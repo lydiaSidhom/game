@@ -1,13 +1,19 @@
 <body>
-	<div class="center jumbotron">
-		<h1>Game for ecology</h1>
+	<div class="center jumbotron" style="margin-top: 10px;">
+		<h1>TrafficLess</h1>
 		<h2>
-			This is the home page for my game.
+			Enjoy the game :)
 		</h2>
-		<%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
+
+		<% if logged_in? %>
+            <%= link_to "Challenge of the week", '#', class: "btn btn-lg btn-success" %>
+        <% else %>
+			<%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
+        <% end %>
+
 	</div>
-	<%= link_to image_tag("54119.png", alt: "Rails logo"),
-            'http://rubyonrails.org/' %>
+	<!--%= link_to image_tag("Logo.png", alt: "logo"),
+            'http://rubyonrails.org/' %-->
 </body>
 <style>
 body{background-color: #8fb4ff}
