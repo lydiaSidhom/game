@@ -1,0 +1,48 @@
+<div style="margin-left: 25px">
+	<h3>Errand 1 from "" to "":</h3>
+	<label class="radio">
+		<input type="radio" name="optionsRadios" id="optionsRadios1" value="options1" checked>
+		Carpooling with a colleague
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios" id="optionsRadios2" value="options2">
+		Bus line 9232
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios" id="optionsRadios3" value="options3">
+		Metro line 2
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios" id="optionsRadios4" value="options4">
+		Using my car
+	</label>
+</div>
+<div style="margin-left: 25px">
+	<h3>Errand 2:</h3>
+	<label class="radio">
+		<input type="radio" name="optionsRadios2" id="optionsRadios5" value="options5" checked>
+		Carpooling with a colleague
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios2" id="optionsRadios6" value="options6">
+		Bus line 7645
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios2" id="optionsRadios7" value="options7">
+		Metro line 1
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios2" id="optionsRadios8" value="options8">
+		Using my car
+	</label>
+	<label class="radio">
+		<input type="radio" name="optionsRadios2" id="optionsRadios9" value="options9">
+		Walking
+	</label>
+	<%= button_to "Choose", users_profile_path, {method: :get, class: 'btn btn-info', style: 'width: 100px'} %>
+</div>
+
+<style>
+	body{background-color: #b2e2b7}
+   #newLoc {width:600px}
+</style>

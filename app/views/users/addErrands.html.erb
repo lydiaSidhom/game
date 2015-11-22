@@ -1,0 +1,75 @@
+<script>
+var ct = 1;
+function newLoc()
+{
+	ct++;
+	var div1 = document.createElement('div');
+	div1.id = 'bus_stop-'+ct;
+	div1.setAttribute('class', 'bus-stop');
+	// link to delete extended form elements
+	var delLink = '<a href="javascript:delIt('+ ct +')" class="btn btn-danger">Del</a>';
+	div1.innerHTML = document.getElementById('newTpl').innerHTML + delLink;
+	document.getElementById('newLoc').appendChild(div1);
+	$(div1).find('input').each(function() {
+		new app.BusStops($(this));
+	});
+}
+// function to delete the newly added set of elements
+function delIt(eleId)
+{
+	d = document;
+	var ele = d.getElementById('bus_stop-'+eleId);
+	var parentEle = d.getElementById('newLoc');
+	parentEle.removeChild(ele);
+}
+
+$(function() {
+	$('.bus-stop input').each(function() {
+		new app.BusStops($(this));
+	});
+  });
+</script>
+
+
+<form method="post" action="" style="margin-top: 20px; ">
+	<div id="newLoc" class="form-inline bus-stop">
+		<div class="form-group">
+			<label for="locationFrom">From: </label>
+			<input type="text" class="form-control" id="locationFrom" placeholder="Enter starting point">
+		</div>
+		<div class="form-group">
+			<label for="locationTo">To: </label>
+			<input type="text" class="form-control" id="locationTo" placeholder="Enter end point">
+		</div>
+		<label >
+			<input type="checkbox"/> Carpooling available
+		</label>		
+	</div>
+	<p id="addnew">
+		<a href="javascript:newLoc()" class="btn btn-warning">Add new</a>
+	</p>
+	<p>
+		
+		<!--button type="submit" class="btn btn-default">Submit</button-->
+	</p>
+</form>
+<%= button_to "Submit", users_entries_path, {method: :get, class: 'btn btn-info', style: 'width: 100px'} %>
+<!-- Template -->
+<div id="newTpl" style="display:none" class="form-inline">
+	<div class="form-group">
+		<label for="locationFrom">From: </label>
+		<input type="text" class="form-control" id="locationFrom" placeholder="Enter starting point">
+	</div>
+	<div class="form-group">
+		<label for="locationTo">To: </label>
+		<input type="text" class="form-control" id="locationTo" placeholder="Enter end point">
+	</div>
+	<label >
+		<input type="checkbox"/> Carpooling available
+	</label>
+</div>
+
+<style>
+	body{background-color: #FFF0F5}
+   #newLoc {width:600px}
+</style>

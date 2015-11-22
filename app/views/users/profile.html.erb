@@ -1,0 +1,51 @@
+<% provide(:title, @user.name) %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <h1>
+        <%= image_tag("profile.png", alt: "profile", style: "width: 150px") %>
+        <br>
+        <%= @user.name.titleize %> 
+        <br>
+      </h1>
+      <%= @user.email %>
+    </section>
+
+    <%= button_to "Add Errands", users_addErrands_path, {method: :get, class: 'btn btn-info', style: 'width: 100px; margin-top: 20px;'} %>
+  </aside>
+  
+  <!--div class="col-md-2">
+  	<%= button_to "Add Errands", users_addErrands_path, {method: :get, class: 'btn btn-info', style: 'width: 100px; margin-top: 20px;'} %>
+  </div-->
+
+  <div class="col-md-4" style="margin-top: 20px;">
+  	<h3>Leaderboard</h3>	
+  	<table class="table table-striped" >
+	  <tr>
+	    <th>Name</th>
+	    <th>Score</th> 
+	    <th>Rank</th>
+	  </tr>
+	  <tr>
+	    <td>Sandra</td>
+	    <td>320</td> 
+	    <td>1</td>
+	  </tr>
+	  <tr class="success">
+	    <td>Lydia</td>
+	    <td>280</td> 
+	    <td>2</td>
+	  </tr>
+	  <tr>
+	    <td>Jailan</td>
+	    <td>200</td> 
+	    <td>3</td>
+	  </tr>
+	  <tr>
+	    <td>Sherif</td>
+	    <td>190</td> 
+	    <td>4</td>
+	  </tr>
+	</table>
+  </div>
+</div>
