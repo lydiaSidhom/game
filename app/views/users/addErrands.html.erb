@@ -1,60 +1,98 @@
 <script>
 var ct = 1;
+var count = 1;
 function newLoc()
 {
 	ct++;
-	var div1 = document.createElement('div');
-	div1.id = 'bus_stop-'+ct;
-	div1.setAttribute('class', 'bus-stop');
+	count++;
+	//debugger
 	// link to delete extended form elements
-	var delLink = '<a href="javascript:delIt('+ ct +')" class="btn btn-danger">Del</a>';
-	div1.innerHTML = document.getElementById('newTpl').innerHTML + delLink;
-	document.getElementById('newLoc').appendChild(div1);
+	var delLink = '<a href="javascript:delIt('+ ct +')" class="btn btn-danger" id="delbtn">Del</a>';
+
+
+	var div1 = $(['<div id="location-'+ct+'" class="form-inline location">',
+		'<div class="form-group">',
+			'<label for="locationFrom"+>From: </label>',
+			'<input type="text" class="form-control" id="locationFrom'+count+'" name="locations[locationFrom'+count+']" placeholder="Enter starting point">',
+		'</div>',
+		'<div class="form-group">',
+			'<label for="locationTo">To: </label>',
+			'<input type="text" class="form-control" id="locationTo'+count+'" name="locations[locationTo'+count+']" placeholder="Enter end point">',
+		'</div>',
+		'<input id="carpool"'+count+' name="locations[carpool'+count+']" type="checkbox" /> ',
+		'<label id="carpoolLabel">Carpooling available</label>',
+		'<a href="javascript:delIt('+ ct +')" class="btn btn-danger" id="delbtn">Del</a>',
+	'</div>',].join(''))
+
+	$('#newLoc').append(div1);
 	$(div1).find('input').each(function() {
-		new app.BusStops($(this));
+		new app.Locations($(this));
 	});
 }
 // function to delete the newly added set of elements
 function delIt(eleId)
 {
 	d = document;
-	var ele = d.getElementById('bus_stop-'+eleId);
+	var ele = d.getElementById('location-'+eleId);
 	var parentEle = d.getElementById('newLoc');
 	parentEle.removeChild(ele);
 }
 
 $(function() {
-	$('.bus-stop input').each(function() {
-		new app.BusStops($(this));
+	$('.location input').each(function() {
+		new app.Locations($(this));
 	});
   });
 </script>
 
+<%= form_tag users_choices_path, :id => 'form_id' do %>
+	<div id="newLoc" class="form-inline location" >
+		<div id="location-1" class="form-inline">
+			<div class="form-group">
+				<label for="locationFrom">From: </label>
+				<input type="text" class="form-control" id="locationFrom1" name="locations[locationFrom1]" placeholder="Enter starting point">
+			</div>
+			<div class="form-group">
+				<label for="locationTo">To: </label>
+				<input type="text" class="form-control" id="locationTo1" name="locations[locationTo1]" placeholder="Enter end point">
+			</div>
+			<%= check_box_tag(:carpool) %>
+			<%= label_tag(:carpool, "Carpooling available") %>
+		</div>
+	</div>
+	<p id="addnew">
+		<a href="javascript:newLoc()" class="btn btn-warning">Add new</a>
+	</p>
+	<%= submit_tag("Submit", class: "btn btn-success", style: "width: auto") %>
+<% end %>
 
-<form method="post" action="" style="margin-top: 20px; ">
-	<div id="newLoc" class="form-inline bus-stop">
-		<div class="form-group">
-			<label for="locationFrom">From: </label>
-			<input type="text" class="form-control" id="locationFrom" placeholder="Enter starting point">
+
+<!-- <form method="post" action="choices" style="margin-top: 20px; " >
+	<div id="newLoc" class="form-inline location" >
+		<div id="location-1" class="form-inline">
+			<div class="form-group">
+				<label for="locationFrom">From: </label>
+				<input type="text" class="form-control" id="locationFrom1" name="locations[locationFrom1]" placeholder="Enter starting point">
+			</div>
+			<div class="form-group">
+				<label for="locationTo">To: </label>
+				<input type="text" class="form-control" id="locationTo1" name="locations[locationTo1]" placeholder="Enter end point">
+			</div>
+			<input id="carpool" type="checkbox"/> 
+			<label id="carpoolLabel">Carpooling available</label>
 		</div>
-		<div class="form-group">
-			<label for="locationTo">To: </label>
-			<input type="text" class="form-control" id="locationTo" placeholder="Enter end point">
-		</div>
-		<label >
-			<input type="checkbox"/> Carpooling available
-		</label>		
 	</div>
 	<p id="addnew">
 		<a href="javascript:newLoc()" class="btn btn-warning">Add new</a>
 	</p>
 	<p>
 		
-		<!--button type="submit" class="btn btn-default">Submit</button-->
+		<button type="submit" class="btn btn-success">Submit</button>
 	</p>
-</form>
-<%= button_to "Submit", users_entries_path, {method: :get, class: 'btn btn-info', style: 'width: 100px'} %>
+</form> -->
+<!--%= button_to "Submit", users_choices_path, {method: :get, class: 'btn btn-success', style: 'width: 100px'} %-->
 <!-- Template -->
+
 <div id="newTpl" style="display:none" class="form-inline">
 	<div class="form-group">
 		<label for="locationFrom">From: </label>
@@ -64,12 +102,76 @@ $(function() {
 		<label for="locationTo">To: </label>
 		<input type="text" class="form-control" id="locationTo" placeholder="Enter end point">
 	</div>
-	<label >
-		<input type="checkbox"/> Carpooling available
-	</label>
+		<input id="carpool" type="checkbox"/> 
+		<label id="carpoolLabel">Carpooling available</label>
 </div>
 
 <style>
-	body{background-color: #FFF0F5}
-   #newLoc {width:600px}
+	body{background-color: #8fb4ff}
+   #newLoc {
+   		width:600px;
+   	}
+   	#form_id {
+   		margin-top: 20px;
+   	}
+   #delbtn {
+   		margin-left: 0;
+   		position: absolute;
+	}
+	#carpool {
+		margin-left: 0;
+   		position: absolute;
+	}
+	#carpoolLabel {
+		margin-left: 0;
+	}
+
+	/*.location input {
+	  width: 100%;
+	  font-size: 1em;
+	  padding: .5em 1.3em;
+	  background: transparent;
+	  border: 1px solid #ddd;
+	  border-radius: 2em;
+	}
+
+	.location input:focus {
+	  border-color: #A5CEF5;
+	}*/
+	.ui-widget-content {
+	  width: 100px;
+	  background: #fff;
+	  font-size: .9em;
+	  padding: .5em 0;
+	  border-color: #ddd;
+	  box-shadow: 0 .1em .2em rgba(187, 187, 187, 0.64);
+	  line-height: 1.2;
+	  max-height: 20em;
+	  overflow: hidden;
+	  overflow-y: auto;
+	}
+
+	.ui-menu-item {
+	  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+	  padding: .4em .4em .4em 4em;
+	  position: relative;
+	  border: 0;
+	  border-left: 5px solid transparent;
+	  position: relative;
+	}
+	.ui-state-focus {
+	  background: #fff;
+	  border-left-color: #08c;
+	  font-weight: 300;
+	}
+
+	
+	.ui-menu-item .name {
+	  display: block;
+	  color: #555;
+	}
+
+	.ui-state-focus .name {
+	  color: #08c;
+	}
 </style>

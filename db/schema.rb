@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112111359) do
+ActiveRecord::Schema.define(version: 20151123184420) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -26,7 +26,15 @@ ActiveRecord::Schema.define(version: 20151112111359) do
 
   create_table "bus_stops", force: :cascade do |t|
     t.string   "name"
-    t.string   "location"
+    t.integer  "location_id"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string   "name"
     t.decimal  "lat"
     t.decimal  "lng"
     t.datetime "created_at", null: false
@@ -36,9 +44,10 @@ ActiveRecord::Schema.define(version: 20151112111359) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "email"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.string   "password_digest"
+    t.integer  "score",           default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
