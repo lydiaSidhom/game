@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   get 'contact' => 'static_pages#contact'
 
+  get 'challenges' => 'static_pages#challenges'
+
   get 'signup'  => 'users#new'
 
   #get 'home' => 'users#home'
@@ -19,13 +21,21 @@ Rails.application.routes.draw do
 
   get 'users/:id/' ,to: 'users#profile',as: 'users_profile'
 
-  get 'users/:id/entries' ,to: 'users#entries',as: 'users_entries'
+  #get 'users/:id/choices' ,to: 'users#choices',as: 'users_choices'
+
+  post 'users/:id/choices' ,to: 'users#choices',as: 'users_choices'
 
   get 'users/:id/addErrands' ,to: 'users#addErrands',as: 'users_addErrands'
 
   resources :users 
 
   resources :bus_stops, only: [] do
+    collection do
+      get :search
+    end
+  end
+
+  resources :locations, only: [] do
     collection do
       get :search
     end

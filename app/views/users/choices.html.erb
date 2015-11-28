@@ -1,24 +1,23 @@
+<h3><%= @locations %></h3>
+<h3><%= @results %></h3>
+
 <div style="margin-left: 25px">
-	<h3>Errand 1 from "" to "":</h3>
+	<h3>Errand 1 from "Nasr City" to "New Cairo":</h3>
 	<label class="radio">
 		<input type="radio" name="optionsRadios" id="optionsRadios1" value="options1" checked>
-		Carpooling with a colleague
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios2" value="options2">
 		Bus line 9232
 	</label>
 	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios3" value="options3">
+		<input type="radio" name="optionsRadios" id="optionsRadios2" value="options2">
 		Metro line 2
 	</label>
 	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios4" value="options4">
+		<input type="radio" name="optionsRadios" id="optionsRadios3" value="options3">
 		Using my car
 	</label>
 </div>
 <div style="margin-left: 25px">
-	<h3>Errand 2:</h3>
+	<h3>Errand 2 from "New Cairo" to "Heliopolis":</h3>
 	<label class="radio">
 		<input type="radio" name="optionsRadios2" id="optionsRadios5" value="options5" checked>
 		Carpooling with a colleague
@@ -39,10 +38,11 @@
 		<input type="radio" name="optionsRadios2" id="optionsRadios9" value="options9">
 		Walking
 	</label>
-	<%= button_to "Choose", users_profile_path, {method: :get, class: 'btn btn-info', style: 'width: 100px'} %>
+
+	<%= button_to "Choose", users_profile_path, {method: :get, class: 'btn btn-success', style: 'width: 100px'} %>
 </div>
 
 <style>
-	body{background-color: #b2e2b7}
+	body{background-color: #8fb4ff}
    #newLoc {width:600px}
 </style>

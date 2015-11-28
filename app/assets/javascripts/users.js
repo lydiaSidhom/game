@@ -1,16 +1,16 @@
 var app = window.app = {};
 
-app.BusStops = function(elm) {
+app.Locations = function(elm) {
   this._input = elm;
   this._initAutocomplete();
 };
 
-app.BusStops.prototype = {
+app.Locations.prototype = {
   _initAutocomplete: function() {
     this._input
       .autocomplete({
-        source: '/bus_stops/search.json',
-        appendTo: '#bus-stops-search-results',
+        source: '/locations/search.json',
+        appendTo: '#locations-search-results',
         select: $.proxy(this._select, this)
       })
       .autocomplete('instance')._renderItem = $.proxy(this._render, this);
