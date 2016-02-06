@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151230153247) do
+ActiveRecord::Schema.define(version: 20160206182315) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 20151230153247) do
     t.datetime "updated_at",                  null: false
     t.string   "password_digest"
     t.integer  "score",           default: 0
+    t.string   "remember_digest"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
