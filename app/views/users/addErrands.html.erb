@@ -10,7 +10,8 @@ function newLoc()
 	var delLink = '<a href="javascript:delIt('+ ct +')" class="btn btn-danger" id="delbtn">Del</a>';
 
 
-	var div1 = $(['<div id="location-'+ct+'" class="form-inline location">',
+	var div1 = $([
+	'<div id="location-'+ct+'" class="form-inline location">',
 		'<div class="form-group">',
 			'<label for="locationFrom"+>From: </label>',
 			'<input type="text" class="form-control" id="locationFrom'+count+'" name="locations[locationFrom'+count+']" placeholder="Enter starting point">',
@@ -19,8 +20,11 @@ function newLoc()
 			'<label for="locationTo">To: </label>',
 			'<input type="text" class="form-control" id="locationTo'+count+'" name="locations[locationTo'+count+']" placeholder="Enter end point">',
 		'</div>',
-		'<input id="carpool"'+count+' name="locations[carpool'+count+']" type="checkbox" /> ',
-		'<label id="carpoolLabel">Carpooling available</label>',
+		'<div class="form-group">',
+			'<input type="hidden" name="locations[carpool'+count+']" id="carpool'+count+'" value="" autocomplete="off">',
+			'<input id="carpool'+count+'" name="locations[carpool'+count+']" type="checkbox" /> ',
+			'<label id="carpoolLabel">Carpooling available</label>',
+		'</div>',
 		'<a href="javascript:delIt('+ ct +')" class="btn btn-danger" id="delbtn">Del</a>',
 	'</div>',].join(''))
 
@@ -56,8 +60,11 @@ $(function() {
 				<label for="locationTo">To: </label>
 				<input type="text" class="form-control" id="locationTo1" name="locations[locationTo1]" placeholder="Enter end point">
 			</div>
-			<%= check_box_tag(:carpool) %>
-			<%= label_tag(:carpool, "Carpooling available") %>
+			<div class="form-group">
+				<input type="hidden" name="locations[carpool1]" id="carpool1" value="" autocomplete="off">
+				<input id="carpool1" name="locations[carpool1]" type="checkbox" />
+				<label id="carpoolLabel">Carpooling available</label>
+			</div>
 		</div>
 	</div>
 	<p id="addnew">
@@ -93,7 +100,7 @@ $(function() {
 <!--%= button_to "Submit", users_choices_path, {method: :get, class: 'btn btn-success', style: 'width: 100px'} %-->
 <!-- Template -->
 
-<div id="newTpl" style="display:none" class="form-inline">
+<!-- <div id="newTpl" style="display:none" class="form-inline">
 	<div class="form-group">
 		<label for="locationFrom">From: </label>
 		<input type="text" class="form-control" id="locationFrom" placeholder="Enter starting point">
@@ -104,7 +111,7 @@ $(function() {
 	</div>
 		<input id="carpool" type="checkbox"/> 
 		<label id="carpoolLabel">Carpooling available</label>
-</div>
+</div> -->
 
 <style>
 	body{background-color: #8fb4ff}

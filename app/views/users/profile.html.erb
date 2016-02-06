@@ -1,6 +1,59 @@
+<!DOCTYPE html>
+<html>
+<script>
+
+function getLocation() {
+    var x = document.getElementById("demo");
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    var x = document.getElementById("demo");
+    x.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;  
+
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    document.cookie = "lat_lng=" + escape(lat+ "|" +lng);
+    // var url = $('#my_link').attr('href') + '?message=' + lat + ',' + lng;
+    // $('#my_link').attr('href', url);
+
+    // jQuery.ajax({
+    //   data: "coord=" + lat + ',' + lng,
+    //   dataType: 'script',
+    //   type: 'post',
+    //   url: '/users/checkin'
+    // });
+}
+
+function showError(error) {
+    var x = document.getElementById("demo");
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
+}
+</script>
+
 <% provide(:title, @user.name) %>
+
+<!--h3><%= @choices %></h3-->
+
 <div class="row">
-  <aside class="col-md-4">
+  <aside class="col-md-6">
     <section class="user_info">
       <h1>
         <%= image_tag("profilePic.jpeg", alt: "profile", style: "width: 150px") %>
@@ -9,9 +62,31 @@
         <br>
       </h1>
       <%= @user.email %>
-    </section>
-
+    </section>    
     <%= button_to "Add Errands", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
+
+    <% if(Errand.where(user_id: params[:id]).find_each.size > 0) %>
+      <h3>Errands</h3>
+      <div style="height: 350px; overflow: auto;">
+        <table class="table" style="background-color: #ffffff">
+          <tr>
+          <th>From</th>
+          <th>To</th> 
+          <th>Choice</th>
+          <th>Lat/Lng</th>
+          </tr>
+          <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
+            <tr>
+              <td><%= link_to errand.start.name, users_checkin_path, :onclick => 'getLocation()'%></td>
+              <!--td><%= link_to errand.start.name, @user, remote: true, method: :checkin, :class => 'checkin_start' %></td-->
+              <td><%= link_to errand.end.name, errand_path(:id => errand.id)%></td>
+              <td><%= errand.choice %></td>
+              <td id="demo"></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    <% end %>
   </aside>
   
   <!--div class="col-md-2">
@@ -27,20 +102,20 @@
 	    <th>Name</th>
 	    <th>Score</th> 
 	    <th>Rank</th>
-	  </tr>
+	    </tr>
   	  <% @users.each do |user| %>
   	  	<% @rank+=1 %>
   	  	<% if(user.name == @user.name) %>       
-  		<tr class="success">
-  		<% else %>
-  		<tr>
-  		<% end %>
-    		<td><%= user.name.titleize %></td>
-    		<td><%= user.score %></td>
-    		<td><%= @rank %></td>
-  		</tr>
-	  <% end %>
-	</table>
+    		<tr class="success">
+    		<% else %>
+    		<tr>
+    		<% end %>
+      		<td><%= user.name.titleize %></td>
+      		<td><%= user.score %></td>
+      		<td><%= @rank %></td>
+    		</tr>
+  	  <% end %>
+  	</table>
 	</div>
   </div>
 </div>
@@ -53,3 +128,4 @@
 		display: inline-block;
 	}
 </style>
+</html>

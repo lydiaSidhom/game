@@ -1,48 +1,52 @@
-<h3><%= @locations %></h3>
 <h3><%= @results %></h3>
+<%= form_tag users_profile_after_choices_path, :id => 'form_id' do %>
+	<% count = 0 %>
+	<% errand_no = @results[count][0]-1 %>
+	<% current = 0 %>
+	<% while(count < @results.size) %>
+		<% if(@results[count][0] != errand_no) %>
+			<% current += 1 %>
+			<% errand_no += 1 %>
+			<h3>Errand <%= current %> from <%= BusStop.find_by_name(@results[count][1]).location.name %> to <%= BusStop.find_by_name(@results[count][2]).location.name %>:</h3>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Using own Car" checked>
+				Using own Car
+			</label>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line 1">
+				Metro line 1
+			</label>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
+				Walking
+			</label>
+			<% if(@results[count][4] != "") %>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Carpooling">
+				Carpooling
+			</label>
+			<% end %>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+				Bus line <%= @results[count][3] %>
+			</label>
+			<!-- Add rest of choicesssssss -->
+		<% else %>
+			<label class="radio">
+				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+				Bus line <%= @results[count][3] %>
+			</label>
+		<% end %>
+		<% count += 1 %>
+	<% end %>
+	<%= submit_tag("Choose", class: "btn btn-success", style: "width: auto") %>
 
-<div style="margin-left: 25px">
-	<h3>Errand 1 from "Nasr City" to "New Cairo":</h3>
-	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios1" value="options1" checked>
-		Bus line 9232
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios2" value="options2">
-		Metro line 2
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios" id="optionsRadios3" value="options3">
-		Using my car
-	</label>
-</div>
-<div style="margin-left: 25px">
-	<h3>Errand 2 from "New Cairo" to "Heliopolis":</h3>
-	<label class="radio">
-		<input type="radio" name="optionsRadios2" id="optionsRadios5" value="options5" checked>
-		Carpooling with a colleague
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios2" id="optionsRadios6" value="options6">
-		Bus line 7645
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios2" id="optionsRadios7" value="options7">
-		Metro line 1
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios2" id="optionsRadios8" value="options8">
-		Using my car
-	</label>
-	<label class="radio">
-		<input type="radio" name="optionsRadios2" id="optionsRadios9" value="options9">
-		Walking
-	</label>
-
-	<%= button_to "Choose", users_profile_path, {method: :get, class: 'btn btn-success', style: 'width: 100px'} %>
-</div>
+	<!--%= button_to "Choose", users_profile_after_choices_path, {method: :post, class: 'btn btn-success', style: 'width: 100px'} %-->
+<% end %>
 
 <style>
 	body{background-color: #8fb4ff}
-   #newLoc {width:600px}
+	.radio{
+		margin-left: 20px;
+	}
 </style>

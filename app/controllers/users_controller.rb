@@ -20,19 +20,76 @@ class UsersController < ApplicationController
     end
   end
 
-  def choices
+  def is_number? string
+    true if Float(string) rescue false
+  end
+
+  def profileAfterChoices
     @user = User.find(params[:id])
-    @user.update_attribute :score, @user.score+10
+    @users = User.all.order(score: :desc)
+    @rank = 0 
+
+    #Update Score
+    @choices = params[:choices]
+    $i = 1
+    while $i <= @choices.size
+      choice = @choices["optionsRadios#{$i}"]
+      e = ""
+
+      $s=0
+      while(is_number?(choice[$s]))
+        e = e + choice[$s]
+        $s += 1
+      end
+
+      size = e.length
+      $s=size
+      c = ""
+      while($s < choice.length)
+        c = c + choice[$s]
+        $s += 1
+      end
+
+      @errand = Errand.find(e.to_i)
+      if(c.include? "Bus line")
+        @user.update_attribute :score, @user.score+10
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Metro line")
+        @user.update_attribute :score, @user.score+20
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Carpooling")
+        @user.update_attribute :score, @user.score+10
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Walking")
+        @user.update_attribute :score, @user.score+40
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Using own Car")
+        @user.update_attribute :score, @user.score-10   
+        @errand.update_attribute :choice, c
+      end
+      $i += 1
+    end
+
+    render 'profile'
+  end
+
+  def choices
 
     @locations = params[:locations]
     
-    $i = 1
+    @i = 1
     $count = 0
     @results = []
+    @errands = []
     while $count < @locations.size
-      from = Location.find_by_name(@locations["locationFrom#{$i}"])
-      to = Location.find_by_name(@locations["locationTo#{$i}"])
-      #carpool = @locations[$i+2]
+      from = Location.find_by_name(@locations["locationFrom#{@i}"])
+      to = Location.find_by_name(@locations["locationTo#{@i}"])
+
+      errand = Errand.new(start_id: from.id, end_id: to.id, choice: "", user_id: params[:id])
+      errand.save
+      @errands.push(errand)
+
+      carpool = @locations["carpool#{@i}"]
       if(!(from.nil?) && !(to.nil?))
         stopsFrom = from.bus_stops
         stopsTo = to.bus_stops
@@ -45,7 +102,7 @@ class UsersController < ApplicationController
               common = lf & lt
               if(!(common.empty?))
                 common.each do |c|
-                  @results.push([f.name,t.name,c.name])
+                  @results.push([errand.id,f.name,t.name,c.name,carpool])
                 end
               end
             end
@@ -53,13 +110,20 @@ class UsersController < ApplicationController
         end
       end
 
-      $count += 2
-      $i += 1
+      $count += 3
+      @i += 1
     end
     @results = @results.uniq
   end
 
   def addErrands
+  end
+
+  def checkin
+    @user = User.find(params[:id])
+    @user.update_attribute :score, @user.score+10
+    @lat_lng = cookies[:lat_lng].split("|")
+    render 'new'
   end
 
   def profile

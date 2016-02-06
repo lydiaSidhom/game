@@ -19,15 +19,21 @@ Rails.application.routes.draw do
   
   delete 'logout'  => 'sessions#destroy'
 
+  post 'users/:id/', to: 'users#checkin', as: 'users_checkin'
+
+  post 'users/:id/' ,to: 'users#profileAfterChoices',as: 'users_profile_after_choices'
+
   get 'users/:id/' ,to: 'users#profile',as: 'users_profile'
 
   #get 'users/:id/choices' ,to: 'users#choices',as: 'users_choices'
 
-  post 'users/:id/choices' ,to: 'users#choices',as: 'users_choices'
+  post 'users/:id/choices',to: 'users#choices',as: 'users_choices'
 
-  get 'users/:id/addErrands' ,to: 'users#addErrands',as: 'users_addErrands'
+  get 'users/:id/addErrands',to: 'users#addErrands',as: 'users_addErrands'
 
   resources :users 
+
+  resources :errands
 
   resources :bus_stops, only: [] do
     collection do
