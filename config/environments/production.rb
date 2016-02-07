@@ -77,10 +77,8 @@ Rails.application.configure do
     :address        => 'smtp.sendgrid.net',
     :port           => '587',
     :authentication => :plain,
-    :user_name      => ENV['lydia.sidhom'],
-    #:user_name      => 'bHlkaWEuc2lkaG9t',
-    :password       => ENV['loulou123'],
-    #:password       => 'bG91bG91MTIz',
+    :user_name => ENV['SENDGRID_USERNAME'],
+    :password => ENV['SENDGRID_PASSWORD'],
     :domain         => 'trafficless.herokuapp.com',
     :enable_starttls_auto => true
   }
