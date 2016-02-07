@@ -77,11 +77,24 @@ Rails.application.configure do
     :address        => 'smtp.sendgrid.net',
     :port           => '587',
     :authentication => :plain,
-    :user_name      => ENV['lydia.sidhom'],
-    :password       => ENV['loulou123'],
+    #:user_name      => ENV['lydia.sidhom'],
+    :user_name      => 'bHlkaWEuc2lkaG9t',
+    #:password       => ENV['loulou123'],
+    :password       => 'bG91bG91MTIz',
     :domain         => 'heroku.com',
     :enable_starttls_auto => true
   }
+
+  ActionMailer::Base.delivery_method = :smtp
+ActionMailer::Base.smtp_settings = {
+  :user_name => "yourSendGridusernameyougetfromheroku",
+  :password => "yourSendGridpasswordyougetfromheroku",
+  :domain => "staging.freelanceful.com",
+  :address => "smtp.sendgrid.net",
+  :port => 587,
+  :authentication => :plain,
+  :enable_starttls_auto => true
+}
 
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
