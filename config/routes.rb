@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   
   delete 'logout'  => 'sessions#destroy'
 
-  #post 'users/:id/', to: 'users#checkin', as: 'users_checkin'
+  post 'users/:id/', to: 'users#checkin', as: 'users_checkin'
 
   post 'users/:id/' ,to: 'users#profileAfterChoices',as: 'users_profile_after_choices'
 

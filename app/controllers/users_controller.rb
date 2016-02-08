@@ -122,7 +122,8 @@ class UsersController < ApplicationController
   def checkin
     @user = User.find(params[:id])
     @user.update_attribute :score, @user.score+10
-    @lat_lng = cookies[:lat_lng].split("|")
+    #@lat_lng = cookies[:lat_lng].split("|")
+    @lat_lng = cookies[:lat_lng]
     render 'new'
   end
 
