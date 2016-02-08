@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207124650) do
+ActiveRecord::Schema.define(version: 20160208135546) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -26,11 +26,11 @@ ActiveRecord::Schema.define(version: 20160207124650) do
 
   create_table "bus_stops", force: :cascade do |t|
     t.string   "name"
-    t.integer  "location_id"
     t.decimal  "lat"
     t.decimal  "lng"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "location_id"
   end
 
   create_table "errands", force: :cascade do |t|
