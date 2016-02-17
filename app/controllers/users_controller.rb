@@ -146,9 +146,8 @@ class UsersController < ApplicationController
 
   def profile
     @user = User.find(params[:id])
-    #@users = User.all.order(score: :desc)
     #To get only users that are activated
-    @users = User.where(:activated => true)
+    @users = User.where(:activated => true).order(score: :desc)
     @rank = 0
   end
 
