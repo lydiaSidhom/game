@@ -3,41 +3,68 @@
 	<% count = 0 %>
 	<% errand_no = @results[count][0]-1 %>
 	<% current = 0 %>
-	<% while(count < @results.size) %>
-		<% if(@results[count][0] != errand_no) %>
-			<% current += 1 %>
-			<% errand_no += 1 %>
-			<h3>Errand <%= current %> from <%= BusStop.find_by_name(@results[count][1]).location.name %> to <%= BusStop.find_by_name(@results[count][2]).location.name %>:</h3>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Using own Car" checked>
-				Using own Car
-			</label>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line 1">
-				Metro line 1
-			</label>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
-				Walking
-			</label>
-			<% if(@results[count][4] != "") %>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Carpooling">
-				Carpooling
-			</label>
-			<% end %>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-				Bus line <%= @results[count][3] %>
-			</label>
-			<!-- Add rest of choicesssssss -->
-		<% else %>
-			<label class="radio">
-				<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-				Bus line <%= @results[count][3] %>
-			</label>
+	<!-- checking if all errands have no results -->
+	<% i = 0 %>
+	<% errNoResults = 0 %>
+	<% while(i < @results.size) %>
+		<% if(@results[i].size == 1) %>
+			<% errNoResults += 1 %>
 		<% end %>
-		<% count += 1 %>
+		<% i+=1 %>
+	<% end %>
+	<% if(errNoResults != @results.size) %>
+		<% while(count < @results.size) %>
+			<% if(@results[count].size > 1) %>
+				<% if(@results[count][0] != errand_no) %>
+					<% current += 1 %>
+					<% errand_no += 1 %>
+					<h3>Errand <%= current %> from <%= BusStop.find_by_name(@results[count][1]).location.name %> to <%= BusStop.find_by_name(@results[count][2]).location.name %>:</h3>
+					<label class="radio">
+						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Using own Car" checked>
+							Using own Car
+					</label>
+					<label class="radio">
+						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line 1">
+							Metro line 1
+					</label>
+					<label class="radio">
+						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
+							Walking
+					</label>
+					<% if(@results[count][4] != "") %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Carpooling">
+							Carpooling
+						</label>
+					<% end %>
+					<label class="radio">
+						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+							Bus line <%= @results[count][3] %>
+					</label>
+						<!-- Add rest of choicesssssss -->
+				<% else %>
+					<label class="radio">
+						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+							Bus line <%= @results[count][3] %>
+					</label>
+				<% end %>
+			<% else %>
+				<% errand_no += 1 %>
+				<% errand = Errand.find(errand_no) %>
+				<% errand.destroy %>
+			<% end %>
+			<% count += 1 %>
+		<% end %>
+	<% else %>
+		<!-- checking if all errands have no results and removing them -->
+		<% i = 0 %>
+		<% while(i < @results.size) %>
+			<% errand_no = @results[i][0] %>
+			<% errand = Errand.find(errand_no) %>
+			<% errand.destroy %>			
+			<% i+=1 %>
+		<% end %>
+		<h3> Sorry. No results available. </h3>
 	<% end %>
 	<%= submit_tag("Choose", class: "btn btn-success", style: "width: auto") %>
 

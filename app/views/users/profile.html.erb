@@ -2,50 +2,62 @@
 <html>
 <script>
 
-function getLocation() {
-    var x = document.getElementById("demo");
+// For todays date;
+Date.prototype.today = function () { 
+    return this.getFullYear() +"-"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"-"+ ((this.getDate() < 10)?"0":"") + this.getDate();
+}
+
+// For the time now
+Date.prototype.timeNow = function () {
+     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+}
+
+function getLocation(elm) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var datetime = new Date().today() + " " + new Date().timeNow();
+
+            $.rails.ajax({
+              method: 'POST',
+              url: elm.getAttribute('href'),
+              data: {
+                lat: lat,
+                lng: lng,
+                datetime: datetime
+              }
+            });
+          }, function(error) {
+            $.rails.ajax({
+              method: 'POST',
+              url: elm.getAttribute('href')
+            });
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        });
+    } else {         
+      $.rails.ajax({
+        method: 'POST',
+        url: elm.getAttribute('href')
+      });
+      alert("Geolocation is not supported by this browser.");
     }
 }
 
-function showPosition(position) {
-    var x = document.getElementById("demo");
-    x.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;  
-
-    lat = position.coords.latitude;
-    lng = position.coords.longitude;
-    document.cookie = "lat_lng=" + escape(lat+ "|" +lng);
-    // var url = $('#my_link').attr('href') + '?message=' + lat + ',' + lng;
-    // $('#my_link').attr('href', url);
-
-    // jQuery.ajax({
-    //   data: "coord=" + lat + ',' + lng,
-    //   dataType: 'script',
-    //   type: 'post',
-    //   url: '/users/checkin'
-    // });
-}
-
-function showError(error) {
-    var x = document.getElementById("demo");
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            x.innerHTML = "User denied the request for Geolocation."
-            break;
-        case error.POSITION_UNAVAILABLE:
-            x.innerHTML = "Location information is unavailable."
-            break;
-        case error.TIMEOUT:
-            x.innerHTML = "The request to get user location timed out."
-            break;
-        case error.UNKNOWN_ERROR:
-            x.innerHTML = "An unknown error occurred."
-            break;
-    }
-}
 </script>
 
 <% provide(:title, @user.name) %>
@@ -73,16 +85,15 @@ function showError(error) {
           <th>From</th>
           <th>To</th> 
           <th>Choice</th>
-          <th>Lat/Lng</th>
           </tr>
           <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
-            <tr>
-              <td><%= link_to errand.start.name, users_checkin_path, :onclick => 'getLocation()'%></td>
-              <!--td><%= link_to errand.start.name, @user, remote: true, method: :checkin, :class => 'checkin_start' %></td-->
-              <td><%= link_to errand.end.name, errand_path(:id => errand.id)%></td>
-              <td><%= errand.choice %></td>
-              <td id="demo"></td>
-            </tr>
+            <% if(errand.done == false) %>
+              <tr>
+                <td><%= link_to errand.start.name, users_checkin_start_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
+                <td><%= link_to errand.end.name, users_checkin_end_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
+                <td><%= errand.choice %></td>
+              </tr>
+            <% end %>
           <% end %>
         </table>
       </div>
