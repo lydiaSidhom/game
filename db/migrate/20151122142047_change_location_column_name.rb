@@ -1,10 +1,10 @@
 class ChangeLocationColumnName < ActiveRecord::Migration
-  def change
+  #def change
   	#rename_column :bus_stops, :location, :location_id 	
   	#change_column :bus_stops, :location_id, :integer
-  end
+  #end
 
-  def up
+  def change
   	rename_column :bus_stops, :location, :location_id 	
   	
   connection.execute(%q{

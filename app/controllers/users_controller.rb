@@ -30,46 +30,49 @@ class UsersController < ApplicationController
     @rank = 0 
 
     #Update Score
-    @choices = params[:choices]
-    $i = 1
-    while $i <= @choices.size
-      choice = @choices["optionsRadios#{$i}"]
-      e = ""
+    if(params[:choices] != nil)
+      @choices = params[:choices]
+      $i = 1
+      while $i <= @choices.size
+        choice = @choices["optionsRadios#{$i}"]
+        e = ""
 
-      $s=0
-      while(is_number?(choice[$s]))
-        e = e + choice[$s]
-        $s += 1
-      end
+        #get errand number
+        $s=0
+        while(is_number?(choice[$s]))
+          e = e + choice[$s]
+          $s += 1
+        end
 
-      size = e.length
-      $s=size
-      c = ""
-      while($s < choice.length)
-        c = c + choice[$s]
-        $s += 1
-      end
+        #getting choice string
+        size = e.length
+        $s=size
+        c = ""
+        while($s < choice.length)
+          c = c + choice[$s]
+          $s += 1
+        end
 
-      @errand = Errand.find(e.to_i)
-      if(c.include? "Bus line")
-        @user.update_attribute :score, @user.score+10
-        @errand.update_attribute :choice, c
-      elsif(c.include? "Metro line")
-        @user.update_attribute :score, @user.score+20
-        @errand.update_attribute :choice, c
-      elsif(c.include? "Carpooling")
-        @user.update_attribute :score, @user.score+10
-        @errand.update_attribute :choice, c
-      elsif(c.include? "Walking")
-        @user.update_attribute :score, @user.score+40
-        @errand.update_attribute :choice, c
-      elsif(c.include? "Using own Car")
-        @user.update_attribute :score, @user.score-10   
-        @errand.update_attribute :choice, c
+        @errand = Errand.find(e.to_i)
+        if(c.include? "Bus line")
+          @user.update_attribute :score, @user.score+10
+          @errand.update_attribute :choice, c
+        elsif(c.include? "Metro line")
+          @user.update_attribute :score, @user.score+20
+          @errand.update_attribute :choice, c
+        elsif(c.include? "Carpooling")
+          @user.update_attribute :score, @user.score+10
+          @errand.update_attribute :choice, c
+        elsif(c.include? "Walking")
+          @user.update_attribute :score, @user.score+40
+          @errand.update_attribute :choice, c
+        elsif(c.include? "Using own Car")
+          @user.update_attribute :score, @user.score-10   
+          @errand.update_attribute :choice, c
+        end
+        $i += 1
       end
-      $i += 1
     end
-
     render 'profile'
   end
 
@@ -104,10 +107,16 @@ class UsersController < ApplicationController
                 common.each do |c|
                   @results.push([errand.id,f.name,t.name,c.name,carpool])
                 end
+              else
+                @results.push([errand.id])
               end
+            else
+              @results.push([errand.id])
             end
           end
         end
+      else
+        @results.push([errand.id])
       end
 
       $count += 3
@@ -119,17 +128,28 @@ class UsersController < ApplicationController
   def addErrands
   end
 
-  def checkin
+  def checkin_start
     @user = User.find(params[:id])
-    @user.update_attribute :score, @user.score+10
-    @lat_lng = cookies[:lat_lng].split("|")
-    render 'new'
+    @errand = Errand.find(params[:errand_id])
+    if(is_near(params[:lat], params[:lng], @errand.start.lat, @errand.start.lng) && params[:datetime])
+      @errand.update_attribute :check_start_time, params[:datetime]
+    end
+  end
+
+  def checkin_end
+    @user = User.find(params[:id])
+    @errand = Errand.find(params[:errand_id])
+    if(is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
+      @errand.update_attribute :check_end_time, params[:datetime]
+    end
   end
 
   def profile
     @user = User.find(params[:id])
-    @users = User.all.order(score: :desc)
-    @rank = 0 
+    #@users = User.all.order(score: :desc)
+    #To get only users that are activated
+    @users = User.where(:activated => true)
+    @rank = 0
   end
 
 
@@ -138,5 +158,17 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
+    end
+
+    def is_near(checked_lat, checked_lng, errand_lat, errand_lng)
+      #get the locations near the place the user checked-in in, that are maximum 1 mile away
+      near_checked_location = Location.near([checked_lat,checked_lng],1)
+      near_errand_location = Location.near([errand_lat,errand_lng],1)
+      common = near_errand_location & near_checked_location
+      if(common.empty?)
+        return false
+      else
+        return true
+      end
     end
 end
