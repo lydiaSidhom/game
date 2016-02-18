@@ -145,13 +145,18 @@ class UsersController < ApplicationController
   def checkin_end
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
-    if(is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
-    #if(@errand.check_start_time && is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
-      if(params[:datetime])
-        @errand.update_attribute :check_end_time, params[:datetime]
+    if(@errand.check_start_time)
+      if(is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
+      #if(@errand.check_start_time && is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
+        if(params[:datetime])
+          @errand.update_attribute :check_end_time, params[:datetime]
+          @errand.update_attribute :done, true
+        end
+      else
+        render status: 200, text: "The location you checked in is different from the end location of your errand."
       end
     else
-      render status: 200, text: "The location you checked in is different from the end location of your errand."
+      render status: 200, text: "You have not checked in at the start yet."
     end
   end
 

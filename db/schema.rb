@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160208135546) do
+ActiveRecord::Schema.define(version: 20160218160119) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -51,6 +51,28 @@ ActiveRecord::Schema.define(version: 20160208135546) do
     t.decimal  "lng"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "metro_line_metro_stops", force: :cascade do |t|
+    t.integer  "metro_line_id"
+    t.integer  "metro_stop_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "metro_lines", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "metro_stops", force: :cascade do |t|
+    t.string   "name"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.integer  "location_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "users", force: :cascade do |t|
