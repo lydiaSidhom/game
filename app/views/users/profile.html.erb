@@ -28,6 +28,8 @@ function getLocation(elm) {
                 lng: lng,
                 datetime: datetime
               }
+            }).done(function(data){
+              alert(data);
             });
           }, function(error) {
             $.rails.ajax({
@@ -63,6 +65,7 @@ function getLocation(elm) {
 <% provide(:title, @user.name) %>
 
 <!--h3><%= @choices %></h3-->
+
 
 <div class="row">
   <aside class="col-md-6">
