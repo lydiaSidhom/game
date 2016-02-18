@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  respond_to :js, :html, :json
 
   def show
     @user = User.find(params[:id])
@@ -25,8 +26,9 @@ class UsersController < ApplicationController
   end
 
   def profileAfterChoices
-    @user = User.find(params[:id])
-    @users = User.all.order(score: :desc)
+    @user = User.find(params[:id])    
+    #To get only users that are activated
+    @users = User.where(:activated => true).order(score: :desc)
     @rank = 0 
 
     #Update Score
@@ -73,7 +75,7 @@ class UsersController < ApplicationController
         $i += 1
       end
     end
-    render 'profile'
+    redirect_to @user
   end
 
   def choices
@@ -131,16 +133,25 @@ class UsersController < ApplicationController
   def checkin_start
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
-    if(is_near(params[:lat], params[:lng], @errand.start.lat, @errand.start.lng) && params[:datetime])
-      @errand.update_attribute :check_start_time, params[:datetime]
+    if(is_near(params[:lat], params[:lng], @errand.start.lat, @errand.start.lng))
+      if(params[:datetime])
+        @errand.update_attribute :check_start_time, params[:datetime]
+      end
+    else
+      render status: 200, text: "The location you checked in is different from the start location of your errand."
     end
   end
-
+  
   def checkin_end
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
     if(is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
-      @errand.update_attribute :check_end_time, params[:datetime]
+    #if(@errand.check_start_time && is_near(params[:lat], params[:lng], @errand.end.lat, @errand.end.lng) && params[:datetime])
+      if(params[:datetime])
+        @errand.update_attribute :check_end_time, params[:datetime]
+      end
+    else
+      render status: 200, text: "The location you checked in is different from the end location of your errand."
     end
   end
 
@@ -161,8 +172,9 @@ class UsersController < ApplicationController
 
     def is_near(checked_lat, checked_lng, errand_lat, errand_lng)
       #get the locations near the place the user checked-in in, that are maximum 1 mile away
-      near_checked_location = Location.near([checked_lat,checked_lng],1)
-      near_errand_location = Location.near([errand_lat,errand_lng],1)
+      #????????????????????????????????????????????what is an appropriate range to say a location is near another
+      near_checked_location = Location.near([checked_lat,checked_lng],4, :units => :km)
+      near_errand_location = Location.near([errand_lat,errand_lng],4, :units => :km)
       common = near_errand_location & near_checked_location
       if(common.empty?)
         return false
