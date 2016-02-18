@@ -88,6 +88,7 @@ function getLocation(elm) {
           <th>From</th>
           <th>To</th> 
           <th>Choice</th>
+          <th></th>
           </tr>
           <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
             <% if(errand.done == false) %>
@@ -95,6 +96,7 @@ function getLocation(elm) {
                 <td><%= link_to errand.start.name, users_checkin_start_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
                 <td><%= link_to errand.end.name, users_checkin_end_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
                 <td><%= errand.choice %></td>
+                <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
               </tr>
             <% end %>
           <% end %>
