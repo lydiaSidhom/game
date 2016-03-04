@@ -1,9 +1,9 @@
 <body>
 	<h1>Challenges of the week: </h1>
 	<ol>
-		<li><h3 style="opacity: 0.5">Use car only twice</h3></li>
-		<li><h3>Don't spend more than 30 pounds on transportation</h3></li>
-		<li><h3>Use metro at least once daily(if possible)</h3></li>
+		<li><h3 <%if(@ch1[1])%> style="opacity: 0.5" <%end%> > <%= @ch1[0] %> </h3></li>
+		<li><h3 <%if(@ch2[1])%> style="opacity: 0.5" <%end%> > <%= @ch2[0] %> </h3></li>
+		<li><h3 <%if(@ch3[1])%> style="opacity: 0.5" <%end%> > <%= @ch3[0] %> </h3></li>
 	</ol>
 </body>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A" async defer></script>
 <script>
 
 // For todays date;
@@ -12,7 +13,7 @@ Date.prototype.timeNow = function () {
      return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
 
-function getLocation(elm) {
+function getLocation(elm, loc, start_lat, start_lng, end_lat, end_lng, check_start_lat, check_start_lng, choice) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
@@ -20,17 +21,40 @@ function getLocation(elm) {
             var lng = position.coords.longitude;
             var datetime = new Date().today() + " " + new Date().timeNow();
 
-            $.rails.ajax({
-              method: 'POST',
-              url: elm.getAttribute('href'),
-              data: {
-                lat: lat,
-                lng: lng,
-                datetime: datetime
-              }
-            }).done(function(data){
-              alert(data);
-            });
+            var postRequest = function() {
+              $.rails.ajax({
+                method: 'POST',
+                url: elm.getAttribute('href'),
+                data: {
+                  lat: lat,
+                  lng: lng,
+                  datetime: datetime
+                }
+              }).done(function(data){
+                if(data != ""){
+                  alert(data);
+                } else {
+                  //location.reload(true);
+                  if(loc == "end") {
+                    elm.closest('tr').remove();
+                  } else {
+                    var highlightedText = elm.innerHTML;
+                    var parent = elm.parentNode;
+                    var newNode = document.createTextNode(highlightedText);
+                    parent.insertBefore(newNode, elm);
+                    parent.removeChild(elm);
+                  }
+                }
+              });
+            }
+
+            if(loc == "end") {
+              getDirections(check_start_lat, check_start_lng, lat, lng, choice, postRequest);
+            } else {
+              postRequest();
+            }
+
+            
           }, function(error) {
             $.rails.ajax({
               method: 'POST',
@@ -60,12 +84,101 @@ function getLocation(elm) {
     }
 }
 
+// function getDirections(start_lat, start_lng, end_lat, end_lng) {
+//   var parameters = "origin="+start_lat+","+start_lng+"&destination="+end_lat+","+end_lng+"&sensor=false";
+//     $.getJSON("https://maps.googleapis.com/maps/api/directions/json?" + parameters + "&key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A", function(data){
+        
+//         var output = data.routes[0].legs[0].duration.text
+//         // for (x = 0;x < data.routes[0].legs[0].steps.length; x++){
+//         //     output = output + data.routes[0].legs[0].steps[x].html_instructions;
+//         //     output += " (Distance: " + data.routes[0].legs[0].steps[x].distance.text + ") <br />";
+//         // }
+//         console.log(output+"#");
+//         document.getElementById("test").innerHTML=output+"#"
+//     });
+// }
+
+function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postRequest) {
+  var origin = new google.maps.LatLng(start_lat, start_lng);
+  var destination = new google.maps.LatLng(end_lat, end_lng);
+
+  var service = new google.maps.DistanceMatrixService();
+
+  var travelMode = ""
+  if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
+    travelMode = google.maps.TravelMode.DRIVING;
+  } else if(choice.includes("Metro line")) {
+    travelMode = "";
+  } else if(choice.includes("Walking")) {
+    travelMode = google.maps.TravelMode.WALKING;
+  } else if(choice.includes("Cycling")) {
+    travelMode = "";
+  }
+
+  service.getDistanceMatrix(
+    {
+      origins: [origin],
+      destinations: [destination],
+      travelMode: travelMode,
+      unitSystem: google.maps.UnitSystem.METRIC,
+    }, function(response, status) {
+        if (status !== google.maps.DistanceMatrixStatus.OK) {
+          alert('Error was: ' + status);
+        } else {
+          var originList = response.originAddresses;
+          var destinationList = response.destinationAddresses;
+          var outputDiv = document.getElementById('test');
+          outputDiv.innerHTML = '';
+
+          var output = response.rows[0].elements[0].duration.text
+          // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+          //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+          //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+          // }
+          outputDiv.innerHTML=output+"#";
+
+          postRequest();
+        }
+  });
+
+  // var myOptions = {
+  //   zoom: 15,
+  //   center: {lat: 30.0931855, lng: 31.3151443}
+  // };
+  // // Draw the map
+  // var mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
+
+  // var directionsService = new google.maps.DirectionsService();
+  // directionsService.route(
+  //   {
+  //     origin: origin,
+  //     destination: destination,
+  //     travelMode: travelMode,
+  //     unitSystem: google.maps.UnitSystem.METRIC,
+  //   },
+  //   function(response, status)
+  //   {
+  //     if (status == google.maps.DirectionsStatus.OK)
+  //     {
+  //       new google.maps.DirectionsRenderer({
+  //         map: mapObject,
+  //         directions: response
+  //       });
+  //     }
+  //     else
+  //       $("#test").append("Unable to retrieve your route<br />");
+  //   }
+  // );
+}
+
 </script>
 
 <% provide(:title, @user.name) %>
 
-<!--h3><%= @choices %></h3-->
-
+<h3 id="test"></h3>
+<div id="map-container">
+  <div id="map"></div>
+</div>
 
 <div class="row">
   <aside class="col-md-6">
@@ -78,7 +191,7 @@ function getLocation(elm) {
       </h1>
       <%= @user.email %>
     </section>    
-    <%= button_to "Add Errands", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
+    <%= button_to "Add Errand", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
 
     <% if(Errand.where(user_id: params[:id]).find_each.size > 0) %>
       <h3>Errands</h3>
@@ -93,8 +206,8 @@ function getLocation(elm) {
           <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
             <% if(errand.done == false) %>
               <tr>
-                <td><%= link_to errand.start.name, users_checkin_start_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
-                <td><%= link_to errand.end.name, users_checkin_end_path(:errand_id => errand.id), :onclick => 'getLocation(this); return false;'%></td>
+                <td><%= link_to_if (errand.check_start_time == nil), errand.start_lat.truncate(2).to_s() +"-"+errand.start_lng.truncate(2).to_s(), users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', '', '', '', '', ''); return false;"%></td>
+                <td><%= link_to_if (errand.check_end_time == nil), errand.end_lat.truncate(2).to_s() +"-"+errand.end_lng.truncate(2).to_s(), users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.start_lat}, #{errand.start_lng}, #{errand.end_lat}, #{errand.end_lng}, #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;"%></td>
                 <td><%= errand.choice %></td>
                 <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
               </tr>
@@ -104,10 +217,6 @@ function getLocation(elm) {
       </div>
     <% end %>
   </aside>
-  
-  <!--div class="col-md-2">
-  	<%= button_to "Add Errands", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
-  </div-->
 
   <div class="col-md-4" style="margin-top: 20px;">
   	<h1 class="boxed">Score: <%= @user.score %></h1>

@@ -26,8 +26,6 @@ Rails.application.routes.draw do
 
   get 'users/:id/' ,to: 'users#profile',as: 'users_profile'
 
-  #get 'users/:id/choices' ,to: 'users#choices',as: 'users_choices'
-
   post 'users/:id/choices',to: 'users#choices',as: 'users_choices'
 
   get 'users/:id/addErrands',to: 'users#addErrands',as: 'users_addErrands'

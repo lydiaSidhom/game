@@ -4,6 +4,8 @@ class BusStop < ActiveRecord::Base
 
 	belongs_to :location
 
+	reverse_geocoded_by :lat, :lng
+
 #	def self.search(term)
 #  		where('LOWER(name) LIKE :term', term: "%#{term.to_s.strip.downcase}%").limit(5)
 #	end

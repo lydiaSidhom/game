@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160218160119) do
+ActiveRecord::Schema.define(version: 20160303125702) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -34,8 +34,6 @@ ActiveRecord::Schema.define(version: 20160218160119) do
   end
 
   create_table "errands", force: :cascade do |t|
-    t.integer  "start_id"
-    t.integer  "end_id"
     t.string   "choice"
     t.integer  "user_id"
     t.datetime "created_at",                       null: false
@@ -43,6 +41,14 @@ ActiveRecord::Schema.define(version: 20160218160119) do
     t.datetime "check_start_time"
     t.datetime "check_end_time"
     t.boolean  "done",             default: false
+    t.decimal  "start_lat"
+    t.decimal  "end_lat"
+    t.decimal  "end_lng"
+    t.decimal  "start_lng"
+    t.decimal  "check_start_lat"
+    t.decimal  "check_start_lng"
+    t.decimal  "check_end_lat"
+    t.decimal  "check_end_lng"
   end
 
   create_table "locations", force: :cascade do |t|
