@@ -1,3 +1,5 @@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A&callback=initMap" async defer></script>
+
 <script>
 var ct = 1;
 var count = 1;
@@ -47,8 +49,102 @@ $(function() {
 		new app.Locations($(this));
 	});
   });
+
+
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    //center: {lat: 30.040495, lng: 31.227477}
+    center: {lat: 30.0794804, lng: 31.2620502}
+  });
+
+  var map2 = new google.maps.Map(document.getElementById('map2'), {
+    zoom: 15,
+    //center: {lat: 30.040495, lng: 31.227477}
+    center: {lat: 30.0931855, lng: 31.3151443}
+  });
+
+  var marker = new google.maps.Marker({
+  	//position: {lat: 30.040495, lng: 31.227477},
+  	position: {lat: 30.0794804, lng: 31.2620502},
+   	map: map
+  });
+  map.addListener('click', function(e) {
+    placeMarkerAndPanTo(marker, e.latLng, map, "start");
+  });
+  
+  var marker2 = new google.maps.Marker({
+  	//position: {lat: 30.040495, lng: 31.227477},
+  	position: {lat: 30.0931855, lng: 31.3151443},
+   	map: map2
+  });
+  map2.addListener('click', function(e2) {
+    placeMarkerAndPanTo(marker2, e2.latLng, map2, "end");
+  });
+}
+
+function placeMarkerAndPanTo(marker, latLng, map, mapName) {
+  marker.setPosition(latLng);
+  map.panTo(latLng);
+  var splitted = latLng.toString().split(",");
+  var lat = splitted[0].substring(1);
+  var lng = splitted[1].substring(1, splitted[1].length-1);
+
+  if(mapName === "start") {
+	var element = document.getElementById("latStart");
+	element.value = lat;
+
+	var element2 = document.getElementById("lngStart");
+	element2.value = lng;
+  } else {
+  	var element = document.getElementById("latEnd");
+	element.value = lat;
+
+	var element2 = document.getElementById("lngEnd");
+	element2.value = lng;
+  }
+  // $.rails.ajax({
+  //   method: 'POST',
+  //   url: $('#form_id').attr('action'),
+  //   data: {
+  //     lat: lat,
+  //     lng: lng
+  //   }
+  //  });
+}
 </script>
 
+<div style="width: 100%; overflow: auto;">
+	<div class="col-md-6">
+		<h3>Enter starting point:</h3>
+		<div id="map-container">
+			<div id="map"></div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<h3>Enter end point:</h3>
+		<div id="map-container2">
+			<div id="map2"></div>
+		</div>
+	</div>
+</div>
+
+<%= form_tag users_choices_path, :id => 'form_id' do %>
+	<input type="text" id="latStart" name="latStart" value="30.0794804" style="display: none;">
+	<input type="text" id="lngStart" name="lngStart" value="31.2620502" style="display: none;">
+	<input type="text" id="latEnd" name="latEnd" value="30.0931855" style="display: none;">
+	<input type="text" id="lngEnd" name="lngEnd" value="31.3151443" style="display: none;">
+
+	<div class="checkbox">
+    	<label style="font-weight: bold;">
+    		<input type="checkbox" id="carpool" name="carpool"> Carpooling available
+    	</label>
+	</div>
+	
+	<%= submit_tag("Submit", class: "btn btn-success", style: "width: auto") %>
+<% end %>
+
+<!--div>
 <%= form_tag users_choices_path, :id => 'form_id' do %>
 	<div id="newLoc" class="form-inline location" >
 		<div id="location-1" class="form-inline">
@@ -72,7 +168,7 @@ $(function() {
 	</p>
 	<%= submit_tag("Submit", class: "btn btn-success", style: "width: auto") %>
 <% end %>
-
+</div-->
 
 <!-- <form method="post" action="choices" style="margin-top: 20px; " >
 	<div id="newLoc" class="form-inline location" >
@@ -125,14 +221,6 @@ $(function() {
    		margin-left: 0;
    		position: absolute;
 	}
-	#carpool {
-		margin-left: 0;
-   		position: absolute;
-	}
-	#carpoolLabel {
-		margin-left: 0;
-	}
-
 	/*.location input {
 	  width: 100%;
 	  font-size: 1em;
@@ -181,4 +269,33 @@ $(function() {
 	.ui-state-focus .name {
 	  color: #08c;
 	}
+
+	#map-container {
+	   height: 400px;
+	   width: 95%;
+	   border-radius: 16px 16px;
+	   border-color: #fff;
+	   border-style: solid;
+	   box-shadow: 2px 2px 10px #B1B1B1;
+	   margin-top: 25px;
+	   border-width: 7px;
+	 }
+	 #map-container2 {
+	   height: 400px;
+	   width: 95%;
+	   border-radius: 16px 16px;
+	   border-color: #fff;
+	   border-style: solid;
+	   box-shadow: 2px 2px 10px #B1B1B1;
+	   margin-top: 25px;
+	   border-width: 7px;
+	 }
+	 #map {
+	   height: 384px;
+	   width: 100%;
+	 }
+	 #map2 {
+	   height: 384px;
+	   width: 100%;
+	 }
 </style>

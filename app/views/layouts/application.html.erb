@@ -9,14 +9,14 @@
 </head>
 <body>
 	<%= render 'layouts/header' %>
-    <div class="container">
+    <div class="container" style="position:absolute; top:50px; bottom:50px; left:0px; right:0px; overflow:auto;">
     <% flash.each do |message_type, message| %>
       <div class="alert alert-<%= message_type %>"><%= message %></div>
     <% end %>
 		<%= yield %>
-    <%= render 'layouts/footer' %>
     <%= debug(params) if Rails.env.development? %>
-	</div>
+	  </div>
+  <%= render 'layouts/footer' %>
 </body>
 <style>
   body{background-color: #8fb4ff}
@@ -27,3 +27,4 @@
   }
 </style>
 </html>
+

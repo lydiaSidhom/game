@@ -1,3 +1,4 @@
+
 <h3><%= @results %></h3>
 <%= form_tag users_profile_after_choices_path, :id => 'form_id' do %>
 	<% count = 0 %>
@@ -18,35 +19,56 @@
 				<% if(@results[count][0] != errand_no) %>
 					<% current += 1 %>
 					<% errand_no += 1 %>
-					<h3>Errand <%= current %> from <%= BusStop.find_by_name(@results[count][1]).location.name %> to <%= BusStop.find_by_name(@results[count][2]).location.name %>:</h3>
+					<h3>Errand <%= current %>:</h3>
 					<label class="radio">
 						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Using own Car" checked>
 							Using own Car
 					</label>
-					<label class="radio">
-						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line 1">
-							Metro line 1
-					</label>
-					<label class="radio">
-						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
-							Walking
-					</label>
-					<% if(@results[count][4] != "") %>
+					<% if(@results[count][5] == "Metro") %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line <%= @results[count][3] %>">
+								Metro line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
+						</label>
+					<% end %>
+					<% if(Geocoder::Calculations.distance_between([@results[count][1].lat,@results[count][1].lng],[@results[count][2].lat,@results[count][2].lng]) < 6) %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
+								Walking
+						</label>
+					<% end %>
+					<% if(Geocoder::Calculations.distance_between([@results[count][1].lat,@results[count][1].lng],[@results[count][2].lat,@results[count][2].lng]) < 6) %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Cycling">
+								Cycling
+						</label>
+					<% end %>
+					<% if(@results[count][4]) %>
 						<label class="radio">
 							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Carpooling">
 							Carpooling
 						</label>
 					<% end %>
-					<label class="radio">
-						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-							Bus line <%= @results[count][3] %>
-					</label>
+					<% if(@results[count][5] == "Bus") %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+								Bus line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
+						</label>
+					<% end %>
 						<!-- Add rest of choicesssssss -->
 				<% else %>
-					<label class="radio">
-						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-							Bus line <%= @results[count][3] %>
-					</label>
+					<!-- If I am still in same errand add the rem. busses and metros-->
+					<% if(@results[count][5] == "Metro") %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line <%= @results[count][3] %>">
+								Metro line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
+						</label>
+					<% end %>
+					<% if(@results[count][5] == "Bus") %>
+						<label class="radio">
+							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
+								Bus line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
+						</label>
+					<% end %>
 				<% end %>
 			<% else %>
 				<% errand_no += 1 %>
