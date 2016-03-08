@@ -25,10 +25,11 @@ class UsersController < ApplicationController
     true if Float(string) rescue false
   end
 
-  def profileAfterChoices
+  def profileAfterChoices_old
     @user = User.find(params[:id])    
     #To get only users that are activated
-    @users = User.where(:activated => true).order(score: :desc)
+    #@users = User.where(:activated => true).order(score_time: :desc)
+    @users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
     @rank = 0 
 
     #Update Score
@@ -57,22 +58,34 @@ class UsersController < ApplicationController
 
         @errand = Errand.find(e.to_i)
         if(c.include? "Bus line")
-          @user.update_attribute :score, @user.score+10
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10
           @errand.update_attribute :choice, c
         elsif(c.include? "Metro line")
-          @user.update_attribute :score, @user.score+20
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10
           @errand.update_attribute :choice, c
         elsif(c.include? "Carpooling")
-          @user.update_attribute :score, @user.score+10
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10
           @errand.update_attribute :choice, c
         elsif(c.include? "Walking")
-          @user.update_attribute :score, @user.score+40
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10
           @errand.update_attribute :choice, c
         elsif(c.include? "Using own Car")
-          @user.update_attribute :score, @user.score-10   
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10
           @errand.update_attribute :choice, c
         elsif(c.include? "Cycling")
-          @user.update_attribute :score, @user.score+40   
+          @user.update_attribute :score_time, @user.score_time+10
+          @user.update_attribute :score_money, @user.score_money+10
+          @user.update_attribute :score_pollution, @user.score_pollution+10  
           @errand.update_attribute :choice, c
         end
         $i += 1
@@ -81,84 +94,130 @@ class UsersController < ApplicationController
     redirect_to @user
   end
 
-  # def choices
-  #   @locations = params[:locations]
+  def profileAfterChoices
+    @user = User.find(params[:id])    
+    #To get only users that are activated
+    @users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
+    @rank = 0 
+
+    #Update Score
+    if(params[:choices] != nil)
+      @choices = params[:choices]
+      choice = @choices["optionsRadios"]
+      e = ""
+
+      #get errand number
+      $s=0
+      while(is_number?(choice[$s]))
+        e = e + choice[$s]
+        $s += 1
+      end
+
+      #getting choice string
+      size = e.length
+      $s=size
+      c = ""
+      while($s < choice.length)
+        c = c + choice[$s]
+        $s += 1
+      end
+
+      @errand = Errand.find(e.to_i)
+      if(c.include? "Bus line")
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Metro line")
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Carpooling")
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Walking")
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Using own Car")
+        @errand.update_attribute :choice, c
+      elsif(c.include? "Cycling")
+        @errand.update_attribute :choice, c
+      end
+    end
+    redirect_to @user
+  end
+
+  def choices_old
+    @locations = params[:locations]
     
-  #   @i = 1
-  #   $count = 0
-  #   @busResults = []
-  #   @metroResults = []
-  #   @results = []
-  #   @errands = []
-  #   while $count < @locations.size
-  #     from = Location.find_by_name(@locations["locationFrom#{@i}"])
-  #     to = Location.find_by_name(@locations["locationTo#{@i}"])
+    @i = 1
+    $count = 0
+    @busResults = []
+    @metroResults = []
+    @results = []
+    @errands = []
+    while $count < @locations.size
+      from = Location.find_by_name(@locations["locationFrom#{@i}"])
+      to = Location.find_by_name(@locations["locationTo#{@i}"])
 
-  #     errand = Errand.new(start_id: from.id, end_id: to.id, choice: "", user_id: params[:id])
-  #     errand.save
-  #     @errands.push(errand)
+      errand = Errand.new(start_id: from.id, end_id: to.id, choice: "", user_id: params[:id])
+      errand.save
+      @errands.push(errand)
 
-  #     carpool = @locations["carpool#{@i}"]
-  #     if(!(from.nil?) && !(to.nil?))
-  #       busStopsFrom = from.bus_stops
-  #       busStopsTo = to.bus_stops
+      carpool = @locations["carpool#{@i}"]
+      if(!(from.nil?) && !(to.nil?))
+        busStopsFrom = from.bus_stops
+        busStopsTo = to.bus_stops
 
-  #       busStopsFrom.each do |f|
-  #         busStopsTo.each do |t|
-  #           busLinesFrom = f.bus_lines
-  #           busLinesTo = t.bus_lines
-  #           if(!(busLinesFrom.empty?) && !(busLinesTo.empty?))
-  #             common = busLinesFrom & busLinesTo
-  #             if(!(common.empty?))
-  #               common.each do |c|
-  #                 @busResults.push([errand.id,f.name,t.name,c.name,carpool])
-  #               end
-  #             end
-  #           end
-  #         end
-  #       end
+        busStopsFrom.each do |f|
+          busStopsTo.each do |t|
+            busLinesFrom = f.bus_lines
+            busLinesTo = t.bus_lines
+            if(!(busLinesFrom.empty?) && !(busLinesTo.empty?))
+              common = busLinesFrom & busLinesTo
+              if(!(common.empty?))
+                common.each do |c|
+                  @busResults.push([errand.id,f.name,t.name,c.name,carpool])
+                end
+              end
+            end
+          end
+        end
 
-  #       metroStopsFrom = from.metro_stops
-  #       metroStopsTo = to.metro_stops
+        metroStopsFrom = from.metro_stops
+        metroStopsTo = to.metro_stops
         
-  #       metroStopsFrom.each do |f|
-  #         metroStopsTo.each do |t|
-  #           metroLinesFrom = f.metro_lines
-  #           metroLinesTo = t.metro_lines
-  #           if(!(metroLinesFrom.empty?) && !(metroLinesTo.empty?))
-  #             common = metroLinesFrom & metroLinesTo
-  #             if(!(common.empty?))
-  #               common.each do |c|
-  #                 @metroResults.push([errand.id,f.name,t.name,c.name,carpool])
-  #               end
-  #             end
-  #           end
-  #         end
-  #       end
+        metroStopsFrom.each do |f|
+          metroStopsTo.each do |t|
+            metroLinesFrom = f.metro_lines
+            metroLinesTo = t.metro_lines
+            if(!(metroLinesFrom.empty?) && !(metroLinesTo.empty?))
+              common = metroLinesFrom & metroLinesTo
+              if(!(common.empty?))
+                common.each do |c|
+                  @metroResults.push([errand.id,f.name,t.name,c.name,carpool])
+                end
+              end
+            end
+          end
+        end
 
-  #     else
-  #       @results.push([errand.id])
-  #     end
+      else
+        @results.push([errand.id])
+      end
 
-  #     $count += 3
-  #     @i += 1
-  #   end
+      $count += 3
+      @i += 1
+    end
 
-  #   @busResults = @busResults.uniq
-  #   @metroResults = @metroResults.uniq
-  #   if(@busResults.size == 0 && @metroResults.size == 0)
-  #     @results.push([errand.id])
-  #   else
-  #     @busResults.each do |res|
-  #       res.push("Bus")
-  #       @results.push(res)
-  #     end
-  #     @metroResults.each do |res|
-  #       res.push("Metro")
-  #       @results.push(res)
-  #     end
-  #   end
-  # end
+    @busResults = @busResults.uniq
+    @metroResults = @metroResults.uniq
+    if(@busResults.size == 0 && @metroResults.size == 0)
+      @results.push([errand.id])
+    else
+      @busResults.each do |res|
+        res.push("Bus")
+        @results.push(res)
+      end
+      @metroResults.each do |res|
+        res.push("Metro")
+        @results.push(res)
+      end
+    end
+  end
 
   def choices
 
@@ -179,8 +238,8 @@ class UsersController < ApplicationController
     errand.save
     @errands.push(errand)
 
-    busStopsStart = BusStop.near([@latStart,@lngStart], 5, :units => :km)
-    busStopsEnd = BusStop.near([@latEnd, @lngEnd], 5, :units => :km)
+    busStopsStart = BusStop.near([@latStart,@lngStart], 1, :units => :km)
+    busStopsEnd = BusStop.near([@latEnd, @lngEnd], 1, :units => :km)
     #@debug = busStopsStart.join(',') + "-" + busStopsEnd.join(',')
 
     busStopsStart.each do |stopStart|
@@ -201,8 +260,8 @@ class UsersController < ApplicationController
       end
     end
 
-    metroStopsStart = MetroStop.near([@latStart,@lngStart], 5, :units => :km)
-    metroStopsEnd = MetroStop.near([@latEnd, @lngEnd], 5, :units => :km)
+    metroStopsStart = MetroStop.near([@latStart,@lngStart], 1, :units => :km)
+    metroStopsEnd = MetroStop.near([@latEnd, @lngEnd], 1, :units => :km)
 
     metroStopsStart.each do |stopStart|
       metroStopsEnd.each do |stopEnd|
@@ -246,13 +305,11 @@ class UsersController < ApplicationController
   def checkin_start
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
-    if(is_near(params[:lat], params[:lng], @errand.start_lat, @errand.start_lng))
-      if(params[:datetime])
-        @errand.update_attribute :check_start_lat, params[:lat]
-        @errand.update_attribute :check_start_lng, params[:lng]
-        @errand.update_attribute :check_start_time, params[:datetime]
-        render status: 200, text: ""
-      end
+    if(is_near(params[:lat], params[:lng], @errand.start_lat, @errand.start_lng) && params[:datetime])
+      @errand.update_attribute :check_start_lat, params[:lat]
+      @errand.update_attribute :check_start_lng, params[:lng]
+      @errand.update_attribute :check_start_time, params[:datetime]
+      render status: 200, text: ""
     else
       render status: 200, text: "The location you checked in is different from the start location of your errand."
     end
@@ -261,14 +318,66 @@ class UsersController < ApplicationController
   def checkin_end
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
+
+    @actual_duration = ActiveSupport::TimeZone['UTC'].parse(params[:datetime]) - @errand.check_start_time
+    
+    #logger.debug @actual_duration
+
+    if(@errand.choice.include?("Bus line") || @errand.choice.include?("Carpooling") || @errand.choice.include?("Using own Car") || @errand.choice.include?("Walking"))
+      @estimated_duration = params[:duration].to_i
+    elsif(@errand.choice.include?("Metro line"))
+      distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
+      @estimated_duration = (distance/100)*3600 #average metro speed is 100km/hr
+    elsif(@errand.choice.include?("Cycling"))
+      distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
+      @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr
+    end
+
+    #if the difference between the actual duration and the estimated duration is more or less than 15 minutes then there is something wrong
+    diff = ((@estimated_duration-@actual_duration).abs < 900) || ((@actual_duration-@estimated_duration).abs < 900)
+
     if(@errand.check_start_time)
       if(is_near(params[:lat], params[:lng], @errand.end_lat, @errand.end_lng) && params[:datetime])
-        if(params[:datetime])
+        if(diff)
           @errand.update_attribute :check_end_lat, params[:lat]
           @errand.update_attribute :check_end_lng, params[:lng]
           @errand.update_attribute :check_end_time, params[:datetime]
           @errand.update_attribute :done, true
+
+          c = @errand.choice
+          if(c.include? "Bus line")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          elsif(c.include? "Metro line")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          elsif(c.include? "Carpooling")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          elsif(c.include? "Walking")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          elsif(c.include? "Using own Car")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          elsif(c.include? "Cycling")
+            @user.update_attribute :score_time, @user.score_time+10
+            @user.update_attribute :score_money, @user.score_money+10
+            @user.update_attribute :score_pollution, @user.score_pollution+10
+          end
+
           render status: 200, text:""
+        else
+          @errand.update_attribute :check_end_lat, params[:lat]
+          @errand.update_attribute :check_end_lng, params[:lng]
+          @errand.update_attribute :check_end_time, params[:datetime]
+          @errand.update_attribute :done, true
+          render status: 200, text: "The time you took to finish the errand is more than the expected. Your score will not be updated."
         end
       else
         render status: 200, text: "The location you checked in is different from the end location of your errand."
@@ -281,7 +390,7 @@ class UsersController < ApplicationController
   def profile
     @user = User.find(params[:id])
     #To get only users that are activated
-    @users = User.where(:activated => true).order(score: :desc)
+    @users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
     @rank = 0
     Errand.all.each do |err|
       if(err.choice == "")
@@ -302,7 +411,7 @@ class UsersController < ApplicationController
       #get the locations near the place the user checked-in in, that are maximum 1 mile away
       #????????????????????????????????????????????what is an appropriate range to say a location is near another
 
-      if(Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng]) < 5)
+      if(Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng], :units => :km) < 1)
         return true
       else
         return false

@@ -13,7 +13,7 @@ Date.prototype.timeNow = function () {
      return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
 
-function getLocation(elm, loc, start_lat, start_lng, end_lat, end_lng, check_start_lat, check_start_lng, choice) {
+function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
@@ -21,18 +21,22 @@ function getLocation(elm, loc, start_lat, start_lng, end_lat, end_lng, check_sta
             var lng = position.coords.longitude;
             var datetime = new Date().today() + " " + new Date().timeNow();
 
-            var postRequest = function() {
+            var postRequest = function(estimated_duration) {
               $.rails.ajax({
                 method: 'POST',
                 url: elm.getAttribute('href'),
                 data: {
                   lat: lat,
                   lng: lng,
-                  datetime: datetime
+                  datetime: datetime,
+                  duration: estimated_duration
                 }
               }).done(function(data){
                 if(data != ""){
                   alert(data);
+                  if (data.includes("The time")) {
+                    location.reload(true);
+                  }
                 } else {
                   //location.reload(true);
                   if(loc == "end") {
@@ -51,7 +55,7 @@ function getLocation(elm, loc, start_lat, start_lng, end_lat, end_lng, check_sta
             if(loc == "end") {
               getDirections(check_start_lat, check_start_lng, lat, lng, choice, postRequest);
             } else {
-              postRequest();
+              postRequest("");
             }
 
             
@@ -102,6 +106,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   var origin = new google.maps.LatLng(start_lat, start_lng);
   var destination = new google.maps.LatLng(end_lat, end_lng);
 
+  // var origin = "San Francisco, Californie, États-Unis, Victoria, BC, Canada";
+  // var destination = "Vancouver, BC, Canada, Seattle, Washington, États-Unis";
+
   var service = new google.maps.DistanceMatrixService();
 
   var travelMode = ""
@@ -130,14 +137,14 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
           var outputDiv = document.getElementById('test');
           outputDiv.innerHTML = '';
 
-          var output = response.rows[0].elements[0].duration.text
+          var output = response.rows[0].elements[0].duration.value
           // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
           //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
           //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
           // }
           outputDiv.innerHTML=output+"#";
 
-          postRequest();
+          postRequest(output);
         }
   });
 
@@ -193,7 +200,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
     </section>    
     <%= button_to "Add Errand", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
 
-    <% if(Errand.where(user_id: params[:id]).find_each.size > 0) %>
+    <% if(Errand.where(user_id: params[:id], done: false).find_each.size > 0) %>
       <h3>Errands</h3>
       <div style="height: 350px; overflow: auto;">
         <table class="table" style="background-color: #ffffff">
@@ -206,8 +213,8 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
           <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
             <% if(errand.done == false) %>
               <tr>
-                <td><%= link_to_if (errand.check_start_time == nil), errand.start_lat.truncate(2).to_s() +"-"+errand.start_lng.truncate(2).to_s(), users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', '', '', '', '', ''); return false;"%></td>
-                <td><%= link_to_if (errand.check_end_time == nil), errand.end_lat.truncate(2).to_s() +"-"+errand.end_lng.truncate(2).to_s(), users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.start_lat}, #{errand.start_lng}, #{errand.end_lat}, #{errand.end_lng}, #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;"%></td>
+                <td><%= link_to_if (errand.check_start_time == nil), errand.start_lat.truncate(2).to_s() +"-"+errand.start_lng.truncate(2).to_s(), users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;"%></td>
+                <td><%= link_to_if (errand.check_end_time == nil), errand.end_lat.truncate(2).to_s() +"-"+errand.end_lng.truncate(2).to_s(), users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;"%></td>
                 <td><%= errand.choice %></td>
                 <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
               </tr>
@@ -219,7 +226,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   </aside>
 
   <div class="col-md-4" style="margin-top: 20px;">
-  	<h1 class="boxed">Score: <%= @user.score %></h1>
+  	<h3 class="boxed">Time: <%= @user.score_time %></h3>
+    <h3 class="boxed">Money: <%= @user.score_money %></h3>
+    <h3 class="boxed">Pollution: <%= @user.score_pollution %></h3>
   	<h3>Leaderboard</h3>
   	<div style="height: 350px; overflow: auto;">
   	<table class="table table-striped" style="background-color: #ffffff">
@@ -228,17 +237,21 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
 	    <th>Score</th> 
 	    <th>Rank</th>
 	    </tr>
+      <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
   	  <% @users.each do |user| %>
-  	  	<% @rank+=1 %>
+        <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
+  	  	  <% @rank+=1 %>
+        <% end %>
   	  	<% if(user.name == @user.name) %>       
-    		<tr class="success">
+    		  <tr class="success">
     		<% else %>
-    		<tr>
+    		  <tr>
     		<% end %>
       		<td><%= user.name.titleize %></td>
-      		<td><%= user.score %></td>
+      		<td><%= user.score_time+user.score_money+user.score_pollution %></td>
       		<td><%= @rank %></td>
     		</tr>
+        <% pre = user.score_time+user.score_money+user.score_pollution %>
   	  <% end %>
   	</table>
 	</div>

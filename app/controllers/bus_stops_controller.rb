@@ -5,4 +5,5 @@ class BusStopsController < ApplicationController
 #	      format.json { @bus_stops = BusStop.search(params[:term]) }
 #	    end
 #	end
+
 end
