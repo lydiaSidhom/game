@@ -50,37 +50,52 @@ $(function() {
 	});
   });
 
-
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    //center: {lat: 30.040495, lng: 31.227477}
-    center: {lat: 30.0794804, lng: 31.2620502}
+    zoom: 10,
+    center: {lat: 30.040495, lng: 31.227477}
   });
 
   var map2 = new google.maps.Map(document.getElementById('map2'), {
-    zoom: 15,
-    //center: {lat: 30.040495, lng: 31.227477}
-    center: {lat: 30.0931855, lng: 31.3151443}
+    zoom: 10,
+    center: {lat: 30.040495, lng: 31.227477}
   });
 
   var marker = new google.maps.Marker({
-  	//position: {lat: 30.040495, lng: 31.227477},
-  	position: {lat: 30.0794804, lng: 31.2620502},
-   	map: map
+  	position: {lat: 30.040495, lng: 31.227477},
+  	map: map
   });
   map.addListener('click', function(e) {
     placeMarkerAndPanTo(marker, e.latLng, map, "start");
   });
   
   var marker2 = new google.maps.Marker({
-  	//position: {lat: 30.040495, lng: 31.227477},
-  	position: {lat: 30.0931855, lng: 31.3151443},
-   	map: map2
+  	position: {lat: 30.040495, lng: 31.227477},
+  	map: map2
   });
   map2.addListener('click', function(e2) {
     placeMarkerAndPanTo(marker2, e2.latLng, map2, "end");
   });
+
+ if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
+	  document.getElementById("latStart").value = lat;
+	  document.getElementById("lngStart").value = lng;
+	  document.getElementById("latEnd").value = lat;
+	  document.getElementById("lngEnd").value = lng;
+      map.setCenter(pos);
+      map2.setCenter(pos);
+      marker.setPosition(pos);
+      marker2.setPosition(pos);
+
+     });
+ }
 }
 
 function placeMarkerAndPanTo(marker, latLng, map, mapName) {
@@ -130,10 +145,10 @@ function placeMarkerAndPanTo(marker, latLng, map, mapName) {
 </div>
 
 <%= form_tag users_choices_path, :id => 'form_id' do %>
-	<input type="text" id="latStart" name="latStart" value="30.0794804" style="display: none;">
-	<input type="text" id="lngStart" name="lngStart" value="31.2620502" style="display: none;">
-	<input type="text" id="latEnd" name="latEnd" value="30.0931855" style="display: none;">
-	<input type="text" id="lngEnd" name="lngEnd" value="31.3151443" style="display: none;">
+	<input type="text" id="latStart" name="latStart" style="display: none;">
+	<input type="text" id="lngStart" name="lngStart" style="display: none;">
+	<input type="text" id="latEnd" name="latEnd" style="display: none;">
+	<input type="text" id="lngEnd" name="lngEnd" style="display: none;">
 
 	<div class="checkbox">
     	<label style="font-weight: bold;">
