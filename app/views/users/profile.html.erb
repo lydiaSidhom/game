@@ -97,8 +97,8 @@ function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
 //         //     output = output + data.routes[0].legs[0].steps[x].html_instructions;
 //         //     output += " (Distance: " + data.routes[0].legs[0].steps[x].distance.text + ") <br />";
 //         // }
-//         console.log(output+"#");
-//         document.getElementById("test").innerHTML=output+"#"
+//         .log(output+"#");
+//         document.getElementByIdconsole("test").innerHTML=output+"#"
 //     });
 // }
 
@@ -213,9 +213,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
           <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
             <% if(errand.done == false) %>
               <tr>
-                <td><%= link_to_if (errand.check_start_time == nil), errand.start_lat.truncate(2).to_s() +"-"+errand.start_lng.truncate(2).to_s(), users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;"%></td>
-                <td><%= link_to_if (errand.check_end_time == nil), errand.end_lat.truncate(2).to_s() +"-"+errand.end_lng.truncate(2).to_s(), users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;"%></td>
-                <td><%= errand.choice %></td>
+                <td><%= link_to_if (errand.check_start_time == nil), errand.geocoded_start, users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;", :id => "from"%></td>
+                <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;", :id => "to"%></td>
+                <td><%= errand.choice.split(',')[0] %></td>
                 <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
               </tr>
             <% end %>
