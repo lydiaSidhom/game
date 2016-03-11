@@ -123,9 +123,9 @@ class UsersController < ApplicationController
       end
 
       @errand = Errand.find(e.to_i)
-      if(c.include? "Bus line")
+      if(c.include? "Bus ")
         @errand.update_attribute :choice, c
-      elsif(c.include? "Metro line")
+      elsif(c.include? "Metro ")
         @errand.update_attribute :choice, c
       elsif(c.include? "Carpooling")
         @errand.update_attribute :choice, c
@@ -227,6 +227,11 @@ class UsersController < ApplicationController
     @lngEnd = params[:lngEnd]
     @carpool = params[:carpool]
 
+    queryStart = "#{@latStart},#{@lngStart}"
+    queryEnd = "#{@latEnd},#{@lngEnd}"
+    geocodedStart = Geocoder.search(queryStart).first.formatted_address
+    geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
+
     @busResults = []
     @metroResults = []
     @results = []
@@ -234,70 +239,237 @@ class UsersController < ApplicationController
 
     @debug = ""
 
-    errand = Errand.new(start_lat: @latStart, start_lng: @lngStart, end_lat: @latEnd, end_lng: @lngEnd, choice: "", user_id: params[:id])
+    errand = Errand.new(start_lat: @latStart, start_lng: @lngStart, end_lat: @latEnd, end_lng: @lngEnd, choice: "", user_id: params[:id], geocoded_start: geocodedStart, geocoded_end: geocodedEnd)
     errand.save
     @errands.push(errand)
 
-    busStopsStart = BusStop.near([@latStart,@lngStart], 1, :units => :km)
-    busStopsEnd = BusStop.near([@latEnd, @lngEnd], 1, :units => :km)
-    #@debug = busStopsStart.join(',') + "-" + busStopsEnd.join(',')
+    @finalMetroResults = get_metro_results(@latStart, @lngStart, @latEnd, @lngEnd)
 
-    busStopsStart.each do |stopStart|
-      busStopsEnd.each do |stopEnd|
-        if(stopStart != stopEnd)
-          busLinesStart = stopStart.bus_lines
-          busLinesEnd = stopEnd.bus_lines
-          #@debug = busLinesStart.join(',') + "-" + busLinesEnd.join(',')
-          if(!(busLinesStart.empty?) && !(busLinesEnd.empty?))
-            common = busLinesStart & busLinesEnd
-            if(!(common.empty?))
-              common.each do |line|
-                @busResults.push([errand.id,stopStart,stopEnd,line.name,@carpool])
-              end
-            end
-          end
-        end
-      end
-    end
+    @finalBusResults = get_bus_results(@latStart, @lngStart, @latEnd, @lngEnd)
 
-    metroStopsStart = MetroStop.near([@latStart,@lngStart], 1, :units => :km)
-    metroStopsEnd = MetroStop.near([@latEnd, @lngEnd], 1, :units => :km)
+    @errand_carpool = [errand.id, @carpool]
+    # if(@finalBusResults.size == 0 && @finalMetroResults.size == 0)
+    #   @results.push([errand.id])
+    # else
+    #   @finalBusResults.each do |res|
+    #     res.push("Bus")
+    #     @results.push(res)
+    #   end
+    #   @finalMetroResults.each do |res|
+    #     res.push("Metro")
+    #     @results.push(res)
+    #   end
+    # end
+  end
 
+  def get_metro_results(latStart,lngStart,latEnd, lngEnd)
+    metroStopsStart = MetroStop.near([latStart,lngStart], 1, :units => :km)
+    metroStopsEnd = MetroStop.near([latEnd, lngEnd], 1, :units => :km)
+    
     metroStopsStart.each do |stopStart|
       metroStopsEnd.each do |stopEnd|
         if(stopStart != stopEnd)
-          metroLinesStart = stopStart.metro_lines
-          metroLinesEnd = stopEnd.metro_lines
-          if(!(metroLinesStart.empty?) && !(metroLinesEnd.empty?))
-            common = metroLinesStart & metroLinesEnd
-            if(!(common.empty?))
-              common.each do |line|
-                @metroResults.push([errand.id,stopStart,stopEnd,line.name,@carpool])
-              end
-            end
-          end
+          results = []
+          dfsMetro(stopStart, stopEnd, results)
         end
       end
     end
 
-    @busResults = @busResults.uniq
-    @metroResults = @metroResults.uniq
+    finalMetroResults = []
 
-    if(@busResults.size == 0 && @metroResults.size == 0)
-      @results.push([errand.id])
-    else
-      @busResults.each do |res|
-        res.push("Bus")
-        @results.push(res)
+    if(@metroResults.size > 0)
+      distances = {}
+      index = 0
+      @metroResults.each do |result|
+        i = 0
+        distance = 0
+        currentStop = result[0]
+        nextStop = result[1]
+        while(i<result.size)
+          distance += Geocoder::Calculations.distance_between([currentStop.lat,currentStop.lng],[nextStop.lat,nextStop.lng], :units => :km)
+          currentStop = nextStop
+          i+=1
+          nextStop = result[i]
+        end
+        distances.store(index, distance)
+        index += 1
       end
-      @metroResults.each do |res|
-        res.push("Metro")
-        @results.push(res)
+
+      if(distances.size >= 3)
+        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..2]
+        shortestPaths = [@metroResults[shortestPathsIndeces[0][0]],@metroResults[shortestPathsIndeces[1][0]],@metroResults[shortestPathsIndeces[2][0]]]
+      else
+        shortestPaths = []
+        @metroResults.each do |m|
+          shortestPaths.push(m)
+        end
+      end
+
+      shortestPaths.each do |path|
+        currentStop = path[0]
+        nextStop = path[1]
+        i=1
+        pathFinal = []
+        while(i<path.size)
+          commonLines = currentStop.metro_lines & nextStop.metro_lines
+          pathFinal.push(currentStop.id.to_s+"&"+nextStop.id.to_s+"&"+commonLines[0].name)
+          currentStop = nextStop
+          i+=1
+          nextStop = path[i]
+        end
+        finalMetroResults.push(pathFinal)
+      end
+    end
+    return finalMetroResults
+  end
+
+  def get_bus_results(latStart,lngStart,latEnd, lngEnd)
+    busStopsStart = BusStop.near([latStart,lngStart], 1, :units => :km)
+    busStopsEnd = BusStop.near([latEnd, lngEnd], 1, :units => :km)
+    
+    busStopsStart.each do |stopStart|
+      busStopsEnd.each do |stopEnd|
+        if(stopStart != stopEnd)
+          results = []
+          dfsBus(stopStart, stopEnd, results)
+        end
       end
     end
 
-    #@results = [[errand.id, BusStop.first, BusStop.second, "348", nil, "Bus"],[errand.id, MetroStop.first, MetroStop.second, "3", nil,"Metro"]]
+    finalBusResults = []
+    
+    if(@busResults.size > 0)
+      distances = {}
+      index = 0
+      @busResults.each do |result|
+        i = 0
+        distance = 0
+        currentStop = result[0]
+        nextStop = result[1]
+        while(i<result.size)
+          distance += Geocoder::Calculations.distance_between([currentStop.lat,currentStop.lng],[nextStop.lat,nextStop.lng], :units => :km)
+          currentStop = nextStop
+          i+=1
+          nextStop = result[i]
+        end
+        distances.store(index, distance)
+        index += 1
+      end
+
+      if(distances.size >= 3)
+        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..2]
+        shortestPaths = [@busResults[shortestPathsIndeces[0][0]],@busResults[shortestPathsIndeces[1][0]],@busResults[shortestPathsIndeces[2][0]]]
+      else
+        shortestPaths = []
+        @busResults.each do |m|
+          shortestPaths.push(m)
+        end
+      end
+
+      shortestPaths.each do |path|
+        currentStop = path[0]
+        nextStop = path[1]
+        i=1
+        pathFinal = []
+        while(i<path.size)
+          commonLines = currentStop.bus_lines & nextStop.bus_lines
+          pathFinal.push(currentStop.id.to_s+"&"+nextStop.id.to_s+"&"+commonLines[0].name)
+          currentStop = nextStop
+          i+=1
+          nextStop = path[i]
+        end
+        finalBusResults.push(pathFinal)
+      end
+    end
+    return finalBusResults
   end
+
+  def dfsBus(stopStart, stopEnd, results)
+    results.push(stopStart)
+    busLinesStart = stopStart.bus_lines
+    flag = false
+    busLinesStart.each do |lSt|
+      busStopsOfLineSt = lSt.bus_stops
+      if(busStopsOfLineSt.include?(stopEnd))
+        flag = true
+        if(!(results.include?(stopEnd)))
+          results.push(stopEnd)
+        end
+      end  
+    end
+    if(flag)
+      @busResults.push(results)
+    else
+      busLinesStart.each do |lSt|
+        BusStop.find_each do |stop|
+          if(stop != stopStart && stop.bus_lines.include?(lSt) && (stop.bus_lines.size > 1))
+              dfsBus(stop, stopEnd, results.clone())
+          end
+        end
+      end
+    end
+  end
+
+  def dfsMetro(stopStart, stopEnd, results)
+    results.push(stopStart)
+    metroLinesStart = stopStart.metro_lines
+    flag = false
+    metroLinesStart.each do |lSt|
+      metroStopsOfLineSt = lSt.metro_stops
+      if(metroStopsOfLineSt.include?(stopEnd))
+        flag = true
+        if(!(results.include?(stopEnd)))
+          results.push(stopEnd)
+        end
+      end  
+    end
+    if(flag)
+      @metroResults.push(results)
+    else
+      metroLinesStart.each do |lSt|
+        MetroStop.find_each do |stop|
+          if(stop != stopStart && stop.metro_lines.include?(lSt) && (stop.metro_lines.size > 1))
+              dfsMetro(stop, stopEnd, results.clone())
+          end
+        end
+      end
+    end
+  end
+
+  # def old_function_to_get_bus_paths(stopStart, stopEnd, errand, carpool)
+    # busStopsStart = BusStop.near([@latStart,@lngStart], 1, :units => :km)
+    # busStopsEnd = BusStop.near([@latEnd, @lngEnd], 1, :units => :km)
+    # #@debug = busStopsStart.join(',') + "-" + busStopsEnd.join(',')
+
+    # busStopsStart.each do |stopStart|
+    #   busStopsEnd.each do |stopEnd|
+    #     if(stopStart != stopEnd)
+    #       busLinesStart = stopStart.bus_lines
+    #       busLinesEnd = stopEnd.bus_lines
+    #       #@debug = busLinesStart.join(',') + "-" + busLinesEnd.join(',')
+    #       if(!(busLinesStart.empty?) && !(busLinesEnd.empty?))
+    #         common = busLinesStart & busLinesEnd
+    #         if(!(common.empty?))
+    #           common.each do |line|
+    #             @busResults.push([errand.id,stopStart,'',stopEnd,line.name,'',@carpool,''])
+    #           end
+    #         else
+    #           busLinesStart.each do |lSt|
+    #             busStopsOfLineSt = lSt.bus_stops
+    #             busLinesEnd.each do |lEn|
+    #               busStopsOfLineEn = lEn.bus_stops
+    #               commonStops = busStopsOfLineSt & busStopsOfLineEn
+    #               commonStops.each do |stopMiddle|
+    #                 @busResults.push([errand.id,stopStart,stopMiddle,stopEnd,lSt.name,lEn.name,@carpool,'transit'])
+    #               end
+    #             end
+    #           end
+    #         end
+    #       end
+    #     end
+    #   end
+    # end
+  # end
 
   def addErrands
   end
@@ -345,11 +517,11 @@ class UsersController < ApplicationController
           @errand.update_attribute :done, true
 
           c = @errand.choice
-          if(c.include? "Bus line")
+          if(c.include? "Bus ")
             @user.update_attribute :score_time, @user.score_time+10
             @user.update_attribute :score_money, @user.score_money+10
             @user.update_attribute :score_pollution, @user.score_pollution+10
-          elsif(c.include? "Metro line")
+          elsif(c.include? "Metro ")
             @user.update_attribute :score_time, @user.score_time+10
             @user.update_attribute :score_money, @user.score_money+10
             @user.update_attribute :score_pollution, @user.score_pollution+10

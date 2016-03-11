@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160306130138) do
+ActiveRecord::Schema.define(version: 20160311192611) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer "bus_line_id"
@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(version: 20160306130138) do
     t.decimal  "check_start_lng"
     t.decimal  "check_end_lat"
     t.decimal  "check_end_lng"
+    t.string   "geocoded_start"
+    t.string   "geocoded_end"
   end
 
   create_table "locations", force: :cascade do |t|
