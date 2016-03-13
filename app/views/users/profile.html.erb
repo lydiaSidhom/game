@@ -191,7 +191,8 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   <aside class="col-md-6">
     <section class="user_info">
       <h1>
-        <%= image_tag("profilePic.jpeg", alt: "profile", style: "width: 150px") %>
+        <%#= image_tag("profilePic.jpeg", alt: "profile", style: "width: 150px") %>
+        <%= image_tag avatar_url(@user) %>
         <br>
         <%= @user.name.titleize %> 
         <br>
@@ -199,30 +200,6 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
       <%= @user.email %>
     </section>    
     <%= button_to "Add Errand", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
-
-    <% if(Errand.where(user_id: params[:id], done: false).find_each.size > 0) %>
-      <h3>Errands</h3>
-      <div style="height: 350px; overflow: auto;">
-        <table class="table" style="background-color: #ffffff">
-          <tr>
-          <th>From</th>
-          <th>To</th> 
-          <th>Choice</th>
-          <th></th>
-          </tr>
-          <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
-            <% if(errand.done == false) %>
-              <tr>
-                <td><%= link_to_if (errand.check_start_time == nil), errand.geocoded_start, users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;", :id => "from"%></td>
-                <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;", :id => "to"%></td>
-                <td><%= errand.choice.split(',')[0] %></td>
-                <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
-              </tr>
-            <% end %>
-          <% end %>
-        </table>
-      </div>
-    <% end %>
   </aside>
 
   <div class="col-md-4" style="margin-top: 20px;">
@@ -230,7 +207,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
     <h3 class="boxed">Money: <%= @user.score_money %></h3>
     <h3 class="boxed">Pollution: <%= @user.score_pollution %></h3>
   	<h3>Leaderboard</h3>
-  	<div style="height: 350px; overflow: auto;">
+  	<div style="height: auto; overflow: auto;">
   	<table class="table table-striped" style="background-color: #ffffff">
   	  <tr>
 	    <th>Name</th>
@@ -256,6 +233,33 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   	</table>
 	</div>
   </div>
+</div>
+
+
+<div class="row">
+  <% if(Errand.where(user_id: params[:id], done: false).find_each.size > 0) %>
+    <h3>Errands</h3>
+    <div style="width: 90%; height: auto; overflow: auto;">
+      <table class="table" style="background-color: #ffffff">
+        <tr>
+        <th>From</th>
+        <th>To</th> 
+        <th>Choice</th>
+        <th></th>
+        </tr>
+        <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
+          <% if(errand.done == false) %>
+            <tr>
+              <td><%= link_to_if (errand.check_start_time == nil), errand.geocoded_start, users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;", :id => "from"%></td>
+              <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;", :id => "to"%></td>
+              <td><%= errand.choice.split(',')[0] %></td>
+              <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
 </div>
 
 <style>
