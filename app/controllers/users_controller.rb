@@ -229,8 +229,16 @@ class UsersController < ApplicationController
 
     queryStart = "#{@latStart},#{@lngStart}"
     queryEnd = "#{@latEnd},#{@lngEnd}"
-    geocodedStart = Geocoder.search(queryStart).first.formatted_address
-    geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
+    if(Geocoder.search(queryStart).first)
+      geocodedStart = Geocoder.search(queryStart).first.formatted_address
+    else
+      geocodedStart = ""
+    end
+    if(Geocoder.search(queryEnd).first)
+      geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
+    else
+      geocodedEnd = ""
+    end
 
     @busResults = []
     @metroResults = []
@@ -248,6 +256,7 @@ class UsersController < ApplicationController
     @finalBusResults = get_bus_results(@latStart, @lngStart, @latEnd, @lngEnd)
 
     @errand_carpool = [errand.id, @carpool]
+
     # if(@finalBusResults.size == 0 && @finalMetroResults.size == 0)
     #   @results.push([errand.id])
     # else
