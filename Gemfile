@@ -32,6 +32,8 @@ gem 'database_cleaner'
 gem 'geocoder'
 
 gem 'responders', '~> 2.0'
+
+gem 'omniauth'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
