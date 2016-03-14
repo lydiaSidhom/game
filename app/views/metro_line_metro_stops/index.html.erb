@@ -1,0 +1,21 @@
+<%= flash[:notice] %>
+<table>
+	<thead>
+		<tr>
+			<th>name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @metro_line_metro_stops.each do |line| %>
+			<tr>
+				<td><%= line.metro_line_id %></td>
+			</tr>
+		<% end %>
+	</tbody>		
+</table>
+<div>
+<%= form_tag import_metro_line_metro_stops_path, multipart: true do %>
+	<%= file_field_tag :file %>
+	<%= submit_tag "Import File" %>
+<% end %>
+</div>

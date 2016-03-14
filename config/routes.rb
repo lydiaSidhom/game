@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+  get 'metro_line_metro_stops/index'
+
+  get 'metro_line_metro_stops/import'
+
+  get 'metro_stops/index'
+
+  get 'metro_stops/import'
+
+  get 'metro_lines/index'
+
+  get 'metro_lines/import'
+
   root 'static_pages#home'
 
   get 'help' => 'static_pages#help'
@@ -35,6 +47,18 @@ Rails.application.routes.draw do
   resources :account_activations, only: [:edit]
 
   resources :errands
+
+  resources :metro_lines do
+    collection {post :import}
+  end
+  
+  resources :metro_stops do
+    collection {post :import}
+  end
+
+  resources :metro_line_metro_stops do
+    collection {post :import}
+  end
 
   resources :bus_stops, only: [] do
     collection do
