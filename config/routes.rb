@@ -1,15 +1,15 @@
 Rails.application.routes.draw do
-  get 'metro_line_metro_stops/index'
+  # get 'metro_line_metro_stops/index'
 
-  get 'metro_line_metro_stops/import'
+  # get 'metro_line_metro_stops/import'
 
-  get 'metro_stops/index'
+  # get 'metro_stops/index'
 
-  get 'metro_stops/import'
+  # get 'metro_stops/import'
 
-  get 'metro_lines/index'
+  # get 'metro_lines/index'
 
-  get 'metro_lines/import'
+  # get 'metro_lines/import'
 
   root 'static_pages#home'
 
