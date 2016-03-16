@@ -232,12 +232,16 @@ class UsersController < ApplicationController
     if(Geocoder.search(queryStart).first)
       geocodedStart = Geocoder.search(queryStart).first.formatted_address
     else
-      geocodedStart = ""
+      flash[:info] = "Check your internet connection. Address is not recognized."
+      redirect_to users_addErrands_path and return
+      #geocodedStart = ""
     end
     if(Geocoder.search(queryEnd).first)
       geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
     else
-      geocodedEnd = ""
+      flash[:info] = "Check your internet connection. Address is not recognized."
+      redirect_to users_addErrands_path and return
+      #geocodedEnd = ""
     end
 
     @busResults = []
