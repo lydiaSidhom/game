@@ -8,9 +8,12 @@ class User < ActiveRecord::Base
 	validates :email, presence: true, length: { maximum: 255 },
 		format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	has_secure_password
-	validates :password, length: { minimum: 6 }
+	validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
 	has_many :errands
+
+	has_attached_file :avatar, :styles => { :thumb => "100x100#" , :small => "30x30#"}, :default_url => "/images/:style/missing.png"
+  	validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
 	# Returns the hash digest of the given string.
     def User.digest(string)

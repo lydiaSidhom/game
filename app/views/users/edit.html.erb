@@ -1,5 +1,5 @@
-<% provide(:title, 'Sign up') %>
-<h1>Sign up</h1>
+<% provide(:title, "Edit user") %>
+<h1>Update your profile</h1>
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
@@ -21,10 +21,7 @@
       <%= f.label :avatar %>
       <%= f.file_field :avatar, class: 'form-control' %>
 
-      <%= f.submit "Create my account", class: "btn btn-primary" %>
+      <%= f.submit "Save changes", class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>
-<style>
-  body{background-color: #8fb4ff}
-</style>
