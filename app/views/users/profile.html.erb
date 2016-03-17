@@ -147,35 +147,6 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
           postRequest(output);
         }
   });
-
-  // var myOptions = {
-  //   zoom: 15,
-  //   center: {lat: 30.0931855, lng: 31.3151443}
-  // };
-  // // Draw the map
-  // var mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
-
-  // var directionsService = new google.maps.DirectionsService();
-  // directionsService.route(
-  //   {
-  //     origin: origin,
-  //     destination: destination,
-  //     travelMode: travelMode,
-  //     unitSystem: google.maps.UnitSystem.METRIC,
-  //   },
-  //   function(response, status)
-  //   {
-  //     if (status == google.maps.DirectionsStatus.OK)
-  //     {
-  //       new google.maps.DirectionsRenderer({
-  //         map: mapObject,
-  //         directions: response
-  //       });
-  //     }
-  //     else
-  //       $("#test").append("Unable to retrieve your route<br />");
-  //   }
-  // );
 }
 
 </script>

@@ -232,7 +232,7 @@ class UsersController < ApplicationController
     if(Geocoder.search(queryStart).first)
       geocodedStart = Geocoder.search(queryStart).first.formatted_address
     else
-      flash[:info] = "Check your internet connection. Address is not recognized."
+      flash[:info] = "Check your internet connection. Address is not recognized."+"#{queryStart}"
       redirect_to users_addErrands_path and return
       #geocodedStart = ""
     end
@@ -308,9 +308,9 @@ class UsersController < ApplicationController
         index += 1
       end
 
-      if(distances.size >= 3)
-        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..2]
-        shortestPaths = [@metroResults[shortestPathsIndeces[0][0]],@metroResults[shortestPathsIndeces[1][0]],@metroResults[shortestPathsIndeces[2][0]]]
+      if(distances.size >= 5)
+        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..4]
+        shortestPaths = [@metroResults[shortestPathsIndeces[0][0]],@metroResults[shortestPathsIndeces[1][0]],@metroResults[shortestPathsIndeces[2][0]],@metroResults[shortestPathsIndeces[3][0]],@metroResults[shortestPathsIndeces[4][0]]]
       else
         shortestPaths = []
         @metroResults.each do |m|
@@ -369,9 +369,9 @@ class UsersController < ApplicationController
         index += 1
       end
 
-      if(distances.size >= 3)
-        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..2]
-        shortestPaths = [@busResults[shortestPathsIndeces[0][0]],@busResults[shortestPathsIndeces[1][0]],@busResults[shortestPathsIndeces[2][0]]]
+      if(distances.size >= 5)
+        shortestPathsIndeces = distances.sort_by {|_key, value| value}[0..4]
+        shortestPaths = [@busResults[shortestPathsIndeces[0][0]],@busResults[shortestPathsIndeces[1][0]],@busResults[shortestPathsIndeces[2][0]],@busResults[shortestPathsIndeces[3][0]],@busResults[shortestPathsIndeces[4][0]]]
       else
         shortestPaths = []
         @busResults.each do |m|
