@@ -35,6 +35,11 @@ gem 'responders', '~> 2.0'
 
 gem 'paperclip', '~> 4.1'
 
+gem 'dotenv-rails', :groups => [:development, :test], :require => 'dotenv/rails-now'
+
+gem 'omniauth-facebook'
+
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

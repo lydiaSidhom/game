@@ -13,6 +13,15 @@ Date.prototype.timeNow = function () {
      return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
 
+$(document).ajaxStart(function () {
+    $('#loading').show();  // show loading indicator
+});
+
+$(document).ajaxStop(function() 
+{
+    $('#loading').hide();  // hide loading indicator
+});
+
 function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -47,6 +56,7 @@ function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
                     var newNode = document.createTextNode(highlightedText);
                     parent.insertBefore(newNode, elm);
                     parent.removeChild(elm);
+                    location.reload(true);
                   }
                 }
               });
@@ -103,60 +113,61 @@ function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
 // }
 
 function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postRequest) {
-  var origin = new google.maps.LatLng(start_lat, start_lng);
-  var destination = new google.maps.LatLng(end_lat, end_lng);
+  if(start_lat != "" && start_lng != "") {
+    var origin = new google.maps.LatLng(start_lat, start_lng);
+    var destination = new google.maps.LatLng(end_lat, end_lng);
 
-  // var origin = "San Francisco, Californie, États-Unis, Victoria, BC, Canada";
-  // var destination = "Vancouver, BC, Canada, Seattle, Washington, États-Unis";
+    var service = new google.maps.DistanceMatrixService();
 
-  var service = new google.maps.DistanceMatrixService();
+    var travelMode = ""
+    if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
+      travelMode = google.maps.TravelMode.DRIVING;
+    } else if(choice.includes("Metro line")) {
+      travelMode = "";
+    } else if(choice.includes("Walking")) {
+      travelMode = google.maps.TravelMode.WALKING;
+    } else if(choice.includes("Cycling")) {
+      travelMode = google.maps.TravelMode.WALKING;
+    }
 
-  var travelMode = ""
-  if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
-    travelMode = google.maps.TravelMode.DRIVING;
-  } else if(choice.includes("Metro line")) {
-    travelMode = "";
-  } else if(choice.includes("Walking")) {
-    travelMode = google.maps.TravelMode.WALKING;
-  } else if(choice.includes("Cycling")) {
-    travelMode = "";
+    service.getDistanceMatrix(
+      {
+        origins: [origin],
+        destinations: [destination],
+        travelMode: travelMode,
+        unitSystem: google.maps.UnitSystem.METRIC,
+      }, function(response, status) {
+          if (status !== google.maps.DistanceMatrixStatus.OK) {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+            //var outputDiv = document.getElementById('test');
+            //outputDiv.innerHTML = '';
+
+            var output = response.rows[0].elements[0].duration.value
+            // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+            //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+            //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+            // }
+            //outputDiv.innerHTML=output+"#";
+
+            postRequest(output);
+          }
+    });
+  } else {
+    postRequest("");
   }
-
-  service.getDistanceMatrix(
-    {
-      origins: [origin],
-      destinations: [destination],
-      travelMode: travelMode,
-      unitSystem: google.maps.UnitSystem.METRIC,
-    }, function(response, status) {
-        if (status !== google.maps.DistanceMatrixStatus.OK) {
-          alert('Error was: ' + status);
-        } else {
-          var originList = response.originAddresses;
-          var destinationList = response.destinationAddresses;
-          var outputDiv = document.getElementById('test');
-          outputDiv.innerHTML = '';
-
-          var output = response.rows[0].elements[0].duration.value
-          // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
-          //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
-          //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
-          // }
-          outputDiv.innerHTML=output+"#";
-
-          postRequest(output);
-        }
-  });
 }
 
 </script>
 
 <% provide(:title, @user.name) %>
 
-<h3 id="test"></h3>
+<!-- <h3 id="test"></h3>
 <div id="map-container">
   <div id="map"></div>
-</div>
+</div> -->
 
 <div class="row">
   <aside class="col-md-6">
@@ -174,7 +185,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
     </section>    
     <%= button_to "Add Errand", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
   </aside>
-
+  
   <div class="col-md-4" style="margin-top: 20px;">
   	<h3 class="boxed">Time: <%= @user.score_time %></h3>
     <h3 class="boxed">Money: <%= @user.score_money %></h3>
@@ -210,6 +221,10 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
 
 
 <div class="row">
+  <div class="loading" style="display: none;" id="loading">
+    <img src="/images/loading/loading.gif" style="width:400px; padding-left:175px;"/>
+  </div>
+  
   <% if(Errand.where(user_id: params[:id], done: false).find_each.size > 0) %>
     <h3>Errands</h3>
     <div style="width: 90%; height: auto; overflow: auto;">
@@ -219,14 +234,16 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
         <th>To</th> 
         <th>Choice</th>
         <th></th>
+        <th></th>
         </tr>
         <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
           <% if(errand.done == false) %>
             <tr>
               <td><%= link_to_if (errand.check_start_time == nil), errand.geocoded_start, users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;", :id => "from"%></td>
-              <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', #{errand.check_start_lat}, #{errand.check_start_lng}, '#{errand.choice}'); return false;", :id => "to"%></td>
+              <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', '#{errand.check_start_lat}', '#{errand.check_start_lng}', '#{errand.choice}'); return false;", :id => "to"%></td>
               <td><%= errand.choice.split(',')[0] %></td>
               <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
+              <td><%= button_to "Show Route", {:controller => :errands, :action => 'show', :errand_id => errand.id }, {:method => :post, class: "btn btn-info", style: "width: auto; height: 20px;padding: 0px;"} %></td>
             </tr>
           <% end %>
         <% end %>

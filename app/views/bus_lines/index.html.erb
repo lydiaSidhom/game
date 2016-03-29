@@ -1,0 +1,21 @@
+<%= flash[:notice] %>
+<table>
+	<thead>
+		<tr>
+			<th>name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @bus_lines.each do |line| %>
+			<tr>
+				<td><%= line.name %></td>
+			</tr>
+		<% end %>
+	</tbody>		
+</table>
+<div>
+<%= form_tag import_bus_lines_path, multipart: true do %>
+	<%= file_field_tag :file %>
+	<%= submit_tag "Import File" %>
+<% end %>
+</div>

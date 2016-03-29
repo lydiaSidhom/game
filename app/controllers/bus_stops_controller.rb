@@ -1,9 +1,10 @@
 class BusStopsController < ApplicationController
-#	def search
-#	    respond_to do |format|
-#	      format.html
-#	      format.json { @bus_stops = BusStop.search(params[:term]) }
-#	    end
-#	end
+  def index
+  	@bus_stops = BusStop.all
+  end
 
+  def import
+  	BusStop.import(params[:file])
+  	redirect_to root_url, notice: "Done"
+  end
 end

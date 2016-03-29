@@ -11,6 +11,18 @@ Rails.application.routes.draw do
 
   # get 'metro_lines/import'
 
+  get 'bus_line_bus_stops/index'
+
+  get 'bus_line_bus_stops/import'
+
+  get 'bus_stops/index'
+
+  get 'bus_stops/import'
+
+  get 'bus_lines/index'
+
+  get 'bus_lines/import'
+
   root 'static_pages#home'
 
   get 'help' => 'static_pages#help'
@@ -48,6 +60,12 @@ Rails.application.routes.draw do
 
   resources :errands
 
+  post 'errands/:id/' => 'errands#show'
+  
+  # get 'auth/:provider/callback', to: 'sessions#create_facebook'
+  # get 'auth/failure', to: redirect('/')
+  # get 'signout', to: 'sessions#destroy', as: 'signout'
+
   resources :metro_lines do
     collection {post :import}
   end
@@ -60,10 +78,16 @@ Rails.application.routes.draw do
     collection {post :import}
   end
 
-  resources :bus_stops, only: [] do
-    collection do
-      get :search
-    end
+  resources :bus_lines do
+    collection {post :import}
+  end
+  
+  resources :bus_stops do
+    collection {post :import}
+  end
+
+  resources :bus_line_bus_stops do
+    collection {post :import}
   end
 
   resources :locations, only: [] do

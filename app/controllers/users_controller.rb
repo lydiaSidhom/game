@@ -27,6 +27,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      @user.update_attribute :pretest, "Q1:"+params[:q1]+"$"
       @user.send_activation_email
       flash[:info] = "Please check your email to activate your account."
       redirect_to root_url
@@ -246,7 +247,7 @@ class UsersController < ApplicationController
     if(Geocoder.search(queryStart).first)
       geocodedStart = Geocoder.search(queryStart).first.formatted_address
     else
-      flash[:info] = "Check your internet connection. Address is not recognized."+"#{queryStart}"
+      flash[:info] = "Check your internet connection. Address is not recognized."
       redirect_to users_addErrands_path and return
       #geocodedStart = ""
     end
@@ -259,7 +260,9 @@ class UsersController < ApplicationController
     end
 
     @busResults = []
+    @busTemp = []
     @metroResults = []
+    @metroTemp = []
     @results = []
     @errands = []
 
@@ -362,7 +365,6 @@ class UsersController < ApplicationController
         end
       end
     end
-
     finalBusResults = []
     
     if(@busResults.size > 0)
@@ -412,25 +414,29 @@ class UsersController < ApplicationController
   end
 
   def dfsBus(stopStart, stopEnd, results)
-    results.push(stopStart)
-    busLinesStart = stopStart.bus_lines
-    flag = false
-    busLinesStart.each do |lSt|
-      busStopsOfLineSt = lSt.bus_stops
-      if(busStopsOfLineSt.include?(stopEnd))
-        flag = true
-        if(!(results.include?(stopEnd)))
-          results.push(stopEnd)
-        end
-      end  
-    end
-    if(flag)
-      @busResults.push(results)
-    else
+    logger.debug @busTemp.to_s + "akjsdlfbljshdfblkebflhebsdflkgjvbslkjfghlkejbfdjklsvdfbnvckljsdbfvkljsbdfkljvbskldfbvksdfbv;kjsdbfjkvsbdfkvbsdfkjvbskdjbvksdbkvj"
+    if(!(@busTemp.include?(stopStart)))
+      @busTemp.push(stopStart)
+      results.push(stopStart)
+      busLinesStart = stopStart.bus_lines
+      flag = false
       busLinesStart.each do |lSt|
-        BusStop.find_each do |stop|
-          if(stop != stopStart && stop.bus_lines.include?(lSt) && (stop.bus_lines.size > 1))
-              dfsBus(stop, stopEnd, results.clone())
+        busStopsOfLineSt = lSt.bus_stops
+        if(busStopsOfLineSt.include?(stopEnd))
+          flag = true
+          if(!(results.include?(stopEnd)))
+            results.push(stopEnd)
+          end
+        end  
+      end
+      if(flag)
+        @busResults.push(results)
+      else
+        busLinesStart.each do |lSt|
+          BusStop.find_each do |stop|
+            if(stop != stopStart && stop.bus_lines.include?(lSt) && (stop.bus_lines.size > 1))
+                dfsBus(stop, stopEnd, results.clone())
+            end
           end
         end
       end
@@ -518,25 +524,24 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @errand = Errand.find(params[:errand_id])
 
-    @actual_duration = ActiveSupport::TimeZone['UTC'].parse(params[:datetime]) - @errand.check_start_time
-    
-    #logger.debug @actual_duration
-
-    if(@errand.choice.include?("Bus line") || @errand.choice.include?("Carpooling") || @errand.choice.include?("Using own Car") || @errand.choice.include?("Walking"))
-      @estimated_duration = params[:duration].to_i
-    elsif(@errand.choice.include?("Metro line"))
-      distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
-      @estimated_duration = (distance/100)*3600 #average metro speed is 100km/hr
-    elsif(@errand.choice.include?("Cycling"))
-      distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
-      @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr
-    end
-
-    #if the difference between the actual duration and the estimated duration is more or less than 15 minutes then there is something wrong
-    diff = ((@estimated_duration-@actual_duration).abs < 900) || ((@actual_duration-@estimated_duration).abs < 900)
-
     if(@errand.check_start_time)
       if(is_near(params[:lat], params[:lng], @errand.end_lat, @errand.end_lng) && params[:datetime])
+        @actual_duration = ActiveSupport::TimeZone['UTC'].parse(params[:datetime]) - @errand.check_start_time
+    
+        #logger.debug @actual_duration
+
+        if(@errand.choice.include?("Bus line") || @errand.choice.include?("Carpooling") || @errand.choice.include?("Using own Car") || @errand.choice.include?("Walking"))
+          @estimated_duration = params[:duration].to_i
+        elsif(@errand.choice.include?("Metro line"))
+          distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
+          @estimated_duration = (distance/100)*3600 #average metro speed is 100km/hr
+        elsif(@errand.choice.include?("Cycling"))
+          distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
+          @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr
+        end
+
+        #if the difference between the actual duration and the estimated duration is more or less than 15 minutes then there is something wrong
+        diff = ((@estimated_duration-@actual_duration).abs < 900) || ((@actual_duration-@estimated_duration).abs < 900)
         if(diff)
           @errand.update_attribute :check_end_lat, params[:lat]
           @errand.update_attribute :check_end_lng, params[:lng]

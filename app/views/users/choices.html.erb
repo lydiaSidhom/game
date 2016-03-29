@@ -1,3 +1,67 @@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A&libraries=places&callback=my_function" async defer></script>
+<script>
+// document.addEventListener("DOMContentLoaded", function() {
+//   my_function();
+// });
+
+function my_function() {
+	start_lat = document.getElementById('latStart');
+	start_lng = document.getElementById('lngStart');
+	end_lat = document.getElementById('latEnd');
+	end_lng = document.getElementById('lngEnd');
+	choice = document.getElementById('choice');
+
+	getDirections(start_lat, start_lng, end_lat, end_lng, choice);
+}
+
+function getDirections(start_lat, start_lng, end_lat, end_lng, choice) {
+
+	var origin = new google.maps.LatLng(start_lat, start_lng);
+	var destination = new google.maps.LatLng(end_lat, end_lng);
+
+	var service = new google.maps.DistanceMatrixService();
+
+	var travelMode = ""
+	if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
+	  travelMode = google.maps.TravelMode.DRIVING;
+	} else if(choice.includes("Metro line")) {
+	  travelMode = "";
+	} else if(choice.includes("Walking")) {
+	  travelMode = google.maps.TravelMode.WALKING;
+	} else if(choice.includes("Cycling")) {
+	  travelMode = google.maps.TravelMode.WALKING;
+	}
+
+	service.getDistanceMatrix(
+	  {
+	    origins: [origin],
+	    destinations: [destination],
+	    travelMode: travelMode,
+	    unitSystem: google.maps.UnitSystem.METRIC,
+	  }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	        var originList = response.originAddresses;
+	        var destinationList = response.destinationAddresses;
+
+            var outputDiv = document.getElementById('test');
+            outputDiv.innerHTML = '';
+
+            var output = response.rows[0].elements[0].duration.value
+            outputDiv.innerHTML=output+"#";
+	      }
+	});
+}
+</script>
+
+<h3 id="test"></h3>
+<input type="text" id="latStart" name="latStart" value="<%=Errand.find(@errand_carpool[0]).start_lat%>" style="display: none;">
+<input type="text" id="lngStart" name="lngStart" value="<%=Errand.find(@errand_carpool[0]).start_lng%>" style="display: none;">
+<input type="text" id="latEnd" name="latEnd" value="<%=Errand.find(@errand_carpool[0]).end_lat%>" style="display: none;">
+<input type="text" id="lngEnd" name="lngEnd" value="<%=Errand.find(@errand_carpool[0]).end_lng%>" style="display: none;">
+<input type="text" id="choice" name="choice" value="<%=Errand.find(@errand_carpool[0]).choice%>" style="display: none;">
+
 <%= form_tag users_profile_after_choices_path, :id => 'form_id' do %>
 	<% countMetro = 0 %>
 	<% countBus = 0 %>
@@ -10,7 +74,10 @@
 	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
 		<label class="radio">
 			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Walking">
-				Walking
+				Walking<br>
+				Cost: 0 L.E.<br>
+				Time:  <br>
+				Pollution: <%= image_tag "/images/car.png" %>
 		</label>
 	<% end %>
 	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
@@ -43,6 +110,8 @@
 		<% countMetro += 1 %>
 			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>">
 			<%= choice %>
+			<br>
+			It will only cost ~1 L.E.
 		</label>
 	<% end %>
 

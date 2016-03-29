@@ -21,10 +21,32 @@
       <%= f.label :avatar %>
       <%= f.file_field :avatar, class: 'form-control' %>
 
-      <%= f.submit "Create my account", class: "btn btn-primary" %>
+      <%= f.label :q1 %>
+      <%#= radio_button_tag(:q1, "Option1", checked = true) %>
+      <%= radio_button_tag(:q1, "Option1") %>
+      <%= label_tag(:option1, "Option1") %>
+      <%= radio_button_tag(:q1, "Option2") %>
+      <%= label_tag(:option2, "Option2") %>
+
+      <%= f.submit "Create my account", class: "btn btn-primary",  :onclick => "return validateForm();" %>
     <% end %>
   </div>
 </div>
+<script>
+function validateForm() {
+    var radios = $("input:radio");
+    var formValid = false;
+    console.log(radios);
+    var i = 0;
+    while (!formValid && i < radios.length) {
+        if (radios[i].checked) formValid = true;
+        i++;        
+    }
+
+    if (!formValid) alert("Must check some option!");
+    return formValid;
+}
+</script>
 <style>
   body{background-color: #8fb4ff}
 </style>
