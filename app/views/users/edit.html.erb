@@ -18,6 +18,12 @@
       <%= f.label :password_confirmation, "Confirmation" %>
       <%= f.password_field :password_confirmation, class: 'form-control' %>
 
+      <%= f.label :birthday %>
+      <%= f.date_select :birthday, :order => [:day, :month, :year],:start_year=>1950, class: "date" %>      
+      <br>
+      <%= f.label :job , "Job Title" %>
+      <%= f.text_field :job, class: 'form-control' %>
+
       <%= f.label :avatar %>
       <%= f.file_field :avatar, class: 'form-control' %>
 
@@ -25,3 +31,15 @@
     <% end %>
   </div>
 </div>
+<style>
+  body{background-color: #8fb4ff}
+  #user_birthday_3i {
+    width: 50px;
+  }
+  #user_birthday_2i {
+    width: 100px;
+  }
+  #user_birthday_1i {
+    width: 70px;
+  }
+</style>

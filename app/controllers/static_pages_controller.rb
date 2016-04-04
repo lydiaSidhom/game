@@ -11,6 +11,11 @@ class StaticPagesController < ApplicationController
   def contact
   end
 
+  #each week:
+  #1) change boundaries to current week
+  #2) add 3 new challenges
+  #3) check if challenges fullfilled
+
   def challenges
     if(Time.now.saturday?)
       @user = User.find(params[:user_id])
@@ -20,7 +25,7 @@ class StaticPagesController < ApplicationController
       @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
       if(@car_use.size <= 2)
         @ch1 = ["Use car only twice or less per week",true]
-        #@user.update_attribute :score, @user.score+100
+        @user.update_attribute :score, @user.score+100
       else
         @ch1 = ["Use car only twice or less per week",false]
       end
@@ -37,7 +42,7 @@ class StaticPagesController < ApplicationController
       end
       if(cost <= 30)
         @ch2 = ["Don't spend more than 30 pounds on transportation",true]
-        #@user.update_attribute :score, @user.score+100
+        @user.update_attribute :score, @user.score+100
       else
         @ch2 = ["Don't spend more than 30 pounds on transportation",false]
       end
@@ -45,7 +50,7 @@ class StaticPagesController < ApplicationController
       @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
       if(@metro_use.size >= 5)
         @ch3 = ["Use metro at least 5 times per week",true]
-        #@user.update_attribute :score, @user.score+100
+        @user.update_attribute :score, @user.score+100
       else
         @ch3 = ["Use metro at least 5 times per week",false]
       end

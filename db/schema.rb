@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160329162350) do
+ActiveRecord::Schema.define(version: 20160329163423) do
 
   create_table "bus_line_bus_stops", force: :cascade do |t|
     t.integer  "bus_line_id"
@@ -104,6 +104,8 @@ ActiveRecord::Schema.define(version: 20160329162350) do
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
     t.string   "pretest"
+    t.string   "job"
+    t.date     "birthday"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

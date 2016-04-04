@@ -5,7 +5,7 @@
 			Enjoy the game :)
 		</h2>
 		<% if logged_in? %>
-            <%= link_to "Challenge of the week", challenges_path(:user_id => current_user.id), class: "btn btn-lg btn-success" %>
+            <%= link_to "Challenges of the week", challenges_path(:user_id => current_user.id), class: "btn btn-lg btn-success" %>
         <% else %>
 			<%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
         <% end %>

@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      @user.update_attribute :pretest, "Q1:"+params[:q1]+"$"
+      @user.update_attribute :pretest, params[:q1]+"$"+params[:q2]+"$"+params[:q3]+"$"+params[:q4]+"$"+params[:q5]+"$"+params[:q6]+"$"+params[:q7]+"$"+params[:q8]+"$"+params[:q9]+"$"+params[:q10]+"$"+params[:q11]+"$"+params[:q12]+"$"+params[:q13]+"$"+params[:q14]
       @user.send_activation_email
       flash[:info] = "Please check your email to activate your account."
       redirect_to root_url
@@ -414,7 +414,6 @@ class UsersController < ApplicationController
   end
 
   def dfsBus(stopStart, stopEnd, results)
-    logger.debug @busTemp.to_s + "akjsdlfbljshdfblkebflhebsdflkgjvbslkjfghlkejbfdjklsvdfbnvckljsdbfvkljsbdfkljvbskldfbvksdfbv;kjsdbfjkvsbdfkvbsdfkjvbskdjbvksdbkvj"
     if(!(@busTemp.include?(stopStart)))
       @busTemp.push(stopStart)
       results.push(stopStart)
@@ -444,25 +443,28 @@ class UsersController < ApplicationController
   end
 
   def dfsMetro(stopStart, stopEnd, results)
-    results.push(stopStart)
-    metroLinesStart = stopStart.metro_lines
-    flag = false
-    metroLinesStart.each do |lSt|
-      metroStopsOfLineSt = lSt.metro_stops
-      if(metroStopsOfLineSt.include?(stopEnd))
-        flag = true
-        if(!(results.include?(stopEnd)))
-          results.push(stopEnd)
-        end
-      end  
-    end
-    if(flag)
-      @metroResults.push(results)
-    else
+    if(!(@metroTemp.include?(stopStart)))
+      @metroTemp.push(stopStart)
+      results.push(stopStart)
+      metroLinesStart = stopStart.metro_lines
+      flag = false
       metroLinesStart.each do |lSt|
-        MetroStop.find_each do |stop|
-          if(stop != stopStart && stop.metro_lines.include?(lSt) && (stop.metro_lines.size > 1))
-              dfsMetro(stop, stopEnd, results.clone())
+        metroStopsOfLineSt = lSt.metro_stops
+        if(metroStopsOfLineSt.include?(stopEnd))
+          flag = true
+          if(!(results.include?(stopEnd)))
+            results.push(stopEnd)
+          end
+        end  
+      end
+      if(flag)
+        @metroResults.push(results)
+      else
+        metroLinesStart.each do |lSt|
+          MetroStop.find_each do |stop|
+            if(stop != stopStart && stop.metro_lines.include?(lSt) && (stop.metro_lines.size > 1))
+                dfsMetro(stop, stopEnd, results.clone())
+            end
           end
         end
       end
@@ -534,10 +536,10 @@ class UsersController < ApplicationController
           @estimated_duration = params[:duration].to_i
         elsif(@errand.choice.include?("Metro line"))
           distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
-          @estimated_duration = (distance/100)*3600 #average metro speed is 100km/hr
+          @estimated_duration = (distance/80)*3600 #average metro speed is 80km/hr based on the official website of cairo metros (http://cairometro.gov.eg/UIPages/FirstLineWorking.aspx)
         elsif(@errand.choice.include?("Cycling"))
           distance = Geocoder::Calculations.distance_between([@errand.check_start_lat,@errand.check_start_lng],[params[:lat],params[:lng]], :units => :km)
-          @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr
+          @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr (https://en.wikipedia.org/wiki/Bicycle_performance)
         end
 
         #if the difference between the actual duration and the estimated duration is more or less than 15 minutes then there is something wrong
@@ -550,29 +552,29 @@ class UsersController < ApplicationController
 
           c = @errand.choice
           if(c.include? "Bus ")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+60
+            @user.update_attribute :score_money, @user.score_money+80
+            @user.update_attribute :score_pollution, @user.score_pollution+60
           elsif(c.include? "Metro ")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+80
+            @user.update_attribute :score_money, @user.score_money+80
+            @user.update_attribute :score_pollution, @user.score_pollution+80
           elsif(c.include? "Carpooling")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+60
+            @user.update_attribute :score_money, @user.score_money+80
+            @user.update_attribute :score_pollution, @user.score_pollution+40
           elsif(c.include? "Walking")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+100
+            @user.update_attribute :score_money, @user.score_money+100
+            @user.update_attribute :score_pollution, @user.score_pollution+100
           elsif(c.include? "Using own Car")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+0
+            @user.update_attribute :score_money, @user.score_money+0
+            @user.update_attribute :score_pollution, @user.score_pollution+0
           elsif(c.include? "Cycling")
-            @user.update_attribute :score_time, @user.score_time+10
-            @user.update_attribute :score_money, @user.score_money+10
-            @user.update_attribute :score_pollution, @user.score_pollution+10
+            @user.update_attribute :score_time, @user.score_time+100
+            @user.update_attribute :score_money, @user.score_money+100
+            @user.update_attribute :score_pollution, @user.score_pollution+100
           end
 
           render status: 200, text:""
@@ -608,7 +610,7 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation, :avatar)
+                                   :password_confirmation, :avatar, :birthday, :job)
     end
 
     def is_near(checked_lat, checked_lng, errand_lat, errand_lng)

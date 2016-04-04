@@ -3,6 +3,10 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A" async defer></script>
 <script>
 
+$(window).load(function(){
+    $('#myModal').modal('show');
+});
+
 // For todays date;
 Date.prototype.today = function () { 
     return this.getFullYear() +"-"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"-"+ ((this.getDate() < 10)?"0":"") + this.getDate();
@@ -169,6 +173,11 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   <div id="map"></div>
 </div> -->
 
+<!-- <button type="button" class="btn btn-info btn-lg" onClick="$('#myModal').modal()">Open Modal</button> -->
+<% if session[:modal] == true %>
+  <%= render :partial => 'layouts/info'%>
+<% end %>
+
 <div class="row">
   <aside class="col-md-6">
     <section class="user_info">
@@ -187,9 +196,28 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   </aside>
   
   <div class="col-md-4" style="margin-top: 20px;">
-  	<h3 class="boxed">Time: <%= @user.score_time %></h3>
+    <% total = @user.score_time+@user.score_money+@user.score_pollution %>
+    <% time = (@user.score_time*100)/total %>
+    <% money = (@user.score_money*100)/total %>
+    <% pollution = (@user.score_pollution*100)/total %>
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="<%=time%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=time%>%;">
+        <span class="sr-only"><%=time%>%</span>Time
+      </div>
+    </div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<%=money%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=money%>%;">
+        <span class="sr-only"><%=money%>%</span>Money
+      </div>
+    </div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%=pollution%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=pollution%>%;">
+        <span class="sr-only"><%=pollution%>%</span>Pollution
+      </div>
+    </div>
+<!--   	<h3 class="boxed">Time: <%= @user.score_time %></h3>
     <h3 class="boxed">Money: <%= @user.score_money %></h3>
-    <h3 class="boxed">Pollution: <%= @user.score_pollution %></h3>
+    <h3 class="boxed">Pollution: <%= @user.score_pollution %></h3> -->
   	<h3>Leaderboard</h3>
   	<div style="height: auto; overflow: auto;">
   	<table class="table table-striped" style="background-color: #ffffff">
@@ -259,5 +287,8 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
 		padding: 2px;
 		display: inline-block;
 	}
+  .modal-backdrop {
+    z-index: auto;
+  }
 </style>
 </html>

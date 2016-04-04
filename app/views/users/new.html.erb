@@ -18,15 +18,217 @@
       <%= f.label :password_confirmation, "Confirmation" %>
       <%= f.password_field :password_confirmation, class: 'form-control' %>
 
+      <%= f.label :birthday %>
+      <%= f.date_select :birthday, :order => [:day, :month, :year],:start_year=>1950, class: "date" %>      
+      <br>
+      <%= f.label :job , "Job Title" %>
+      <%= f.text_field :job, class: 'form-control' %>
+
       <%= f.label :avatar %>
       <%= f.file_field :avatar, class: 'form-control' %>
 
-      <%= f.label :q1 %>
+      <%= f.label :q1, "You go to work by:" , class: 'question'%>
       <%#= radio_button_tag(:q1, "Option1", checked = true) %>
-      <%= radio_button_tag(:q1, "Option1") %>
-      <%= label_tag(:option1, "Option1") %>
-      <%= radio_button_tag(:q1, "Option2") %>
-      <%= label_tag(:option2, "Option2") %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q1, "Car") %>
+      <%= label_tag(:option1, "Car", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Bus") %>
+      <%= label_tag(:option2, "Bus", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Carpooling") %>
+      <%= label_tag(:option3, "Carpooling", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Taxi") %>
+      <%= label_tag(:option4, "Taxi", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Bicycle") %>
+      <%= label_tag(:option5, "Bicycle", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Walking") %>
+      <%= label_tag(:option6, "Walking", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Metro") %>
+      <%= label_tag(:option7, "Metro", class: 'label_tag') %>
+      <%= radio_button_tag(:q1, "Other") %>
+      <%= label_tag(:option8, "Other", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q2, "I prefer using my car for transportation.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q2, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q2, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q2, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q2, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q2, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q3, "While driving I often get angry and my mood is bad.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q3, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q3, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q3, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q3, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q3, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+      
+      <%= f.label :q4, "I spend too much time in transportation.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q4, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q4, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q4, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q4, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q4, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q5, "How much time do you spend in transportation per day (in hours)?", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q5, "less than 1") %>
+      <%= label_tag(:option1, "less than 1", class: 'label_tag') %>
+      <%= radio_button_tag(:q5, "more than 1 and less than 3") %>
+      <%= label_tag(:option2, "more than 1 and less than 3", class: 'label_tag') %>
+      <%= radio_button_tag(:q5, "more than 3 and less than 5") %>
+      <%= label_tag(:option3, "more than 3 and less than 5", class: 'label_tag') %>
+      <%= radio_button_tag(:q5, "more than 5") %>
+      <%= label_tag(:option4, "more than 5", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q6, "I spend too much money on transportation.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q6, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q6, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q6, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q6, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q6, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q7, "How much money do you spend on transportation per day (in LE)?", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q7, "less than 10") %>
+      <%= label_tag(:option1, "less than 10", class: 'label_tag') %>
+      <%= radio_button_tag(:q7, "more than 10 and less than 30") %>
+      <%= label_tag(:option2, "more than 10 and less than 30", class: 'label_tag') %>
+      <%= radio_button_tag(:q7, "more than 30 and less than 50") %>
+      <%= label_tag(:option3, "more than 30 and less than 50", class: 'label_tag') %>
+      <%= radio_button_tag(:q7, "more than 50 and less than 70") %>
+      <%= label_tag(:option4, "more than 50 and less than 70", class: 'label_tag') %>
+      <%= radio_button_tag(:q7, "more than 70 and less than 90") %>
+      <%= label_tag(:option5, "more than 70 and less than 90", class: 'label_tag') %>
+      <%= radio_button_tag(:q7, "more than 90") %>
+      <%= label_tag(:option6, "more than 90", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q8, "I can see the negative effect of transportation on the environment.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q8, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q8, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q8, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q8, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q8, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q9, "I am willing to change my transportation ways to decrease pollution.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q9, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q9, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q9, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q9, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q9, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q10, "I am willing to change my transportation ways to decrease the stress I feel while driving.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q10, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q10, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q10, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q10, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q10, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q11, "I am willing to change my transportation ways to be able to use my time better.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q11, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q11, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q11, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q11, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q11, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q12, "I usually have the opportunity to carpool with someone.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q12, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q12, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q12, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q12, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q12, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q13, "Driving less removes the burden of me having accidents.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q13, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q13, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q13, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q13, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q13, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
+
+      <%= f.label :q14, "I could play a game that teaches me about alternative ways of transportation.", class: 'question' %>
+      <div style="display: inline-block;">
+      <%= radio_button_tag(:q14, "Strongly disagree") %>
+      <%= label_tag(:option1, "Strongly disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q14, "Disagree") %>
+      <%= label_tag(:option2, "Disagree", class: 'label_tag') %>
+      <%= radio_button_tag(:q14, "Neutral") %>
+      <%= label_tag(:option3, "Neutral", class: 'label_tag') %>
+      <%= radio_button_tag(:q14, "Agree") %>
+      <%= label_tag(:option4, "Agree", class: 'label_tag') %>
+      <%= radio_button_tag(:q14, "Strongly agree") %>
+      <%= label_tag(:option5, "Strongly agree", class: 'label_tag') %>
+      </div>
 
       <%= f.submit "Create my account", class: "btn btn-primary",  :onclick => "return validateForm();" %>
     <% end %>
@@ -35,18 +237,48 @@
 <script>
 function validateForm() {
     var radios = $("input:radio");
-    var formValid = false;
+    var formValid = 0;
     console.log(radios);
     var i = 0;
-    while (!formValid && i < radios.length) {
-        if (radios[i].checked) formValid = true;
+    while (i < radios.length) {
+        if (radios[i].checked) formValid++;
         i++;        
     }
 
-    if (!formValid) alert("Must check some option!");
-    return formValid;
+    if (formValid<14) {
+      console.log(formValid);
+      alert("Please answer all questions!");
+      return false;
+    } else {
+      console.log(formValid);
+      return true;
+    }
 }
 </script>
 <style>
   body{background-color: #8fb4ff}
+  #user_birthday_3i {
+    width: 50px;
+  }
+  #user_birthday_2i {
+    width: 100px;
+  }
+  #user_birthday_1i {
+    width: 70px;
+  }
+
+  input[type='radio'], .label_tag {
+    width: auto;
+    float: left;
+    margin-left: 5px;
+  }
+  .label_tag {
+    font-weight: normal !important;
+  }
+  input {
+    clear:left;
+  }
+  .question {
+    display: block;
+  }
 </style>
