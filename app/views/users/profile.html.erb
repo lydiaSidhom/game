@@ -4,7 +4,10 @@
 <script>
 
 $(window).load(function(){
-    $('#myModal').modal('show');
+    var modal = document.getElementById('myModal');
+    if(modal != null) {
+      $('#myModal').modal('show');
+    }
 });
 
 // For todays date;
