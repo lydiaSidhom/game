@@ -10,6 +10,7 @@ $(window).load(function(){
     }
 });
 
+
 // For todays date;
 Date.prototype.today = function () { 
     return this.getFullYear() +"-"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"-"+ ((this.getDate() < 10)?"0":"") + this.getDate();
@@ -20,14 +21,14 @@ Date.prototype.timeNow = function () {
      return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 }
 
-$(document).ajaxStart(function () {
-    $('#loading').show();  // show loading indicator
-});
+// $(document).ajaxStart(function () {
+//     $('#loading').show();  // show loading indicator
+// });
 
-$(document).ajaxStop(function() 
-{
-    $('#loading').hide();  // hide loading indicator
-});
+// $(document).ajaxStop(function() 
+// {
+//     $('#loading').hide();  // hide loading indicator
+// });
 
 function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
     if (navigator.geolocation) {
@@ -48,15 +49,55 @@ function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
                   duration: estimated_duration
                 }
               }).done(function(data){
-                if(data != ""){
+                if(data.startsWith("The") || data.startsWith("You")) {
                   alert(data);
                   if (data.includes("The time")) {
                     location.reload(true);
                   }
                 } else {
-                  //location.reload(true);
                   if(loc == "end") {
                     elm.closest('tr').remove();
+                    if(data == "1") {
+                      $('#awardGold').modal('show');
+                    } else if(data == "2") {
+                      $('#awardSilver').modal('show');
+                    } else if(data == "3") {
+                      $('#awardBronze').modal('show');
+                    }
+
+                    if(choice.includes("Bus line")) {
+                      $('#feedbackBus').modal('show');
+                    } else if(choice.includes("Metro line")) {
+                      $('#feedbackMetro').modal('show');
+                    } else if(choice.includes("Walking")) {
+                      $('#feedbackWalking').modal('show');
+                    } else if(choice.includes("Cycling")) {
+                      $('#feedbackCycling').modal('show');
+                    } else if(choice.includes("Carpooling")) {
+                      $('#feedbackCarpool').modal('show');
+                    } else if(choice.includes("Using own Car")) {
+                      $('#feedbackCar').modal('show');
+                    }
+
+                    $('#feedbackBus').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCar').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCarpool').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCycling').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackMetro').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackWalking').on('hidden.bs.modal', function() {
+                      console.log("HERE");
+                      window.location.reload(true);
+                    });
                   } else {
                     var highlightedText = elm.innerHTML;
                     var parent = elm.parentNode;
@@ -181,6 +222,18 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
   <%= render :partial => 'layouts/info'%>
 <% end %>
 
+<%= render :partial => 'layouts/feedbackCar'%>
+<%= render :partial => 'layouts/feedbackBus'%>
+<%= render :partial => 'layouts/feedbackMetro'%>
+<%= render :partial => 'layouts/feedbackCarpool'%>
+<%= render :partial => 'layouts/feedbackWalking'%>
+<%= render :partial => 'layouts/feedbackCycling'%>
+
+<%= render :partial => 'layouts/awardGold'%>
+<%= render :partial => 'layouts/awardSilver'%>
+<%= render :partial => 'layouts/awardBronze'%>
+
+
 <div class="row">
   <aside class="col-md-6">
     <section class="user_info">
@@ -251,14 +304,22 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
         <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
   	  	  <% @rank+=1 %>
         <% end %>
-  	  	<% if(user.name == @user.name) %>       
+  	  	<% if(user.id == @user.id) %>       
     		  <tr class="success">
     		<% else %>
     		  <tr>
     		<% end %>
       		<td><%= user.name.titleize %></td>
       		<td><%= user.score_time+user.score_money+user.score_pollution %></td>
-      		<td><%= @rank %></td>
+          <% if(@rank == 1) %>
+          <td align="left"><img src="/images/gold.png"/></td>
+          <% elsif(@rank == 2) %>
+          <td align="left"><img src="/images/bronze.png"/></td>
+          <% elsif(@rank == 3) %>
+          <td align="left"><img src="/images/silver.png"/></td>
+          <% else %>
+          <td align="left" style="padding-left: 20px;"><%= @rank %></td>
+          <% end %>
     		</tr>
         <% pre = user.score_time+user.score_money+user.score_pollution %>
   	  <% end %>

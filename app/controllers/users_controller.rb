@@ -550,6 +550,21 @@ class UsersController < ApplicationController
           @errand.update_attribute :check_end_time, params[:datetime]
           @errand.update_attribute :done, true
 
+          users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
+          rank = 0
+          userRankBefore = 0
+          pre = users[0].score_time+users[0].score_money+users[0].score_pollution-1
+          users.each do |user|
+            if(pre != (user.score_time+user.score_money+user.score_pollution))
+              rank+=1
+            end
+            if(user.id == @user.id)
+              userRankBefore = rank
+              break
+            end
+            pre = user.score_time+user.score_money+user.score_pollution
+          end
+
           c = @errand.choice
           if(c.include? "Bus ")
             @user.update_attribute :score_time, @user.score_time+60
@@ -577,7 +592,26 @@ class UsersController < ApplicationController
             @user.update_attribute :score_pollution, @user.score_pollution+100
           end
 
-          render status: 200, text:""
+          users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
+          rank = 0
+          userRankAfter = 0
+          pre = users[0].score_time+users[0].score_money+users[0].score_pollution-1
+          users.each do |user|
+            if(pre != (user.score_time+user.score_money+user.score_pollution))
+              rank+=1
+            end
+            if(user.id == @user.id)
+              userRankAfter = rank
+              break
+            end
+            pre = user.score_time+user.score_money+user.score_pollution
+          end
+
+          if(userRankBefore == userRankAfter)
+            render status: 200, text: ""
+          else
+            render status: 200, text: userRankAfter.to_s
+          end
         else
           @errand.update_attribute :check_end_lat, params[:lat]
           @errand.update_attribute :check_end_lng, params[:lng]
@@ -617,7 +651,7 @@ class UsersController < ApplicationController
       #get the locations near the place the user checked-in in, that are maximum 1 mile away
       #????????????????????????????????????????????what is an appropriate range to say a location is near another
 
-      if(Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng], :units => :km) < 1)
+      if(Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng], :units => :km) < 2)
         return true
       else
         return false
