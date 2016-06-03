@@ -8,7 +8,7 @@ class AccountActivationsController < ApplicationController
       flash[:success] = "Account activated!"
       session[:modal] = true
       #redirect_to user
-      redirect_to pretest_path
+      redirect_to '/users/' + user.id.to_s + '/pretest'
     else
       flash[:danger] = "Invalid activation link"
       redirect_to root_url
