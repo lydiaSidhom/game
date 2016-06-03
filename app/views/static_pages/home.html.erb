@@ -1,16 +1,408 @@
+    <div class="full-width navigation" data-sticky-container>
+      <div class="row sticky" data-sticky data-margin-top="0" >
+        <div class="large-7 columns small-centered">
+          <nav data-magellan>
+            <ul class="horizontal menu expanded">
+              <li class="logo">
+                <%= link_to "greenie", root_path(current_user), id: "logo", style: "padding: 0px;" %>
+              </li>
+              <li class="tips">
+                <p>
+                  "Do what you can, with what you have, where you are."
+                </p>                
+              </li>
+              <% if logged_in? %>
+                <li style="display:inline-block;"><%= link_to "Profile", users_profile_path(current_user) %></li>
+                <li style="display:inline-block;"><%= link_to "Log out", logout_path, method: "delete" %></li>
+              <% end %>
+            </ul>
+            
+          </nav>
+        </div>
+      </div>
+    </div>
 
-	<div class="center jumbotron" style="margin-top: 10px;">
-		<h1>TrafficLess</h1>
-		<h2>
-			Enjoy the game :)
-		</h2>
-		<% if logged_in? %>
-            <%= link_to "Challenges of the week", challenges_path(:user_id => current_user.id), class: "btn btn-lg btn-success" %>
-        <% else %>
-			<%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
-        <% end %>
+    <div class="row full-width section">
+      <div class="large-12 column align-self-middle align-center">
+        <h6 class="logo"><b>greenie</b></h6>
+        <p>/' gri:ni/ (n)</p>
+        <p>a person who campaigns for <b>protection</b> of the <b>environment</b></p>
+        <!--a class="button" href=""><h6><b>Become a Greenie</b></h6></a-->
+      </div>
+    </div>
 
-	</div>
+    <div class="row full-width secondary-section">
+      <div class="large-12 column align-self-middle align-center">
+        <div class="row">
+          <div class="large-8 columns small-centered">
+            <h4>Vehical Consumption</h4>
+            <p class="excerpt">
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row full-width section">
+      <div class="large-8 columns align-self-middle small-centered">
+        <h4>Carbon Dioxide</h4>
+        <div class="row">
+          <div class="large-6 columns">
+            <p>
+              Carbon dioxide (CO2) is an important heat-trapping (greenhouse) gas, which is released through human activities such as deforestation and burning fossil fuels, as well as natural process such as respiration and volcanic eruptions. The graph shows atmospheric CO2 levels in recent years in <b>parts per million</b>.
+            </p>
+            <p>
+              parts per million or ppm means out of a million Just as per cent means out of a hundred.
+            </p>
+            <p>
+              According to EPA (United States Environmental Protection Agency), The primary source of CO2 emissions globaly is the use of Fossil Fuel. Fossil Fuel is used mostly in cars, busses, and other forms of transportation. Making <b>cars</b> one of the <b>largest</b> causes of <b>Global Warming</b>
+            </p>
+          </div>
+        
+          <div class="large-6 columns">
+            <div id="canvas-holder1" style="width:100%;">
+              <canvas id="chart1"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row full-width secondary-section">
+      <div class="large-8 columns align-self-middle small-centered">
+        <div class="align-center title">
+          <h4>What Should You Do?</h4>
+          <h6>Reduce the carbon footprint of your car!</h6>
+        </div>
+        <div class="row">
+          <div class="large-6 column">
+            <p>
+              <b>Drive better </b>- Studies have shown up to 30% of the difference in Kilometeres per hour (KMPH) is due to driving habits alone. You could save more than a <b>ton</b> of CO2 per year by:
+              <ul>
+                <li>
+                  <p>Accelerating <b>slowly</b> and <b>smoothly</b></p>
+                </li>
+                <li>
+                  <p>Driving the <b>speed limit</b></p>
+                </li>
+                <li>
+                  <p>Maintiang a <b>steady speed</b></p>
+                </li>
+                <li>
+                  <p>Anticipating your <b>stops</b> and <b>starts</b></p>
+                </li>
+              </ul>
+            </p>
+
+            <p>
+              <b>Maintenance </b>- Keep your car <b>tuned</b> up and <b>running efficiently</b>.
+            </p>
+
+            <p>
+              <b>More Maintenance </b>- Replace your air, oil, and fuel filters according to schedule.
+            </p>
+          </div>
+        
+          <div class="large-6 column"> 
+            <p>
+              <b>Tires </b>- Keep your tires properly inflated (just this can save <b>400-700 pounds</b> of CO2 per year).
+            </p>
+            <p>
+              <b>Carpool </b>- You can help the environment by not using your car to go trips you can go with someone else.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row full-width section">
+      <div class="large-8 columns align-self-middle small-centered">
+        <div class="row">
+          <div class="large-6 column">
+            <ul class="tabs" data-tabs id="sign-up-tabs">
+              <li class="tabs-title is-active">
+                <a href="#signUpContent" aria-selected="true">Sign Up</a>
+              </li>
+
+              <li class="tabs-title">
+                <a href="#loginContent" aria-selected="true">Login</a>
+              </li>
+            </ul>
+            <div class="tabs-content tabs-credentials" data-tabs-content="sign-up-tabs">
+<!--               <div class="tabs-panel is-active" id="signUpContent">
+                <form class="form-credentials" id="signUp">
+                  <div class="row">
+                    <div class="large-6 columns">
+                      <input type="text" placeholder="First Name">
+                    </div>
+
+                    <div class="large-6 columns">
+                      <input type="text" placeholder="Last Name">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="large-12 columns">
+                      <input type="text" placeholder="e-mail">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="large-12 columns">
+                      <input type="password" placeholder="Password">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="large-12 columns">
+                      <input type="password" placeholder="Confirm Password">
+                    </div>
+                  </div>
+                  <a class="button" href=""><h6><b>Become a Greenie</b></h6></a>
+                </form>
+              </div> -->
+
+              <div class="tabs-panel is-active" id="signUpContent">
+                <%#= form_for(@user), :html => {:class => "form-credentials", :id => "signUp"} do |f| %>
+                <%= form_for(@user) do |f| %>
+                  <%#= render 'shared/error_messages' %>
+
+                  <%= f.text_field :name, class: 'large-12 columns', placeholder: "Name", :required => true %>
+
+                  <%= f.email_field :email, class: 'large-12 columns', placeholder: "e-mail", :required => true %>
+
+                  <%= f.password_field :password, class: 'large-12 columns', placeholder: "Password", :required => true %>
+
+                  <%= f.password_field :password_confirmation, class: 'large-12 columns', placeholder: "Confirm Password", :required => true %>
+
+                  <%= f.label :birthday %>
+                  <%= f.date_select :birthday, :order => [:day, :month, :year],:start_year=>1950, class: "date" , :required => true%>      
+                  <br>
+                  <%= f.text_field :job, class: 'large-12 columns', placeholder: "Job Title" , :required => true%>
+
+                  <%= f.label :avatar %>
+                  <%= f.file_field :avatar, class: 'large-12 columns' %>
+
+                  <%= f.submit "Become a Greenie", class: "button" %>
+                <% end %>
+              </div>
+
+<!--               <div class="tabs-panel tabs-credentials" id="loginContent">
+                <form class="form-credentials" id="login">
+                  <div class="row">
+                    <div class="large-12 columns">
+                      <input type="text" placeholder="e-mail">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="large-12 columns">
+                      <input type="password" placeholder="Password">
+                    </div>
+                  </div>
+
+                  <a class="button" href=""><h6><b>Welcome Greenie</b></h6></a>
+                </form>
+              </div> -->
+
+              <div class="tabs-panel tabs-credentials" id="loginContent">
+                <%= form_for(:session, url: login_path) do |f| %>
+
+                  <%= f.email_field :email, class: 'large-12 columns', placeholder: "e-mail" , :required => true %>
+
+                  <%= f.password_field :password, class: 'large-12 columns', placeholder: "Password" , :required => true %>
+
+                  <%= f.label :remember_me, class: "checkbox inline" do %>
+                    <%= f.check_box :remember_me %>
+                    <span>Remember me</span>
+                  <% end %>
+
+                  <%= f.submit "Welcome Greenie", class: "button" %>
+                <% end %>
+              </div>
+
+            </div>
+          </div>
+        
+          <div class="large-6 column">
+            <h4>What does greenie do?</h4>
+            <p>
+              greenie is an application to help you monitor your transportation and your carbon footprint. The application will give you insight on alternative ways to go to your destination in order to lower your consmuption.
+            </p>
+            <p>
+              The more you decrease your carbon footprint the better your score will be on the website and also in helping the environment.
+            </p>
+            <p>
+              You can aslo see where you stand amongst other fellow <b>greenies</b> through the leaderboards.
+            </p>
+            <h4>Join and become a greenie! Make this world green again!</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <div class="row full-width footer">
+      <div class="large-12 column align-self-middle">
+        <div class="row">
+          <div class="large-8 columns small-centered">
+            <h6><b>Copyright Lydia Sidhom, GWAP at German University in Cairo</b></h6>
+            <p class="excerpt">
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 <style>
-body{background-color: #8fb4ff}
+  #user_birthday_3i {
+    width: 50px;
+  }
+  #user_birthday_2i {
+    width: 100px;
+  }
+  #user_birthday_1i {
+    width: 70px;
+  }
 </style>
+
+    <script>
+    window.count = 0;
+    Chart.defaults.global.pointHitDetectionRadius = 1;
+    var customTooltips = function(tooltip) {
+
+      // Tooltip Element
+      var tooltipEl = $('#chartjs-tooltip');
+
+      if (!tooltipEl[0]) {
+        $('body').append('<div id="chartjs-tooltip"></div>');
+        tooltipEl = $('#chartjs-tooltip');
+      }
+
+      // Hide if no tooltip
+      if (!tooltip.opacity) {
+        tooltipEl.css({
+          opacity: 0
+        });
+        $('.chartjs-wrap canvas')
+          .each(function(index, el) {
+            $(el).css('cursor', 'default');
+          });
+        return;
+      }
+
+      $(this._chart.canvas).css('cursor', 'pointer');
+
+      // Set caret Position
+      tooltipEl.removeClass('above below no-transform');
+      if (tooltip.yAlign) {
+        tooltipEl.addClass(tooltip.yAlign);
+      } else {
+        tooltipEl.addClass('no-transform');
+      }
+
+      // Set Text
+      if (tooltip.body) {
+        var innerHtml = [
+          (tooltip.beforeTitle || []).join('\n'), (tooltip.title || []).join('\n'), (tooltip.afterTitle || []).join('\n'), (tooltip.beforeBody || []).join('\n'), (tooltip.body || []).join('\n'), (tooltip.afterBody || []).join('\n'), (tooltip.beforeFooter || [])
+          .join('\n'), (tooltip.footer || []).join('\n'), (tooltip.afterFooter || []).join('\n')
+        ];
+        tooltipEl.html(innerHtml.join('\n'));
+      }
+
+      // Find Y Location on page
+      var top = 0;
+      if (tooltip.yAlign) {
+        if (tooltip.yAlign == 'above') {
+          top = tooltip.y - tooltip.caretHeight - tooltip.caretPadding;
+        } else {
+          top = tooltip.y + tooltip.caretHeight + tooltip.caretPadding;
+        }
+      }
+
+      var position = $(this._chart.canvas)[0].getBoundingClientRect();
+
+      // Display, position, and set styles for font
+      tooltipEl.css({
+        opacity: 1,
+        width: tooltip.width ? (tooltip.width + 'px') : 'auto',
+        left: position.left + tooltip.x + 'px',
+        top: position.top + top + 'px',
+        fontFamily: tooltip._fontFamily,
+        fontSize: tooltip.fontSize,
+        fontStyle: tooltip._fontStyle,
+        padding: tooltip.yPadding + 'px ' + tooltip.xPadding + 'px',
+      });
+    };
+    var randomScalingFactor = function() {
+      return Math.round(Math.random() * 100);
+    };
+    var lineChartData = {
+      labels: ["2005", "2006", "2007", "2008", "2009", "2010","2011", "2012", "2013", "2014", "2015", "2016"],
+      datasets: [{
+        label: "CO2 (Parts Per Millions)",
+        data: [378.21, 381.11, 382.74, 385.26, 386.66, 388.23, 391.00, 392.87, 395.29, 397.56, 399.73, 402.26]
+      }]
+    };
+
+    window.onload = function() {
+      var chartEl = document.getElementById("chart1");
+      window.myLine = new Chart(chartEl, {
+        type: 'line',
+        data: lineChartData,
+        options: {
+          title:{
+            display:true,
+            text:'Direct Measurments: 2005-Present'
+          },
+          tooltips: {
+            enabled: false,
+            custom: customTooltips
+          }
+        }
+      });
+    };
+
+    function validateForm() {
+        var radios = $("input:radio");
+        var formValid = 0;
+        console.log(radios);
+        var i = 0;
+        while (i < radios.length) {
+            if (radios[i].checked) formValid++;
+            i++;        
+        }
+
+        if (formValid<14) {
+          console.log(formValid);
+          alert("Please answer all questions!");
+          return false;
+        } else {
+          console.log(formValid);
+          return true;
+        }
+    }
+
+    // $(document).ready
+    //   $("#new_user").on("ajax:success", function(e, data, status, xhr) {
+    //     var error = '  <div id="error_explanation">
+    //                     <div class="alert alert-danger">
+    //                       The form contains <%= pluralize(@user.errors.count, "error") %>.
+    //                     </div>
+    //                     <ul>
+    //                     <% @user.errors.full_messages.each do |msg| %>
+    //                       <li><%= msg %></li>
+    //                     <% end %>
+    //                     </ul>
+    //                   </div>';
+    //     $("#new_user").append(error)
+    //   });
+    //   $("#new_user").on("ajax:error", function(e, xhr, status, error) {
+    //     $("#new_user").append("<p>ERROR</p>")
+    //   });
+  </script>
+  <script src="/js/vendor/jquery.min.js"></script>
+  <script src="/js/vendor/what-input.min.js"></script>
+  <script src="/js/vendor/foundation.js"></script>
+  <script src="/js/app.js"></script>

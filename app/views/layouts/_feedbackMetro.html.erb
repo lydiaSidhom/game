@@ -8,9 +8,7 @@
         <h4 class="modal-title">Directions</h4>
       </div>
       <div class="modal-body">
-          <p>
-          Welcome to TrafficLess Cycle :)
-          </p>
+         <label id="busStat" style="display: block; text-align: center; line-height: 150%; font-size: .85em; color: #000000"></label>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -19,3 +17,14 @@
 
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+        "You just saved averagely one half of the oil consumed by an automobile rider. ",
+    ];
+
+    var randomDiv = document.getElementById("busStat");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script> 

@@ -16,8 +16,8 @@ class SessionsController < ApplicationController
         redirect_to root_url
       end
     else
-      flash.now[:danger] = 'Invalid email/password combination'
-      render 'new'
+      flash[:danger] = 'Invalid email/password combination'
+      redirect_to root_url
     end
   end
 
@@ -29,6 +29,7 @@ class SessionsController < ApplicationController
 
   def destroy
   	log_out if logged_in?
+    logger.debug "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
     redirect_to root_url
   end
 

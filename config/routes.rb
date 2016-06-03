@@ -11,17 +11,17 @@ Rails.application.routes.draw do
 
   # get 'metro_lines/import'
 
-  get 'bus_line_bus_stops/index'
+  # get 'bus_line_bus_stops/index'
 
-  get 'bus_line_bus_stops/import'
+  # get 'bus_line_bus_stops/import'
 
-  get 'bus_stops/index'
+  # get 'bus_stops/index'
 
-  get 'bus_stops/import'
+  # get 'bus_stops/import'
 
-  get 'bus_lines/index'
+  # get 'bus_lines/index'
 
-  get 'bus_lines/import'
+  # get 'bus_lines/import'
 
   root 'static_pages#home'
 
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
   get 'challenges' => 'static_pages#challenges'
 
-  get 'signup'  => 'users#new'
+  get 'create_user'  => 'users#new'
 
   #get 'home' => 'users#home'
 
@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   delete 'logout'  => 'sessions#destroy'
 
   post 'users/:id/' ,to: 'users#profileAfterChoices',as: 'users_profile_after_choices'
+  post 'users/:id/pretest_answers' ,to: 'users#pretest_answers'
 
   post 'users/:id/checkin_start', to: 'users#checkin_start', as: 'users_checkin_start'
   post 'users/:id/checkin_end', to: 'users#checkin_end', as: 'users_checkin_end'
@@ -53,6 +54,8 @@ Rails.application.routes.draw do
   post 'users/:id/choices',to: 'users#choices',as: 'users_choices'
 
   get 'users/:id/addErrands',to: 'users#addErrands',as: 'users_addErrands'
+
+  get 'users/:id/pretest', to: 'users#pretest', as: 'pretest'
 
   resources :users 
 
