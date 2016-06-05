@@ -249,6 +249,12 @@ canvas{
 	border-bottom:1px solid #c3c3c3;
 }
 
+.user-leaderboard-success{
+	padding:10px 0px 0px 0px;
+	border-bottom:1px solid #c3c3c3;
+	background-color: #dff0d8;
+}
+
 #leaderboardPanel{
 	margin:20px !important;
 }

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A" async defer></script>
+<script>
+
+$(window).load(function(){
+    var modal = document.getElementById('myModal');
+    if(modal != null) {
+      $('#myModal').modal('show');
+    }
+});
+
+
+// For todays date;
+Date.prototype.today = function () { 
+    return this.getFullYear() +"-"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"-"+ ((this.getDate() < 10)?"0":"") + this.getDate();
+}
+
+// For the time now
+Date.prototype.timeNow = function () {
+     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+}
+
+// $(document).ajaxStart(function () {
+//     $('#loading').show();  // show loading indicator
+// });
+
+// $(document).ajaxStop(function() 
+// {
+//     $('#loading').hide();  // hide loading indicator
+// });
+
+function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var datetime = new Date().today() + " " + new Date().timeNow();
+
+            var postRequest = function(estimated_duration) {
+              $.rails.ajax({
+                method: 'POST',
+                url: elm.getAttribute('href'),
+                data: {
+                  lat: lat,
+                  lng: lng,
+                  datetime: datetime,
+                  duration: estimated_duration
+                }
+              }).done(function(data){
+                if(data.startsWith("The") || data.startsWith("You")) {
+                  alert(data);
+                  if (data.includes("The time")) {
+                    location.reload(true);
+                  }
+                } else {
+                  if(loc == "end") {
+                    elm.closest('tr').remove();
+                    if(data == "1") {
+                      $('#awardGold').modal('show');
+                    } else if(data == "2") {
+                      $('#awardSilver').modal('show');
+                    } else if(data == "3") {
+                      $('#awardBronze').modal('show');
+                    }
+
+                    if(choice.includes("Bus line")) {
+                      $('#feedbackBus').modal('show');
+                    } else if(choice.includes("Metro line")) {
+                      $('#feedbackMetro').modal('show');
+                    } else if(choice.includes("Walking")) {
+                      $('#feedbackWalking').modal('show');
+                    } else if(choice.includes("Cycling")) {
+                      $('#feedbackCycling').modal('show');
+                    } else if(choice.includes("Carpooling")) {
+                      $('#feedbackCarpool').modal('show');
+                    } else if(choice.includes("Using own Car")) {
+                      $('#feedbackCar').modal('show');
+                    }
+
+                    $('#feedbackBus').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCar').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCarpool').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackCycling').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackMetro').on('hidden.bs.modal', function() {
+                      window.location.reload(true);
+                    });
+                    $('#feedbackWalking').on('hidden.bs.modal', function() {
+                      console.log("HERE");
+                      window.location.reload(true);
+                    });
+                  } else {
+                    var highlightedText = elm.innerHTML;
+                    var parent = elm.parentNode;
+                    var newNode = document.createTextNode(highlightedText);
+                    parent.insertBefore(newNode, elm);
+                    parent.removeChild(elm);
+                    location.reload(true);
+                  }
+                }
+              });
+            }
+
+            if(loc == "end") {
+              getDirections(check_start_lat, check_start_lng, lat, lng, choice, postRequest);
+            } else {
+              postRequest("");
+            }
+
+            
+          }, function(error) {
+            $.rails.ajax({
+              method: 'POST',
+              url: elm.getAttribute('href')
+            });
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        });
+    } else {         
+      $.rails.ajax({
+        method: 'POST',
+        url: elm.getAttribute('href')
+      });
+      alert("Geolocation is not supported by this browser.");
+    }
+}
+
+// function getDirections(start_lat, start_lng, end_lat, end_lng) {
+//   var parameters = "origin="+start_lat+","+start_lng+"&destination="+end_lat+","+end_lng+"&sensor=false";
+//     $.getJSON("https://maps.googleapis.com/maps/api/directions/json?" + parameters + "&key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A", function(data){
+        
+//         var output = data.routes[0].legs[0].duration.text
+//         // for (x = 0;x < data.routes[0].legs[0].steps.length; x++){
+//         //     output = output + data.routes[0].legs[0].steps[x].html_instructions;
+//         //     output += " (Distance: " + data.routes[0].legs[0].steps[x].distance.text + ") <br />";
+//         // }
+//         .log(output+"#");
+//         document.getElementByIdconsole("test").innerHTML=output+"#"
+//     });
+// }
+
+function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postRequest) {
+  if(start_lat != "" && start_lng != "") {
+    var origin = new google.maps.LatLng(start_lat, start_lng);
+    var destination = new google.maps.LatLng(end_lat, end_lng);
+
+    var service = new google.maps.DistanceMatrixService();
+
+    var travelMode = ""
+    if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
+      travelMode = google.maps.TravelMode.DRIVING;
+    } else if(choice.includes("Metro line")) {
+      travelMode = "";
+    } else if(choice.includes("Walking")) {
+      travelMode = google.maps.TravelMode.WALKING;
+    } else if(choice.includes("Cycling")) {
+      travelMode = google.maps.TravelMode.WALKING;
+    }
+
+    service.getDistanceMatrix(
+      {
+        origins: [origin],
+        destinations: [destination],
+        travelMode: travelMode,
+        unitSystem: google.maps.UnitSystem.METRIC,
+      }, function(response, status) {
+          if (status !== google.maps.DistanceMatrixStatus.OK) {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+            //var outputDiv = document.getElementById('test');
+            //outputDiv.innerHTML = '';
+
+            var output = response.rows[0].elements[0].duration.value
+            // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+            //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+            //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+            // }
+            //outputDiv.innerHTML=output+"#";
+
+            postRequest(output);
+          }
+    });
+  } else {
+    postRequest("");
+  }
+}
+
+</script>
+
+<% provide(:title, @user.name) %>
+
+<!-- <h3 id="test"></h3>
+<div id="map-container">
+  <div id="map"></div>
+</div> -->
+
+<!-- <button type="button" class="btn btn-info btn-lg" onClick="$('#myModal').modal()">Open Modal</button> -->
+<% if session[:modal] == true %>
+  <%= render :partial => 'layouts/info'%>
+<% end %>
+
+<%= render :partial => 'layouts/feedbackCar'%>
+<%= render :partial => 'layouts/feedbackBus'%>
+<%= render :partial => 'layouts/feedbackMetro'%>
+<%= render :partial => 'layouts/feedbackCarpool'%>
+<%= render :partial => 'layouts/feedbackWalking'%>
+<%= render :partial => 'layouts/feedbackCycling'%>
+
+<%= render :partial => 'layouts/awardGold'%>
+<%= render :partial => 'layouts/awardSilver'%>
+<%= render :partial => 'layouts/awardBronze'%>
+
+
+<div class="row">
+  <aside class="col-md-6">
+    <section class="user_info">
+      <h1>
+        <%#= image_tag("profilePic.jpeg", alt: "profile", style: "width: 150px") %>
+        <%#= image_tag avatar_url(@user) %>
+        <%= image_tag @user.avatar.url(:thumb) %>
+        <br>
+        <br>
+        <%= @user.name.titleize %> 
+        <br>
+      </h1>
+      <%= @user.email %>
+    </section>    
+    <%= button_to "Add Errand", users_addErrands_path, {method: :get, class: 'btn btn-success', style: 'width: 100px; margin-top: 20px;'} %>
+  </aside>
+  
+  <div class="col-md-4" style="margin-top: 20px;">
+    <% total = @user.score_time+@user.score_money+@user.score_pollution %>
+    <% if(total!=0) %>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="<%=((@user.score_time*100)/total)%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=((@user.score_time*100)/total)%>%;">
+          <span class="sr-only"><%=((@user.score_time*100)/total)%>%</span>Time
+        </div>
+      </div>
+      <div class="progress">
+        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<%=((@user.score_money*100)/total)%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=((@user.score_money*100)/total)%>%;">
+          <span class="sr-only"><%=((@user.score_money*100)/total)%>%</span>Money
+        </div>
+      </div>
+      <div class="progress">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%=((@user.score_pollution*100)/total)%>" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: <%=((@user.score_pollution*100)/total)%>%;">
+          <span class="sr-only"><%=((@user.score_pollution*100)/total)%>%</span>Pollution
+        </div>
+      </div>
+    <% else %>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 0%;">
+          <span class="sr-only">0%</span>Time
+        </div>
+      </div>
+      <div class="progress">
+        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 0%>%;">
+          <span class="sr-only">0%</span>Money
+        </div>
+      </div>
+      <div class="progress">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 0%;">
+          <span class="sr-only">0%</span>Pollution
+        </div>
+      </div>    
+    <% end %>
+
+<!--   	<h3 class="boxed">Time: <%#= @user.score_time %></h3>
+    <h3 class="boxed">Money: <%#= @user.score_money %></h3>
+    <h3 class="boxed">Pollution: <%#= @user.score_pollution %></h3> -->
+
+  	<h3>Leaderboard</h3>
+  	<div style="height: auto; overflow: auto;">
+  	<table class="table table-striped" style="background-color: #ffffff">
+  	  <tr>
+	    <th>Name</th>
+	    <th>Score</th> 
+	    <th>Rank</th>
+	    </tr>
+      <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
+  	  <% @users.each do |user| %>
+        <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
+  	  	  <% @rank+=1 %>
+        <% end %>
+  	  	<% if(user.id == @user.id) %>       
+    		  <tr class="success">
+    		<% else %>
+    		  <tr>
+    		<% end %>
+      		<td><%= user.name.titleize %></td>
+      		<td><%= user.score_time+user.score_money+user.score_pollution %></td>
+          <% if(@rank == 1) %>
+          <td align="left"><img src="/images/gold.png"/></td>
+          <% elsif(@rank == 2) %>
+          <td align="left"><img src="/images/bronze.png"/></td>
+          <% elsif(@rank == 3) %>
+          <td align="left"><img src="/images/silver.png"/></td>
+          <% else %>
+          <td align="left" style="padding-left: 20px;"><%= @rank %></td>
+          <% end %>
+    		</tr>
+        <% pre = user.score_time+user.score_money+user.score_pollution %>
+  	  <% end %>
+  	</table>
+	 </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="loading" style="display: none;" id="loading">
+    <img src="/images/loading/loading.gif" style="width:400px; padding-left:175px;"/>
+  </div>
+  
+  <% if(Errand.where(user_id: params[:id], done: false).find_each.size > 0) %>
+    <h3>Errands</h3>
+    <div style="width: 90%; height: auto; overflow: auto;">
+      <table class="table" style="background-color: #ffffff">
+        <tr>
+        <th>From</th>
+        <th>To</th> 
+        <th>Choice</th>
+        <th></th>
+        <th></th>
+        </tr>
+        <% Errand.where(user_id: params[:id]).find_each.each do |errand| %>
+          <% if(errand.done == false) %>
+            <tr>
+              <td><%= link_to_if (errand.check_start_time == nil), errand.geocoded_start, users_checkin_start_path(:errand_id => errand.id), :onclick => "getLocation(this, 'start', '', '', ''); return false;", :id => "from"%></td>
+              <td><%= link_to_if (errand.check_end_time == nil), errand.geocoded_end, users_checkin_end_path(:errand_id => errand.id), :onclick => "getLocation(this, 'end', '#{errand.check_start_lat}', '#{errand.check_start_lng}', '#{errand.choice}'); return false;", :id => "to"%></td>
+              <td><%= errand.choice.split(',')[0] %></td>
+              <td><%= button_to "Del", {:controller => :errands, :action => 'destroy', :errand_id => errand.id }, {:method => :delete, class: "btn btn-danger", style: "width: 50px; height: 20px;padding: 0px;"} %></td>
+              <td><%= button_to "Show Route", {:controller => :errands, :action => 'show', :errand_id => errand.id }, {:method => :post, class: "btn btn-info", style: "width: auto; height: 20px;padding: 0px;"} %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+</div>
+
+<style>
+	body{background-color: #8fb4ff}
+	.boxed {
+		border: 2px solid green;
+		padding: 2px;
+		display: inline-block;
+	}
+  .modal-backdrop {
+    z-index: auto;
+  }
+</style>
+</html>

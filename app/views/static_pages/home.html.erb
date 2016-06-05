@@ -7,8 +7,7 @@
                 <%= link_to "greenie", root_path(current_user), id: "logo", style: "padding: 0px;" %>
               </li>
               <li class="tips">
-                <p>
-                  "Do what you can, with what you have, where you are."
+                <p id="myRandomDiv">
                 </p>                
               </li>
               <% if logged_in? %>
@@ -364,26 +363,6 @@
       });
     };
 
-    function validateForm() {
-        var radios = $("input:radio");
-        var formValid = 0;
-        console.log(radios);
-        var i = 0;
-        while (i < radios.length) {
-            if (radios[i].checked) formValid++;
-            i++;        
-        }
-
-        if (formValid<14) {
-          console.log(formValid);
-          alert("Please answer all questions!");
-          return false;
-        } else {
-          console.log(formValid);
-          return true;
-        }
-    }
-
     // $(document).ready
     //   $("#new_user").on("ajax:success", function(e, data, status, xhr) {
     //     var error = '  <div id="error_explanation">
@@ -406,3 +385,21 @@
   <script src="/js/vendor/what-input.min.js"></script>
   <script src="/js/vendor/foundation.js"></script>
   <script src="/js/app.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+        "Did you know that 1 metro ticket costs only 1 pound?",
+        "Did you know that 1 bus ticket costs up to 2 pounds?",
+        "Did you know that 1 litre of gasoline (92) costs 1.85 pounds?", 
+        "Did you know that walking 1 km will burn around 60 calories?", 
+        "Did you know that bicycling for 1 hour will burn around 280 calories?",
+        "Did you know that driving 1 km consumes around 0.1 litre of gasoline?",
+        "Did you know that driving 1 km emits around 230 grams of CO2?",
+        "Did you know that driving emits around 4400 kg of CO2 annually?",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script> 
