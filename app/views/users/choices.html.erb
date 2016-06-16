@@ -140,100 +140,421 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 <input type="text" id="latEnd" name="latEnd" value="<%=Errand.find(@errand_carpool[0]).end_lat%>" style="display: none;">
 <input type="text" id="lngEnd" name="lngEnd" value="<%=Errand.find(@errand_carpool[0]).end_lng%>" style="display: none;">
 
+<div class="segment_header" style="background:#26A65B;width:100%;text-align:Center;">
+  <nav data-magellan>
+    <ul class="horizontal menu expanded">
+      <li class="logo">
+        <%= link_to "greenie", root_path(current_user), style: "padding-left: 20px; color: white;" %>
+      </li>
+      <% if logged_in? %>
+        <li style="display:inline-block;"><%= link_to "Profile", users_profile_path(current_user), style: "color: white;" %></li>
+        <li style="display:inline-block;"><%= link_to "Log out", logout_path, method: "delete", style: "color: white;" %></li>
+      <% end %>
+    </ul>
+    
+  </nav>
+</div>
+
 <%= form_tag users_profile_after_choices_path, :id => 'form_id' do %>
-	<% countMetro = 0 %>
-	<% countBus = 0 %>
-	<% errand_no = @errand_carpool[0] %>
-	<h3>Transportation choices:</h3>
-	<label class="radio">
-		<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked>
-			Using own Car<br>
-			Cost: <%= image_tag "/images/angry2.png" %><br>
-			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
-			Pollution: <%= image_tag "/images/angry2.png" %>
-	</label>
-	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
-		<label class="radio">
-			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Walking">
-				Walking<br>
-				Cost: <%= image_tag "/images/happy2.png" %><br>
-				<label id="walking" style="padding-left: 0px; font-weight: bold;"></label><br>
-				Pollution: <%= image_tag "/images/happy2.png" %>
-		</label>
-	<% end %>
-	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
-		<label class="radio">
-			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Cycling">
-				Cycling<br>
-				Cost: <%= image_tag "/images/happy2.png" %><br>
-				<label id="cycling" style="padding-left: 0px; font-weight: bold;"></label><br>
-				Pollution: <%= image_tag "/images/happy2.png" %>
-		</label>
-	<% end %>
-	<% if(@errand_carpool[1]) %>
-		<label class="radio">
-			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Carpooling">
-			Carpooling<br>
-			Cost: <%= image_tag "/images/happy2.png" %><br>
-			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
-			Pollution: <%= image_tag "/images/angry2.png" %>
-		</label>
-	<% end %>
+  	<div class="form_table"  style="width: 100%;">
+		<div id="q1" class="q full_width">
+		<a class="item_anchor" name="ItemAnchor0"></a>
+		<div class="full_width_space">Please choose one of the following transportation choices.<b class="icon_required" style="color:#FF0000">*</b></div>
+		</div>
 
-	<% while(countMetro < @finalMetroResults.size) %>
-		<label class="radio">
-		<% path = @finalMetroResults[countMetro] %>
-		<% partialPath = 0 %>
-		<% choice = "" %>
-		<% while(partialPath < path.size) %>
-			<% stops_line = path[partialPath].split('&') %>
-			<% if(partialPath == 0) %>
-				<% choice += "Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
-			<% else %>
-				<% choice += ", Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
-			<% end %>
-			<% partialPath += 1 %>
-		<% end %>
-		<% countMetro += 1 %>
-			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>">
-			<%= choice %><br>
-			Cost: <%= image_tag "/images/happy2.png" %><br>
-			<label class="metro" id="metro" style="padding-left: 0px; font-weight: bold;"></label><br>
-			Pollution: <%= image_tag "/images/happy2.png" %>
-		</label>
-	<% end %>
+		<div class="clear"></div>
 
-	<% while(countBus < @finalBusResults.size) %>
-		<label class="radio">
-		<% path = @finalBusResults[countBus] %>
-		<% partialPath = 0 %>
-		<% choice = "" %>
-		<% while(partialPath < path.size) %>
-			<% stops_line = path[partialPath].split('&') %>
-			<% if(partialPath == 0) %>
-				<% choice += "Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
-			<% else %>
-				<% choice += ", Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
-			<% end %>
-			<% partialPath += 1 %>
-		<% end %>
-		<% countBus += 1 %>
-			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>">
-			<%= choice %><br>
-			Cost: <%= image_tag "/images/happy2.png" %><br>
-			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
-			Pollution: <%= image_tag "/images/angry2.png" %>
-		</label>
-	<% end %>
+		<div id="q15" class="q required" style="width: 100%;">
+			<a class="item_anchor" name="ItemAnchor1"></a>
+			<table class="matrix" style="width: 80%;">
+				<% countMetro = 0 %>
+				<% countBus = 0 %>
+				<% errand_no = @errand_carpool[0] %>
+				<tr class="matrix_row_green">
+					<th scope="col" style="height: 30px;"></th>
+					<th scope="col" style="height: 30px; width: 80px;"></th>
+				</tr>
+				<tr class="matrix_row_light">
+					<td class="question" style="word-wrap: break-word; text-align: left;">						
+						Using own Car<br>
+						Cost: <%= image_tag "/images/angry2.png" %><br>
+						<label class="drive" id="drive" style="padding-left: 0px;"></label>
+						Pollution: <%= image_tag "/images/angry2.png" %>
+					</td>
+					<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked/></td>
+				</tr>
 
-	<%= submit_tag("Choose", class: "btn btn-success", style: "width: auto") %>
+				<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
+					<tr class="matrix_row_light">
+						<td class="question" style="word-wrap: break-word; text-align: left;">
+							Walking<br>
+							Cost: <%= image_tag "/images/happy2.png" %><br>
+							<label id="walking" style="padding-left: 0px;"></label>
+							Pollution: <%= image_tag "/images/happy2.png" %>
+						</td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Walking" /></td>
+					</tr>
+				<% end %>
+				<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
+					<tr class="matrix_row_light">
+						<td class="question" style="word-wrap: break-word; text-align: left;">
+							Cycling<br>
+							Cost: <%= image_tag "/images/happy2.png" %><br>
+							<label id="cycling" style="padding-left: 0px;"></label><br>
+							Pollution: <%= image_tag "/images/happy2.png" %>
+						</td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Cycling" /></td>
+					</tr>
+				<% end %>
+				<% if(@errand_carpool[1]) %>
+					<tr class="matrix_row_light">
+						<td class="question" style="word-wrap: break-word; text-align: left;">
+							Carpooling<br>
+							Cost: <%= image_tag "/images/happy2.png" %><br>
+							<label class="drive" id="drive" style="padding-left: 0px;"></label>
+							Pollution: <%= image_tag "/images/angry2.png" %>
+						</td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Carpooling" /></td>
+					</tr>
+				<% end %>
 
-	<!--%= button_to "Choose", users_profile_after_choices_path, {method: :post, class: 'btn btn-success', style: 'width: 100px'} %-->
+				<% while(countMetro < @finalMetroResults.size) %>
+					<% path = @finalMetroResults[countMetro] %>
+					<% partialPath = 0 %>
+					<% choice = "" %>
+					<% while(partialPath < path.size) %>
+						<% stops_line = path[partialPath].split('&') %>
+						<% if(partialPath == 0) %>
+							<% choice += "Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
+						<% else %>
+							<% choice += ", Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
+						<% end %>
+						<% partialPath += 1 %>
+					<% end %>
+					<% countMetro += 1 %>
+					<tr class="matrix_row_light">
+						<td class="question" style="word-wrap: break-all; text-align: left;">
+							<%= choice %><br>
+							Cost: <%= image_tag "/images/happy2.png" %><br>
+							<label class="metro" id="metro" style="padding-left: 0px;"></label>
+							Pollution: <%= image_tag "/images/happy2.png" %>
+						</td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>" /></td>
+					</tr>
+				<% end %>
+
+				<% while(countBus < @finalBusResults.size) %>
+					<% path = @finalBusResults[countBus] %>
+					<% partialPath = 0 %>
+					<% choice = "" %>
+					<% while(partialPath < path.size) %>
+						<% stops_line = path[partialPath].split('&') %>
+						<% if(partialPath == 0) %>
+							<% choice += "Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
+						<% else %>
+							<% choice += ", Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
+						<% end %>
+						<% partialPath += 1 %>
+					<% end %>
+					<% countBus += 1 %>
+					<tr class="matrix_row_light">
+						<td class="question" style="word-wrap: break-word; text-align: left;">
+							<%= choice %><br>
+							Cost: <%= image_tag "/images/happy2.png" %><br>
+							<label class="drive" id="drive" style="padding-left: 0px;"></label>
+							Pollution: <%= image_tag "/images/angry2.png" %>
+						</td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>" /></td>
+					</tr>
+				<% end %>
+			</table>
+		</div>
+		<!--%= button_to "Choose", users_profile_after_choices_path, {method: :post, class: 'btn btn-success', style: 'width: 100px'} %-->
+	</div>
+	<div class="outside_container">
+		<%= submit_tag("Choose", class: "button", style: "width: auto; border-radius: 5px;") %>
+	</div>
 <% end %>
 
-<style>
-	body{background-color: #8fb4ff}
-	.radio{
-		margin-left: 20px;
+<style type="text/css" media="all">
+	body{
+	background: #C3C3C3;
+	background-size: cover;
+	font-family: 'Roboto',sans-serif;
+	font-size: 13px;
+	background-position: 50% 50%;
+	}
+	
+	.form_table{
+	width: 760px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 4px;
+	border: 0px solid #CCCCCC;
+	background: #FFFFFF;
+	background-size: cover;
+	color: #333333;
+	overflow: hidden;
+	box-shadow: none;
+	background-position: 50% 50%;
+	}
+	
+	.form_table a{
+	color: #0D47A1;
+	}
+	
+	.outside a{
+	color: #0D47A1;
+	}
+	
+	.form_table a:visited{
+	color: #0D47A1;
+	}
+	
+	.outside a:visited{
+	color: #0D47A1;
+	}
+	
+	.segment_header{
+	width: auto;
+	margin: 1px;
+	color: #FFFFFF;
+	background: #2196F3;
+	background-size: cover;
+	background-repeat: repeat;
+	background-position: 50% 50%;
+	border-radius: 4px;
+	}
+	
+	.segment_header h1{
+	border-radius: 4px;
+	padding: 20px 10px;
+	font-family: 'Roboto',sans-serif;
+	}
+	
+	.q{
+	padding: 2px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	float: left;
+	display: block;
+	}
+	
+	.q .question{
+	font-weight: bold;
+	}
+	
+	.q .left_question_first{
+	width: 15em;
+	}
+	
+	.required .icon{
+	background-image: none;
+	background-position: left;
+	background-repeat: no-repeat;
+	font-size: 13px;
+	padding-left: 14px;
+	}
+	
+	.q .text_field{
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	border-radius: 20px;
+	border-width: 1px;
+	color: #333333;
+	font-family: 'Roboto',sans-serif;
+	font-size: 14px;
+	margin: 1px 0;
+	padding: 1px;
+	}
+	
+	.q .file_upload{
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	border-radius: 20px;
+	border-width: 1px;
+	color: #333333;
+	font-family: 'Roboto',sans-serif;
+	font-size: 14px;
+	margin-top: 1px;
+	padding: 1px;
+	}
+	
+	.q .file_upload_button{
+	margin-top: 2px;
+	}
+	
+	.q .inline_grid td{
+	padding: 5px;
+	vertical-align: baseline;
+	}
+	
+	.q .drop_down{
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	border-radius: 20px;
+	border-width: 1px;
+	color: #333333;
+	font-family: 'Roboto',sans-serif;
+	font-size: 14px;
+	margin: 1px 0;
+	padding: 0px;
+	}
+	
+	.q .matrix th{
+	color: #FFFFFF;
+	background: #26A65B;
+	padding: 5px;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: bottom;
+	}
+	
+	.q .matrix td{
+	padding: 5px;
+	text-align: center;
+	height: 26px;
+	border-bottom: 1px solid #999999;
+	border-top: 1px solid #999999;
+	}
+	
+	.q .matrix td.question{
+	border-right: 1px solid #999999;
+	font-weight: normal;
+	}
+	
+	.q .matrix .multi_scale_sub th{
+	font-weight: normal;
+	border-top: 1px solid #999999 !important;
+	background: #CC00CC;
+	}
+	
+	.q .matrix .multi_scale_break{
+	border-right: 1px solid #999999;
+	}
+	
+	.q .matrix_row_dark td{
+	color: #333333;
+	background: #FAFAFA;
+	}
+	
+	.q .matrix_row_dark td.question{
+	color: #333333;
+	background: #FAFAFA;
+	}
+	
+	.q .matrix_row_light td{
+	color: #333333;
+	background: #FFFFFF;
+	}
+	
+	.q .matrix_row_light td.question{
+	color: #333333;
+	background: #FFFFFF;
+	}
+	
+	.q .matrix_row_green td{
+	height: 30px;
+	color: #333333;
+	background: #26A65B;
+	}
+	
+	.q .matrix_row_green td.question{
+	height: 30px;
+	color: #333333;
+	background: #26A65B;
+	}
+	.q .rating_ranking td{
+	padding: 5px;
+	}
+	
+	.q .scroller{
+	border: 1px solid #CCCCCC;
+	}
+	
+	.highlight{
+	background: #FFF9C4 !important;
+	}
+	
+	tr.highlight td{
+	background: #FFF9C4 !important;
+	}
+	
+	.outside{
+	color: #333333;
+	}
+	
+	.outside_container{
+	width: 760px;
+	padding: 1em 0;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	color: #333333;
+	}
+	
+	.outside_container .submit_button{
+	color: #FFFFFF !important;
+	background: #26A65B;
+	background-size: cover;
+	border-style: none;
+	border-width: 0px;
+	border-color: #FFFFFF;
+	border-radius: 2px;
+	text-align: center;
+	font-family: 'Roboto',sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	min-width: 0;
+	padding: 4px 20px;
+	text-transform: uppercase;
+	box-shadow: 0 1px 6px rgba(0,0,0,0.30);
+	background-position: 50% 50%;
+	}
+	
+	.outside_container .submit_button:hover{
+	background: #F57C00;
+	border-color: #BBBBBB;
+	background-size: cover;
+	background-position: 50% 50%;
+	}
+	
+	.progressBarWrapper{
+	border-radius: 4px;
+	background: #FFFFFF;
+	background-size: cover;
+	border-color: #CCCCCC;
+	}
+	
+	.progressBarBack{
+	color: #FFFFFF;
+	background-color: #FF9800;
+	}
+	
+	.progressBarFront{
+	color: #333333;
+	}
+	
+	.ui-widget{
+	font-family: 'Roboto',sans-serif;
+	}
+	
+	.invalid{
+	background: #FFEEEE;
+	}
+	
+	.invalid .invalid_message{
+	color: #FF0000;
+	background: #FFEEEE;
+	border: 1px solid #FF0000;
+	border-radius: 2px;
+	}
+	
+	.form_table.invalid{
+	border: 2px solid #FF0000;
+	}
+	
+	.invalid .matrix .invalid_row{
+	background: #FFEEEE;
 	}
 </style>

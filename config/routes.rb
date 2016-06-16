@@ -45,6 +45,7 @@ Rails.application.routes.draw do
 
   post 'users/:id/' ,to: 'users#profileAfterChoices',as: 'users_profile_after_choices'
   post 'users/:id/pretest_answers' ,to: 'users#pretest_answers'
+  post 'users/:id/update' ,to: 'users#update', as: 'users_update'
 
   post 'users/:id/checkin_start', to: 'users#checkin_start', as: 'users_checkin_start'
   post 'users/:id/checkin_end', to: 'users#checkin_end', as: 'users_checkin_end'

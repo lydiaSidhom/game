@@ -176,8 +176,11 @@
 
                   <%= f.password_field :password_confirmation, class: 'large-12 columns', placeholder: "Confirm Password", :required => true %>
 
+                  <%= f.radio_button :gender, "m", class: "form-control radio-inline" , :checked => true %> Male
+                  <%= f.radio_button :gender, "f", class: "form-control radio-inline" %> Female
+                  <br>
                   <%= f.label :birthday %>
-                  <%= f.date_select :birthday, :order => [:day, :month, :year],:start_year=>1950, class: "date" , :required => true%>      
+                  <%= f.date_select :birthday, :order => [:day, :month, :year],:start_year=>1950, :end_year=>2015, class: "date" , :required => true%>      
                   <br>
                   <%= f.text_field :job, class: 'large-12 columns', placeholder: "Job Title" , :required => true%>
 

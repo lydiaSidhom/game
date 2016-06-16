@@ -356,7 +356,7 @@ function displayRoute(origin, destination, service, display) {
 <%= submit_tag("Show on map", class: "btn btn-success", style: "width: auto; position: absolute; right: 5px;", id: "submit") %>
 
 <!--div>
-<%= form_tag users_choices_path, :id => 'form_id' do %>
+<%#= form_tag users_choices_path, :id => 'form_id' do %>
 	<div id="newLoc" class="form-inline location" >
 		<div id="location-1" class="form-inline">
 			<div class="form-group">
@@ -377,8 +377,8 @@ function displayRoute(origin, destination, service, display) {
 	<p id="addnew">
 		<a href="javascript:newLoc()" class="btn btn-warning">Add new</a>
 	</p>
-	<%= submit_tag("Submit", class: "btn btn-success", style: "width: auto") %>
-<% end %>
+	<%#= submit_tag("Submit", class: "btn btn-success", style: "width: auto") %>
+<%# end %>
 </div-->
 
 <!-- <form method="post" action="choices" style="margin-top: 20px; " >

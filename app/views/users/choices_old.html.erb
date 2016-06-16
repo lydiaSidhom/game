@@ -1,93 +1,231 @@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A&libraries=places&callback=my_function" async defer></script>
+<script>
+// document.addEventListener("DOMContentLoaded", function() {
+//   my_function();
+// });
 
-<h3><%= #@results %></h3>
+function my_function() {
+	start_lat = document.getElementById('latStart').value;
+	start_lng = document.getElementById('lngStart').value;
+	end_lat = document.getElementById('latEnd').value;
+	end_lng = document.getElementById('lngEnd').value;
+
+	getDirections(start_lat, start_lng, end_lat, end_lng);
+}
+
+function getDirections(start_lat, start_lng, end_lat, end_lng) {
+
+	var origin = new google.maps.LatLng(start_lat, start_lng);
+	var destination = new google.maps.LatLng(end_lat, end_lng);
+
+	var service = new google.maps.DistanceMatrixService();
+
+	service.getDistanceMatrix(
+	  {
+	    origins: [origin],
+	    destinations: [destination],
+	    travelMode: google.maps.TravelMode.WALKING,
+	    unitSystem: google.maps.UnitSystem.METRIC,
+	  }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	        var originList = response.originAddresses;
+	        var destinationList = response.destinationAddresses;
+
+            var outputDiv = document.getElementById('walking');
+            if(outputDiv != null) {
+	            outputDiv.innerHTML = '';
+
+	            var output = response.rows[0].elements[0].duration.text
+	            outputDiv.innerHTML="Time: ~"+output;
+        	}
+	      }
+	});
+
+	service.getDistanceMatrix(
+	  {
+	    origins: [origin],
+	    destinations: [destination],
+	    travelMode: google.maps.TravelMode.DRIVING,
+	    unitSystem: google.maps.UnitSystem.METRIC,
+	  }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	        var originList = response.originAddresses;
+	        var destinationList = response.destinationAddresses;
+
+         //    var outputDiv = document.getElementById('drive');
+         //    if(outputDiv != null) {
+	        //     outputDiv.innerHTML = '';
+
+	        //     var output = response.rows[0].elements[0].duration.text
+	        //     outputDiv.innerHTML="Time: ~"+output;
+        	// }
+
+		    var output = response.rows[0].elements[0].duration.text
+        	var allDriving = document.getElementsByClassName("drive");
+        	for (var i = allDriving.length - 1; i >= 0; i--) {
+	        	if(allDriving[i] != null) {
+		            allDriving[i].innerHTML="Time: ~"+output;
+	        	}
+        	};
+	      }
+	});
+
+	service.getDistanceMatrix(
+	  {
+	    origins: [origin],
+	    destinations: [destination],
+	    travelMode: google.maps.TravelMode.DRIVING,
+	    unitSystem: google.maps.UnitSystem.METRIC,
+	  }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	        var originList = response.originAddresses;
+	        var destinationList = response.destinationAddresses;
+
+         //    var outputDiv = document.getElementById('metro');
+         //    if(outputDiv != null) {
+	        //     outputDiv.innerHTML = '';
+		        
+		       //  distance = response.rows[0].elements[0].distance.value;
+		       //  duration = Math.round((distance/100000)*60); 
+
+	        //     outputDiv.innerHTML="Time: ~"+duration+" mins";
+        	// }
+
+	        var distance = response.rows[0].elements[0].distance.value;
+	        var duration = Math.round((distance/80000)*60); 
+        	var allMetro = document.getElementsByClassName("metro");
+        	for (var i = allMetro.length - 1; i >= 0; i--) {
+	        	if(allMetro[i] != null) {
+			        allMetro[i].innerHTML="Time: ~"+duration+" mins";
+	        	}
+        	};
+	      }
+	});
+
+	service.getDistanceMatrix(
+	  {
+	    origins: [origin],
+	    destinations: [destination],
+	    travelMode: google.maps.TravelMode.WALKING,
+	    unitSystem: google.maps.UnitSystem.METRIC,
+	  }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	        var originList = response.originAddresses;
+	        var destinationList = response.destinationAddresses;
+
+            var outputDiv = document.getElementById('cycling');
+            if(outputDiv != null) {
+	            outputDiv.innerHTML = '';
+
+		        distance = response.rows[0].elements[0].distance.value;
+		        duration = Math.round((distance/16000)*60); 
+
+	            outputDiv.innerHTML="Time: ~"+duration+" mins";
+        	}
+	      }
+	});
+}
+</script>
+
+<input type="text" id="latStart" name="latStart" value="<%=Errand.find(@errand_carpool[0]).start_lat%>" style="display: none;">
+<input type="text" id="lngStart" name="lngStart" value="<%=Errand.find(@errand_carpool[0]).start_lng%>" style="display: none;">
+<input type="text" id="latEnd" name="latEnd" value="<%=Errand.find(@errand_carpool[0]).end_lat%>" style="display: none;">
+<input type="text" id="lngEnd" name="lngEnd" value="<%=Errand.find(@errand_carpool[0]).end_lng%>" style="display: none;">
+
 <%= form_tag users_profile_after_choices_path, :id => 'form_id' do %>
-	<% count = 0 %>
-	<% errand_no = @results[count][0]-1 %>
-	<% current = 0 %>
-	<!-- checking if all errands have no results -->
-	<% i = 0 %>
-	<% errNoResults = 0 %>
-	<% while(i < @results.size) %>
-		<% if(@results[i].size == 1) %>
-			<% errNoResults += 1 %>
-		<% end %>
-		<% i+=1 %>
+	<% countMetro = 0 %>
+	<% countBus = 0 %>
+	<% errand_no = @errand_carpool[0] %>
+	<h3>Transportation choices:</h3>
+	<label class="radio">
+		<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked>
+			Using own Car<br>
+			Cost: <%= image_tag "/images/angry2.png" %><br>
+			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
+			Pollution: <%= image_tag "/images/angry2.png" %>
+	</label>
+	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
+		<label class="radio">
+			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Walking">
+				Walking<br>
+				Cost: <%= image_tag "/images/happy2.png" %><br>
+				<label id="walking" style="padding-left: 0px; font-weight: bold;"></label><br>
+				Pollution: <%= image_tag "/images/happy2.png" %>
+		</label>
 	<% end %>
-	<% if(errNoResults != @results.size) %>
-		<% while(count < @results.size) %>
-			<% if(@results[count].size > 1) %>
-				<% if(@results[count][0] != errand_no) %>
-					<% current += 1 %>
-					<% errand_no += 1 %>
-					<h3>Errand <%= current %>:</h3>
-					<label class="radio">
-						<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Using own Car" checked>
-							Using own Car
-					</label>
-					<% if(@results[count][5] == "Metro") %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line <%= @results[count][3] %>">
-								Metro line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
-						</label>
-					<% end %>
-					<% if(Geocoder::Calculations.distance_between([@results[count][1].lat,@results[count][1].lng],[@results[count][2].lat,@results[count][2].lng]) < 6) %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Walking">
-								Walking
-						</label>
-					<% end %>
-					<% if(Geocoder::Calculations.distance_between([@results[count][1].lat,@results[count][1].lng],[@results[count][2].lat,@results[count][2].lng]) < 6) %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Cycling">
-								Cycling
-						</label>
-					<% end %>
-					<% if(@results[count][4]) %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Carpooling">
-							Carpooling
-						</label>
-					<% end %>
-					<% if(@results[count][5] == "Bus") %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-								Bus line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
-						</label>
-					<% end %>
-						<!-- Add rest of choicesssssss -->
-				<% else %>
-					<!-- If I am still in same errand add the rem. busses and metros-->
-					<% if(@results[count][5] == "Metro") %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Metro line <%= @results[count][3] %>">
-								Metro line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
-						</label>
-					<% end %>
-					<% if(@results[count][5] == "Bus") %>
-						<label class="radio">
-							<input type="radio" name="choices[optionsRadios<%= current %>]" value="<%= errand_no %>Bus line <%= @results[count][3] %>">
-								Bus line <%= @results[count][3] %> from stop <%= @results[count][1].name %> to stop <%= @results[count][2].name %>
-						</label>
-					<% end %>
-				<% end %>
+	<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
+		<label class="radio">
+			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Cycling">
+				Cycling<br>
+				Cost: <%= image_tag "/images/happy2.png" %><br>
+				<label id="cycling" style="padding-left: 0px; font-weight: bold;"></label><br>
+				Pollution: <%= image_tag "/images/happy2.png" %>
+		</label>
+	<% end %>
+	<% if(@errand_carpool[1]) %>
+		<label class="radio">
+			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Carpooling">
+			Carpooling<br>
+			Cost: <%= image_tag "/images/happy2.png" %><br>
+			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
+			Pollution: <%= image_tag "/images/angry2.png" %>
+		</label>
+	<% end %>
+
+	<% while(countMetro < @finalMetroResults.size) %>
+		<label class="radio">
+		<% path = @finalMetroResults[countMetro] %>
+		<% partialPath = 0 %>
+		<% choice = "" %>
+		<% while(partialPath < path.size) %>
+			<% stops_line = path[partialPath].split('&') %>
+			<% if(partialPath == 0) %>
+				<% choice += "Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
 			<% else %>
-				<% errand_no += 1 %>
-				<% errand = Errand.find(errand_no) %>
-				<% errand.destroy %>
+				<% choice += ", Metro line " + stops_line[2] + " from stop " + MetroStop.find(stops_line[0]).name + " to stop " + MetroStop.find(stops_line[1]).name %>
 			<% end %>
-			<% count += 1 %>
+			<% partialPath += 1 %>
 		<% end %>
-	<% else %>
-		<!-- checking if all errands have no results and removing them -->
-		<% i = 0 %>
-		<% while(i < @results.size) %>
-			<% errand_no = @results[i][0] %>
-			<% errand = Errand.find(errand_no) %>
-			<% errand.destroy %>			
-			<% i+=1 %>
-		<% end %>
-		<h3> Sorry. No results available. </h3>
+		<% countMetro += 1 %>
+			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>">
+			<%= choice %><br>
+			Cost: <%= image_tag "/images/happy2.png" %><br>
+			<label class="metro" id="metro" style="padding-left: 0px; font-weight: bold;"></label><br>
+			Pollution: <%= image_tag "/images/happy2.png" %>
+		</label>
 	<% end %>
+
+	<% while(countBus < @finalBusResults.size) %>
+		<label class="radio">
+		<% path = @finalBusResults[countBus] %>
+		<% partialPath = 0 %>
+		<% choice = "" %>
+		<% while(partialPath < path.size) %>
+			<% stops_line = path[partialPath].split('&') %>
+			<% if(partialPath == 0) %>
+				<% choice += "Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
+			<% else %>
+				<% choice += ", Bus line " + stops_line[2] + " from stop " + BusStop.find(stops_line[0]).name + " to stop " + BusStop.find(stops_line[1]).name %>
+			<% end %>
+			<% partialPath += 1 %>
+		<% end %>
+		<% countBus += 1 %>
+			<input type="radio" name="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>">
+			<%= choice %><br>
+			Cost: <%= image_tag "/images/happy2.png" %><br>
+			<label class="drive" id="drive" style="padding-left: 0px; font-weight: bold;"></label><br>
+			Pollution: <%= image_tag "/images/angry2.png" %>
+		</label>
+	<% end %>
+
 	<%= submit_tag("Choose", class: "btn btn-success", style: "width: auto") %>
 
 	<!--%= button_to "Choose", users_profile_after_choices_path, {method: :post, class: 'btn btn-success', style: 'width: 100px'} %-->

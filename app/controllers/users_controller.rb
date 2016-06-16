@@ -29,16 +29,15 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
-      redirect_to @user
     else
-      render 'edit'
+      flash[:danger] = "Updating your profile contains some errors"
     end
+    redirect_to @user
   end
 
   def create
     @user = User.new(user_params)
     if @user.save
-      #@user.update_attribute :pretest, params[:q1]+"$"+params[:q2]+"$"+params[:q3]+"$"+params[:q4]+"$"+params[:q5]+"$"+params[:q6]+"$"+params[:q7]+"$"+params[:q8]+"$"+params[:q9]+"$"+params[:q10]+"$"+params[:q11]+"$"+params[:q12]+"$"+params[:q13]+"$"+params[:q14]
       @user.send_activation_email
       flash[:info] = "Please check your email to activate your account."
       redirect_to root_url
@@ -254,20 +253,28 @@ class UsersController < ApplicationController
     @lngEnd = params[:lngEnd]
     @carpool = params[:carpool]
 
+    @latStartSmall = params[:latStartSmall]
+    @lngStartSmall = params[:lngStartSmall]
+    @latEndSmall = params[:latEndSmall]
+    @lngEndSmall = params[:lngEndSmall]
+    @carpoolSmall = params[:carpoolSmall]
+
+#########CHECK input from small view
+    
     queryStart = "#{@latStart},#{@lngStart}"
     queryEnd = "#{@latEnd},#{@lngEnd}"
     if(Geocoder.search(queryStart).first)
       geocodedStart = Geocoder.search(queryStart).first.formatted_address
     else
       flash[:info] = "Check your internet connection. Address is not recognized."
-      redirect_to users_addErrands_path and return
+      redirect_to users_profile_path and return
       #geocodedStart = ""
     end
     if(Geocoder.search(queryEnd).first)
       geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
     else
       flash[:info] = "Check your internet connection. Address is not recognized."
-      redirect_to users_addErrands_path and return
+      redirect_to users_profile_path and return
       #geocodedEnd = ""
     end
 
@@ -654,49 +661,51 @@ class UsersController < ApplicationController
         err.destroy
       end
     end
+    @ch1 = []
+    @ch2 = []
+    @ch3 = []
+    # if(Time.now.saturday?)
+    #   @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
 
-    if(Time.now.saturday?)
-      @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
+    #   @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
+    #   if(@car_use.size <= 2)
+    #     @ch1 = ["Use car only twice or less per week",true]
+    #     @user.update_attribute :score_pollution, @user.score_pollution+50
+    #   else
+    #     @ch1 = ["Use car only twice or less per week",false]
+    #   end
 
-      @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
-      if(@car_use.size <= 2)
-        @ch1 = ["Use car only twice or less per week",true]
-        @user.update_attribute :score_pollution, @user.score_pollution+50
-      else
-        @ch1 = ["Use car only twice or less per week",false]
-      end
+    #   cost = 0
+    #   @week_errands.each do |e|
+    #     if(e.choice.starts_with?("Metro"))
+    #       cost+=1
+    #     elsif(e.choice.starts_with?("Bus"))
+    #       cost+=2  
+    #     elsif(e.choice.starts_with?("Using own Car")) ########################### why 50??
+    #       cost+=50
+    #     end
+    #   end
+    #   if(cost <= 30)
+    #     @ch2 = ["Don't spend more than 30 pounds on transportation",true]
+    #     @user.update_attribute :score_pollution, @user.score_pollution+50
+    #   else
+    #     @ch2 = ["Don't spend more than 30 pounds on transportation",false]
+    #   end
 
-      cost = 0
-      @week_errands.each do |e|
-        if(e.choice.starts_with?("Metro"))
-          cost+=1
-        elsif(e.choice.starts_with?("Bus"))
-          cost+=2  
-        elsif(e.choice.starts_with?("Using own Car")) ########################### why 50??
-          cost+=50
-        end
-      end
-      if(cost <= 30)
-        @ch2 = ["Don't spend more than 30 pounds on transportation",true]
-        @user.update_attribute :score_pollution, @user.score_pollution+50
-      else
-        @ch2 = ["Don't spend more than 30 pounds on transportation",false]
-      end
+    #   @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
+    #   if(@metro_use.size >= 5)
+    #     @ch3 = ["Use metro at least 5 times per week",true]
+    #     @user.update_attribute :score_pollution, @user.score_pollution+50
+    #   else
+    #     @ch3 = ["Use metro at least 5 times per week",false]
+    #   end
 
-      @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
-      if(@metro_use.size >= 5)
-        @ch3 = ["Use metro at least 5 times per week",true]
-        @user.update_attribute :score_pollution, @user.score_pollution+50
-      else
-        @ch3 = ["Use metro at least 5 times per week",false]
-      end
-
-      #save and reset values with each new set of challenges
-    else
-      @ch1 = ["Use car only twice or less per week",false]
-      @ch2 = ["Don't spend more than 30 pounds on transportation",false]
-      @ch3 = ["Use metro at least 5 times per week",false]
-    end
+    #   #save and reset values with each new set of challenges
+    # else
+    #   @ch1 = ["Use car only twice or less per week",false]
+    #   @ch2 = ["Don't spend more than 30 pounds on transportation",false]
+    #   @ch3 = ["Use metro at least 5 times per week",false]
+    # end
   end
 
 
@@ -704,7 +713,7 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation, :avatar, :birthday, :job)
+                                   :password_confirmation, :avatar, :birthday, :job, :gender)
     end
 
     def is_near(checked_lat, checked_lng, errand_lat, errand_lng)

@@ -2,22 +2,33 @@
 <html>
 
 <body>
-    <input type="text" id="latStart" name="latStart" value="<%= @errand.start_lat %>" style="display: none;">
-    <input type="text" id="lngStart" name="lngStart" value="<%= @errand.start_lng %>" style="display: none;">
-    <input type="text" id="latEnd" name="latEnd" value="<%= @errand.end_lat %>" style="display: none;">
-    <input type="text" id="lngEnd" name="lngEnd" value="<%= @errand.end_lng %>" style="display: none;">
-	<h3 style="margin-top: 10px"></h3>
+  <div class="segment_header" style="background:#26A65B;width:100%;text-align:Center;">
+      <nav data-magellan>
+        <ul class="horizontal menu expanded">
+          <li class="logo">
+            <p id="logo" style="padding-left: 20px; color: white;"> greenie</p>
+          </li>
+          <% if logged_in? %>
+            <li style="display:inline-block;"><%= link_to "Profile", users_profile_path(current_user), style: "color: white;" %></li>
+            <li style="display:inline-block;"><%= link_to "Log out", logout_path, method: "delete", style: "color: white;" %></li>
+          <% end %>
+        </ul>
+        
+      </nav>
+  </div>
+  <input type="text" id="latStart" name="latStart" value="<%= @errand.start_lat %>" style="display: none;">
+  <input type="text" id="lngStart" name="lngStart" value="<%= @errand.start_lng %>" style="display: none;">
+  <input type="text" id="latEnd" name="latEnd" value="<%= @errand.end_lat %>" style="display: none;">
+  <input type="text" id="lngEnd" name="lngEnd" value="<%= @errand.end_lng %>" style="display: none;">
 
-    <div style="width: 100%; overflow: auto;">
-        <div class="col-md-6">
-            <div id="map-container">
-                <div id="map"></div>
-            </div>
-        </div>    
-        <div id="right-panel">
-          <p>Total Distance: <span id="total"></span></p>
-        </div>
-    </div>
+  <div class="large-12 column align-self-middle align-center">
+        <div class="tabs-panel is-active">          
+              <div id="map"></div>
+          </div>
+          <div id="right-panel">
+        <p style="float: right;">Total Distance: <span id="total"></span></p>
+      </div>
+  </div>
 </body>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoJIYyNv0TRzjN4JytyIOJLnOhXIiZX8A&libraries=places&callback=init" async defer></script>
@@ -101,7 +112,7 @@
   }
   #right-panel {
     float: right;
-    width: 34%;
+    width: 100%;
     height: 100%;
   }
   .panel {
