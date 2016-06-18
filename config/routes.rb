@@ -58,6 +58,8 @@ Rails.application.routes.draw do
 
   get 'users/:id/pretest', to: 'users#pretest', as: 'pretest'
 
+  get 'users/:other_id/publicprofile', to: 'users#publicprofile', as: 'publicprofile'
+
   resources :users 
 
   resources :account_activations, only: [:edit]

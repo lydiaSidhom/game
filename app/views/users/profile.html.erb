@@ -307,7 +307,7 @@
               <div class="row user-leaderboard">
             <% end %>
               <div class="large-4 columns">
-                <p class="learderboard-name"><%= user.name.titleize %></p>
+                <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
               </div>
               <div class="large-4 columns">
                 <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
@@ -525,7 +525,7 @@
               <div class="row user-leaderboard">
             <% end %>
               <div class="large-4 columns">
-                <p class="learderboard-name"><%= user.name.titleize %></p>
+                <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
               </div>
               <div class="large-4 columns">
                 <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>

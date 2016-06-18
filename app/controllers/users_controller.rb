@@ -47,6 +47,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def publicprofile
+    @user = User.find(params[:other_id])
+  end
+
   def is_number? string
     true if Float(string) rescue false
   end

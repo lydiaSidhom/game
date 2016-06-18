@@ -271,9 +271,14 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 		</div>
 		<!--%= button_to "Choose", users_profile_after_choices_path, {method: :post, class: 'btn btn-success', style: 'width: 100px'} %-->
 	</div>
-	<div class="outside_container">
+	<div style="text-align: center;">
 		<%= submit_tag("Choose", class: "button", style: "width: auto; border-radius: 5px;") %>
 	</div>
+
+	<div>
+		Data for busses and metro provided by: <br>
+		<%= image_tag("/img/tfc.png", style: "width: 150px") %>
+	</div
 <% end %>
 
 <style type="text/css" media="all">

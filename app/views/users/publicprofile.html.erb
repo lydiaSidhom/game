@@ -1,0 +1,387 @@
+<div class="full-width" id="profileContainer">
+  <div class="row align-center" id="profileInfo">
+    <div class="large-5 small-12 columns align-self-middle">
+      <div class="profile-pic" style="background-image: url('<%=@user.avatar.url(:thumb)%>')" ></div>
+      <div class="profile-details">
+        <h3 class="profile-name"><%= @user.name.titleize %> </h3>
+        <h5 class="profile-name"><%= @user.email %> </h5>
+        <!--p class="profile-rank"><i class="icon-up-open"></i>Veteran greenie</p-->
+      </div>
+    </div>
+    <div class="large-7 columns">
+    </div>
+  </div>
+</div>
+
+<div class="row align-right" id="profileTabs">
+  <div class="large-6 columns">
+    
+  </div>
+</div>
+
+<div class="row align-self-center" id="profileContent">
+  <div class="large-5 columns show-for-large" id="profileExtras">
+    
+    <h4 class="stats extra-title"><i class="icon-leaf"></i> Current Stats</h4>
+    <div class="row align-center" id="progressStats">
+      <% total = @user.score_time+@user.score_money+@user.score_pollution %>
+      <% if(total!=0) %>
+
+        <div class="large-2 columns">
+          <p><i class="icon-clock"></i></p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_time*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_time*100)/total)%>%"></div>
+          </div>
+        </div>
+
+        <div class="large-2 columns">
+          <p>$</p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_money*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_money*100)/total)%>%"></div>
+          </div>
+        </div>
+        
+        <div class="large-2 columns">
+          <p><i class="icon-globe"></i></p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_pollution*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_pollution*100)/total)%>%"></div>
+          </div>
+        </div>
+
+      <% else %>
+
+        <div class="large-2 columns">
+          <p><i class="icon-clock"></i></p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="large-2 columns">
+          <p>$</p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>
+        
+        <div class="large-2 columns">
+          <p><i class="icon-globe"></i></p>
+        </div>
+        <div class="large-10 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>    
+      <% end %>
+    </div>
+
+<!--     <h4 class="award extra-title"><i class="icon-award"></i> Weekly Challenges</h4>
+    <div class="row align-center" id="challenges">
+      <div class="large-3 columns">
+        <%#if(@ch1[1])%>
+          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
+        <%# else %>
+          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge1'%>
+      </div>
+      <div class="large-3 columns">
+        <%#if(@ch2[1])%>
+          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
+        <%# else %>
+          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge2'%>
+      </div>
+      <div class="large-3 columns">
+        <%#if(@ch3[1])%>
+          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
+        <%# else %>
+          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge3'%>
+      </div>
+    </div> -->
+
+    <div class="row side-footer">
+        <div class="large-12 columns">
+          <nav data-magellan>
+            <ul class="horizontal menu expanded">
+              <li class="logo">
+                <%= link_to "greenie", root_path(current_user), style: "padding: 0px;" %>
+              </li>
+              <li class="tips">
+                <p id="myRandomDiv">
+                </p>                
+              </li>
+              <% if logged_in? %>
+                <li style="display:inline-block; float: right;">
+                  <%= link_to "Profile", users_profile_path(current_user) %>
+                  <%= link_to "Log out", logout_path, method: "delete" %>
+                </li>
+              <% end %>
+            </ul>   
+          </nav>
+        </div>
+    </div>
+  </div>
+
+  <div class="large-7 columns show-for-large">
+    <div class="tab-container">
+      <ul class="tabs" data-tabs id="timeline-tabs">
+        <li class="tabs-title is-active">
+          <a href="#errandsPanel" aria-selected="true"><i class="icon-connectdevelop"></i> Errands</a>
+        </li>
+      </ul>
+      <div class="tabs-content" data-tabs-content="timeline-tabs">
+        <div class="tabs-panel is-active" id="errandsPanel">
+          <% if(Errand.where(user_id: params[:other_id], done: false).find_each.size > 0) %>
+            <% Errand.where(user_id: params[:other_id]).find_each.each do |errand| %>
+              <% if(errand.done == false) %>
+                <div class="row errand-element">
+                  <div class="large-12 columns">
+                    <div class="row errand-title align-self-middle" style="margin-top: 15px;">
+                      <div class="large-12 columns">
+                        <div class="profile-pic small" style="background-image:url('<%=@user.avatar.url(:thumb)%>')"></div>
+                        <div class="errand-title-content">
+                          <p><b class="errand-maker"><%= @user.name.titleize %> </b>
+                          going to <b class="errand-to"><%= errand.geocoded_end %></b></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row errand-content">
+                      <div class="large-4 columns errand-image">
+                        <img src="/img/background.jpg">
+                      </div>
+                      <div class="large-8 columns errand-details">
+                        <b>From: </b>
+                        <p class="errand-from">
+                          <%= errand.geocoded_start %>
+                        </p>
+                        <b>Using: </b>
+                        <p class="errand-method">
+                          <%= errand.choice %>
+                        </p>
+                      </div>
+                    </div> 
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+
+        </div>
+
+        <div class="row">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="small-12 columns hide-for-large" id="profileContentSmall">
+    <div class="tab-container">
+      <ul class="tabs" data-tabs id="timeline-tabs">
+        <li class="tabs-title is-active">
+          <a href="#errandsPanelSmall" aria-selected="true"><i class="icon-connectdevelop"></i></a>
+        </li>
+      </ul>
+      <div class="tabs-content" data-tabs-content="timeline-tabs">
+        <div class="tabs-panel is-active" id="errandsPanelSmall">
+
+
+          <% if(Errand.where(user_id: params[:other_id], done: false).find_each.size > 0) %>
+            <% Errand.where(user_id: params[:other_id]).find_each.each do |errand| %>
+              <% if(errand.done == false) %>
+                <div class="row errand-element">
+                  <div class="large-12 columns">
+                    <div class="row errand-title align-self-middle">
+                      <div class="large-12 columns">
+                        <div class="profile-pic small" style="background-image:url('<%=@user.avatar.url(:thumb)%>')"></div>
+                        <div class="errand-title-content">
+                          <p><b class="errand-maker"><%= @user.name.titleize %> </b>
+                          going to <b class="errand-to"><%= errand.geocoded_end %></b></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row errand-content">
+                      <div class="large-4 small-12 columns errand-image">
+                        <img src="/img/background.jpg">
+                      </div>
+                      <div class="large-8 small-12 columns errand-details">
+                        <b>From: </b>
+                        <p class="errand-from">
+                          <%= errand.geocoded_start %>
+                        </p>
+                        <b>Using: </b>
+                        <p class="errand-method">
+                          <%= errand.choice %>
+                        </p>
+                      </div>
+                    </div> 
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+    </div>
+  </div>
+
+  <div class="small-12 columns hide-for-large">
+    <h4 class="stats extra-title"><i class="icon-leaf"></i> Current Stats</h4>
+    <div class="row align-center" id="progressStats">
+
+      <% total = @user.score_time+@user.score_money+@user.score_pollution %>
+      <% if(total!=0) %>
+
+        <div class="small-12 columns">
+          <p><i class="icon-clock"></i></p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_time*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_time*100)/total)%>%"></div>
+          </div>
+        </div>
+
+        <div class="small-12 columns">
+          <p>$</p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_money*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_money*100)/total)%>%"></div>
+          </div>
+        </div>
+        
+        <div class="small-12 columns">
+          <p><i class="icon-globe"></i></p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="<%=((@user.score_pollution*100)/total)%>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:<%=((@user.score_pollution*100)/total)%>%"></div>
+          </div>
+        </div>
+
+      <% else %>
+
+        <div class="small-12 columns">
+          <p><i class="icon-clock"></i></p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="small-12 columns">
+          <p>$</p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>
+        
+        <div class="small-12 columns">
+          <p><i class="icon-globe"></i></p>
+        </div>
+        <div class="small-12 columns">
+          <div class="progress" role="progressbar" tabindex="0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-meter" style="width:0%"></div>
+          </div>
+        </div>    
+      <% end %>
+    </div>
+
+<!--     <h4 class="award extra-title"><i class="icon-award"></i> Weekly Challenges</h4>
+    <div class="row align-center" id="challenges">
+      <div class="large-3 columns">
+        <%#if(@ch1[1])%>
+          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
+        <%# else %>
+          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge1'%>
+      </div>
+      <div class="large-3 columns">
+        <%#if(@ch2[1])%>
+          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
+        <%# else %>
+          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge2'%>
+      </div>
+      <div class="large-3 columns">
+        <%#if(@ch3[1])%>
+          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
+        <%# else %>
+          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+        <%# end %>
+        <%#= render :partial => 'layouts/challenge3'%>
+      </div>
+    </div> -->
+    <div class="row side-footer">
+        <div class="large-12 columns">
+          <nav data-magellan>
+            <ul class="horizontal menu expanded">
+              <li class="logo">
+                <%= link_to "greenie", root_path(current_user), style: "padding: 0px;" %>
+              </li>
+              <li class="tips">
+                <p id="myRandomDiv2">
+                </p>                
+              </li>
+              <% if logged_in? %>
+                <li style="display:inline-block; float: right;">
+                  <%= link_to "Profile", users_profile_path(current_user) %>
+                  <%= link_to "Log out", logout_path, method: "delete" %>
+                </li>
+              <% end %>
+            </ul>
+          </nav>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="large-12 columns">
+  </div>
+</div>
+
+<script src="/js/vendor/jquery.min.js"></script>
+<script src="/js/vendor/what-input.min.js"></script>
+<script src="/js/vendor/foundation.js"></script>
+<script src="/js/app.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+        "Did you know that 1 metro ticket costs only 1 pound?",
+        "Did you know that 1 bus ticket costs up to 2 pounds?",
+        "Did you know that 1 litre of gasoline (92) costs 1.85 pounds?", 
+        "Did you know that walking 1 km will burn around 60 calories?", 
+        "Did you know that bicycling for 1 hour will burn around 280 calories?",
+        "Did you know that driving 1 km consumes around 0.1 litre of gasoline?",
+        "Did you know that driving 1 km emits around 230 grams of CO2?",
+        "Did you know that driving emits around 4400 kg of CO2 annually?",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+    var randomDiv2 = document.getElementById("myRandomDiv2");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+    randomDiv2.innerHTML = newText;
+</script>
