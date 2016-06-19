@@ -164,9 +164,7 @@
               </div> -->
 
               <div class="tabs-panel is-active" id="signUpContent">
-                <%#= form_for(@user), :html => {:class => "form-credentials", :id => "signUp"} do |f| %>
                 <%= form_for(@user) do |f| %>
-                  <%#= render 'shared/error_messages' %>
 
                   <%= f.text_field :name, class: 'large-12 columns', placeholder: "Name", :required => true %>
 

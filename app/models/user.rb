@@ -12,6 +12,9 @@ class User < ActiveRecord::Base
 
 	has_many :errands
 
+	has_many :user_challenges, dependent: :destroy
+	has_many :challenges, :through => :user_challenges
+
 	has_attached_file :avatar, :styles => { :thumb => "100x100#" , :small => "30x30#"}, :default_url => "/images/:style/missing.png"
   	validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
