@@ -63,8 +63,8 @@ class UsersController < ApplicationController
     @ch2 = currentChallenges[1]
     @ch3 = currentChallenges[2]
 
-    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id) != nil)
-      if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
+    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
+      if(!(UserChallenge.wherech(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
         @challen1 = [@ch1.details,false]
       else
         @challen1 = [@ch1.details,true]
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
       @challen1 = [@ch1.details,false]
     end
 
-    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id) != nil)
+    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).size > 0)
       if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.done))
         @challen2 = [@ch2.details,false]
       else
@@ -83,7 +83,7 @@ class UsersController < ApplicationController
       @challen2 = [@ch2.details,false]
     end
 
-    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id) != nil)
+    if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).size > 0)
       if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.done))
         @challen3 = [@ch3.details,false]
       else
@@ -717,7 +717,7 @@ class UsersController < ApplicationController
     if(Time.now.saturday?)
       @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
 
-      if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id) != nil)
+      if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
         if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
           @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
           if(@car_use.size <= 2)
@@ -734,7 +734,7 @@ class UsersController < ApplicationController
         @challen1 = [@ch1.details,false]
       end
 
-     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id) != nil)
+     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).size > 0)
       if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.done))
         cost = 0
         @week_errands.each do |e|
@@ -760,7 +760,7 @@ class UsersController < ApplicationController
        @challen2 = [@ch1.details,false]
      end
      
-     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id) != nil)
+     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).size > 0)
       if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.done))
         @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
         if(@metro_use.size >= 5)
