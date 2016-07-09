@@ -66,12 +66,12 @@ Rails.application.configure do
   
   #config.action_mailer.raise_delivery_errors = true
   #config.action_mailer.delivery_method = :test
-  #host = 'trafficless.herokuapp.com'
+  #host = 'greenie-game.herokuapp.com'
   #config.action_mailer.default_url_options = { host: host }
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-  host = 'trafficless.herokuapp.com'
+  host = 'greenie-game.herokuapp.com'
   config.action_mailer.default_url_options = { host: host }
   ActionMailer::Base.smtp_settings = {
     :address        => 'smtp.sendgrid.net',
@@ -79,7 +79,7 @@ Rails.application.configure do
     :authentication => :plain,
     :user_name => ENV['SENDGRID_USERNAME'],
     :password => ENV['SENDGRID_PASSWORD'],
-    :domain         => 'trafficless.herokuapp.com',
+    :domain         => 'greenie-game.herokuapp.com',
     :enable_starttls_auto => true
   }
 
