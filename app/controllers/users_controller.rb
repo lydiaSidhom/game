@@ -657,6 +657,7 @@ class UsersController < ApplicationController
           @errand.update_attribute :check_end_lng, params[:lng]
           @errand.update_attribute :check_end_time, params[:datetime]
           @errand.update_attribute :done, true
+          @errand.update_attribute :finished, true
 
           users = User.where(:activated => true).order('score_time + score_money + score_pollution DESC')
           rank = 0
@@ -725,6 +726,7 @@ class UsersController < ApplicationController
           @errand.update_attribute :check_end_lng, params[:lng]
           @errand.update_attribute :check_end_time, params[:datetime]
           @errand.update_attribute :done, true
+          @errand.update_attribute :finished, false
           render status: 200, text: "The time you took to finish the errand is more than the expected. Your score will not be updated."
         end
       else
