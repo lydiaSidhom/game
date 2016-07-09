@@ -760,7 +760,7 @@ class UsersController < ApplicationController
 
     if(Time.now.saturday?)
       @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
-
+###check if errands of the week are not zero
       if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
         if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
           @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
