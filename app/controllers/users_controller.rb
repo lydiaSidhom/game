@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     @ch3 = currentChallenges[2]
 
     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
-      if(!(UserChallenge.wherech(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
+      if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
         @challen1 = [@ch1.details,false]
       else
         @challen1 = [@ch1.details,true]
@@ -306,43 +306,85 @@ class UsersController < ApplicationController
     @lngEndSmall = params[:lngEndSmall]
     @carpoolSmall = params[:carpoolSmall]
 
-#########CHECK input from small view
-    
-    queryStart = "#{@latStart},#{@lngStart}"
-    queryEnd = "#{@latEnd},#{@lngEnd}"
-    if(Geocoder.search(queryStart).first)
-      geocodedStart = Geocoder.search(queryStart).first.formatted_address
-    else
-      flash[:info] = "Check your internet connection. Address is not recognized."
-      redirect_to users_profile_path and return
-      #geocodedStart = ""
+    if(@latStart != nil && @latEnd != nil)
+
+      queryStart = "#{@latStart},#{@lngStart}"
+      queryEnd = "#{@latEnd},#{@lngEnd}"
+
+      if(Geocoder.search(queryStart).first)
+        geocodedStart = Geocoder.search(queryStart).first.formatted_address
+      else
+        flash[:info] = "Check your internet connection. Address is not recognized."
+        redirect_to users_profile_path and return
+        #geocodedStart = ""
+      end
+      if(Geocoder.search(queryEnd).first)
+        geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
+      else
+        flash[:info] = "Check your internet connection. Address is not recognized."
+        redirect_to users_profile_path and return
+        #geocodedEnd = ""
+      end
+
+      @busResults = []
+      @busTemp = []
+      @metroResults = []
+      @metroTemp = []
+      @results = []
+      @errands = []
+
+      @debug = ""
+
+      errand = Errand.new(start_lat: @latStart, start_lng: @lngStart, end_lat: @latEnd, end_lng: @lngEnd, choice: "", user_id: params[:id], geocoded_start: geocodedStart, geocoded_end: geocodedEnd)
+      errand.save
+      @errands.push(errand)
+
+      @finalMetroResults = get_metro_results(@latStart, @lngStart, @latEnd, @lngEnd)
+
+      @finalBusResults = get_bus_results(@latStart, @lngStart, @latEnd, @lngEnd)
+
+      @errand_carpool = [errand.id, @carpool]
     end
-    if(Geocoder.search(queryEnd).first)
-      geocodedEnd = Geocoder.search(queryEnd).first.formatted_address
-    else
-      flash[:info] = "Check your internet connection. Address is not recognized."
-      redirect_to users_profile_path and return
-      #geocodedEnd = ""
+
+    if(@latStartSmall != nil && @latEndSmall != nil)
+
+      queryStartSmall = "#{@latStartSmall},#{@lngStartSmall}"
+      queryEndSmall = "#{@latEndSmall},#{@lngEndSmall}"
+
+      if(Geocoder.search(queryStartSmall).first)
+        geocodedStart = Geocoder.search(queryStartSmall).first.formatted_address
+      else
+        flash[:info] = "Check your internet connection. Address is not recognized."
+        redirect_to users_profile_path and return
+        #geocodedStart = ""
+      end
+      if(Geocoder.search(queryEndSmall).first)
+        geocodedEnd = Geocoder.search(queryEndSmall).first.formatted_address
+      else
+        flash[:info] = "Check your internet connection. Address is not recognized."
+        redirect_to users_profile_path and return
+        #geocodedEnd = ""
+      end
+
+      @busResults = []
+      @busTemp = []
+      @metroResults = []
+      @metroTemp = []
+      @results = []
+      @errands = []
+
+      @debug = ""
+
+      errand = Errand.new(start_lat: @latStartSmall, start_lng: @lngStartSmall, end_lat: @latEndSmall, end_lng: @lngEndSmall, choice: "", user_id: params[:id], geocoded_start: geocodedStart, geocoded_end: geocodedEnd)
+      errand.save
+      @errands.push(errand)
+
+      @finalMetroResults = get_metro_results(@latStartSmall, @lngStartSmall, @latEndSmall, @lngEndSmall)
+
+      @finalBusResults = get_bus_results(@latStartSmall, @lngStartSmall, @latEndSmall, @lngEndSmall)
+
+      @errand_carpool = [errand.id, @carpoolSmall]
     end
-
-    @busResults = []
-    @busTemp = []
-    @metroResults = []
-    @metroTemp = []
-    @results = []
-    @errands = []
-
-    @debug = ""
-
-    errand = Errand.new(start_lat: @latStart, start_lng: @lngStart, end_lat: @latEnd, end_lng: @lngEnd, choice: "", user_id: params[:id], geocoded_start: geocodedStart, geocoded_end: geocodedEnd)
-    errand.save
-    @errands.push(errand)
-
-    @finalMetroResults = get_metro_results(@latStart, @lngStart, @latEnd, @lngEnd)
-
-    @finalBusResults = get_bus_results(@latStart, @lngStart, @latEnd, @lngEnd)
-
-    @errand_carpool = [errand.id, @carpool]
 
     # if(@finalBusResults.size == 0 && @finalMetroResults.size == 0)
     #   @results.push([errand.id])

@@ -36,7 +36,11 @@
           <div class="large-8 columns small-centered">
             <h4>Vehical Consumption</h4>
             <p class="excerpt">
-              
+              <div class="large-6 columns">
+                <div id="canvas-holder2" style="width:100%;">
+                  <canvas id="chart2"/>
+                </div>
+              </div>
             </p>
           </div>
         </div>
@@ -91,9 +95,23 @@
                 <li>
                   <p>Anticipating your <b>stops</b> and <b>starts</b></p>
                 </li>
+                <li>
+                  <p>Drive <b>less</b></p>
+                </li>
+                <li>
+                  <p>Start a <b>No Driving Day</b> once a week</p>
+                </li>
+                <li>
+                  <p><b>Walk</b>, <b>bike</b>, take the <b>bus</b> or <b>train</b> whenever possible</p>
+                </li>
+                <li>
+                  <p>Shut your <b>engine off</b> when faced with idling for <b>more than 3 minutes</b></p>
+                </li>
               </ul>
             </p>
-
+          </div>
+        
+          <div class="large-6 column"> 
             <p>
               <b>Maintenance </b>- Keep your car <b>tuned</b> up and <b>running efficiently</b>.
             </p>
@@ -101,9 +119,6 @@
             <p>
               <b>More Maintenance </b>- Replace your air, oil, and fuel filters according to schedule.
             </p>
-          </div>
-        
-          <div class="large-6 column"> 
             <p>
               <b>Tires </b>- Keep your tires properly inflated (just this can save <b>400-700 pounds</b> of CO2 per year).
             </p>
@@ -229,13 +244,13 @@
           <div class="large-6 column">
             <h4>What does greenie do?</h4>
             <p>
-              greenie is an application to help you monitor your transportation and your carbon footprint. The application will give you insight on alternative ways to go to your destination in order to lower your consmuption.
+              greenie is an application to help you monitor your transportation and your carbon footprint. The application will give you insight on alternative ways to go to your destination in order to lower your consumption.
             </p>
             <p>
               The more you decrease your carbon footprint the better your score will be on the website and also in helping the environment.
             </p>
             <p>
-              You can aslo see where you stand amongst other fellow <b>greenies</b> through the leaderboards.
+              You can also see where you stand amongst other fellow <b>greenies</b> through the leaderboards.
             </p>
             <h4>Join and become a greenie! Make this world green again!</h4>
           </div>
@@ -273,11 +288,11 @@
     var customTooltips = function(tooltip) {
 
       // Tooltip Element
-      var tooltipEl = $('#chartjs-tooltip');
+      var tooltipEl = $('#chartjsTooltip');
 
       if (!tooltipEl[0]) {
-        $('body').append('<div id="chartjs-tooltip"></div>');
-        tooltipEl = $('#chartjs-tooltip');
+        $('body').append('<div id="chartjsTooltip"></div>');
+        tooltipEl = $('#chartjsTooltip');
       }
 
       // Hide if no tooltip
@@ -346,14 +361,121 @@
       }]
     };
 
+    // window.onload = function() {
+    //   var chartEl = document.getElementById("chart1");
+    //   window.myLine = new Chart(chartEl, {
+    //     type: 'line',
+    //     data: lineChartData,
+    //     options: {
+    //       title:{
+    //         display: true,
+    //         text:'Direct Measurments: 2005-Present'
+    //       },
+    //       tooltips: {
+    //         enabled: false,
+    //         custom: customTooltips
+    //       }
+    //     }
+    //   });
+    // };
+
+    var customTooltips2 = function(tooltip2) {
+
+      // Tooltip Element
+      var tooltipEl2 = $('#chartjsTooltip2');
+
+      if (!tooltipEl2[0]) {
+        $('body').append('<div id="chartjsTooltip2"></div>');
+        tooltipEl2 = $('#chartjsTooltip2');
+      }
+
+      // Hide if no tooltip
+      if (!tooltip2.opacity) {
+        tooltipEl2.css({
+          opacity: 0
+        });
+        $('.chartjs-wrap canvas')
+          .each(function(index, el) {
+            $(el).css('cursor', 'default');
+          });
+        return;
+      }
+
+      $(this._chart.canvas).css('cursor', 'pointer');
+
+      // Set caret Position
+      tooltipEl2.removeClass('above below no-transform');
+      if (tooltip2.yAlign) {
+        tooltipEl2.addClass(tooltip2.yAlign);
+      } else {
+        tooltipEl2.addClass('no-transform');
+      }
+
+      // Set Text
+      if (tooltip2.body) {
+        var innerHtml = [
+          (tooltip2.beforeTitle || []).join('\n'), (tooltip2.title || []).join('\n'), (tooltip2.afterTitle || []).join('\n'), (tooltip2.beforeBody || []).join('\n'), (tooltip2.body || []).join('\n'), (tooltip2.afterBody || []).join('\n'), (tooltip2.beforeFooter || [])
+          .join('\n'), (tooltip2.footer || []).join('\n'), (tooltip2.afterFooter || []).join('\n')
+        ];
+        tooltipEl2.html(innerHtml.join('\n'));
+      }
+
+      // Find Y Location on page
+      var top = 0;
+      if (tooltip2.yAlign) {
+        if (tooltip2.yAlign == 'above') {
+          top = tooltip2.y - tooltip2.caretHeight - tooltip2.caretPadding;
+        } else {
+          top = tooltip2.y + tooltip2.caretHeight + tooltip2.caretPadding;
+        }
+      }
+
+      var position = $(this._chart.canvas)[0].getBoundingClientRect();
+
+      // Display, position, and set styles for font
+      tooltipEl2.css({
+        opacity: 1,
+        width: tooltip2.width ? (tooltip2.width + 'px') : 'auto',
+        left: position.left + tooltip2.x + 'px',
+        top: position.top + top + 'px',
+        fontFamily: tooltip2._fontFamily,
+        fontSize: tooltip2.fontSize,
+        fontStyle: tooltip2._fontStyle,
+        padding: tooltip2.yPadding + 'px ' + tooltip2.xPadding + 'px',
+      });
+    };
+
+    var lineChartData2 = {
+      labels: ["2010","2011", "2012", "2013", "2014", "2015"],
+      datasets: [{
+        label: "number of vehicles (in Millions)",
+        data: [3.24, 3.54, 3.59, 3.83, 3.96, 4.28]
+      }]
+    };
+
     window.onload = function() {
+      var chartEl2 = document.getElementById("chart2");
+      window.myLine = new Chart(chartEl2, {
+        type: 'line',
+        data: lineChartData2,
+        options: {
+          title:{
+            display: true,
+            text:'Total number of vehicles across all governorates: 2010-2015'
+          },
+          tooltips: {
+            enabled: false,
+            custom: customTooltips2
+          }
+        }
+      });
       var chartEl = document.getElementById("chart1");
       window.myLine = new Chart(chartEl, {
         type: 'line',
         data: lineChartData,
         options: {
           title:{
-            display:true,
+            display: true,
             text:'Direct Measurments: 2005-Present'
           },
           tooltips: {
@@ -388,14 +510,106 @@
   <script src="/js/app.js"></script>
   <script type="text/javascript" charset="utf-8">
     var randomStrings = [
-        "Did you know that 1 metro ticket costs only 1 pound?",
-        "Did you know that 1 bus ticket costs up to 2 pounds?",
-        "Did you know that 1 litre of gasoline (92) costs 1.85 pounds?", 
-        "Did you know that walking 1 km will burn around 60 calories?", 
-        "Did you know that bicycling for 1 hour will burn around 280 calories?",
-        "Did you know that driving 1 km consumes around 0.1 litre of gasoline?",
-        "Did you know that driving 1 km emits around 230 grams of CO2?",
-        "Did you know that driving emits around 4400 kg of CO2 annually?",
+        "1 metro ticket costs only 1 pound?",
+        "1 bus ticket costs up to 2 pounds?",
+        "1 litre of gasoline (92) costs 1.85 pounds?", 
+        "Walking 1 km will burn around 60 calories?", 
+        "Bicycling for 1 hour will burn around 280 calories?",
+        "Driving 1 km consumes around 0.1 litre of gasoline?",
+        "Driving 1 km emits around 230 grams of CO2?",
+        "Driving emits around 4400 kg of CO2 annually?",
+        "Public transportation can save households an average of 80,000 EGP every year. The savings continues to grow with the ever-increasing price of fuel.",
+        "By eliminating one car in a two-car household, taking public transportation instead of driving can result in a savings of up to 30% of a household’s annual carbon dioxide emissions.",
+        "Human activities release over 130 times the amount of CO2 emitted by volcanoes.",
+        "Using public transportation is vastly cheaper than driving.",
+        "Cycling or walking is a free gym on wheels.",
+        "By using public transportation, you won't miss morning traffic jams.",
+        "By using public transportation, you'll never have to worry about a parking spot again.",
+        "One person riding the metro for one day reduces their carbon emissions into the environment by 20 pounds. That equals more than 4,800 pounds per year, which offers immediate benefits to the environment.",
+        "One metro vehicle full of people removes up to 50 cars from the road; that’s a line of cars approximately four city blocks long.",
+        "The typical metro rider consumes, on average, one half of the oil consumed by an automobile rider. Each year, people using public transportation save the equivalent of 34 supertankers of oil.",
+        "The typical metro rider consumes, on average, one half of the oil consumed by an automobile rider. Each year, people using public transportation save the equivalent of a supertanker leaving the Middle East every 11 days.",
+        "The metro produces nearly 50% less carbon dioxide (CO2) and nitrogen oxide (NOx), per passenger mile, as private vehicles.",
+        "One metro ticket costs 1 EGP",
+        "A metro pass for an unlimited number of adult rides costs only 485 EGP per year.",
+        "A metro pass for an unlimited number of rides for students costs only 300 EGP per year.",
+        "In 2007, the average annual delay for every person using motorized travel during peak periods was 36 hours, equivalent to: Almost 5 vacation days.",
+        "In 2007, the average annual delay for every person using motorized travel during peak periods was 36 hours, equivalent to: More than 600 average online video clips.",
+        "On a weekday, the average car causes a total of 3.26 hours of delays to other drivers, the equivalent of around 1500 EGP",
+        "Traffic congestion is linked to poor health in infants. Reductions in traffic congestion can reduce the incidence of prematurity and low birth weight among mothers who live within 2km of a road",
+        "Over time, people who commute by car daily tend to gain more weight than those who do not, even if they are physically active at other times.",
+        "A 1% decrease in the use of automobiles can decrease obesity by 0.4%.",
+        "It's not the kind of car you drive, but how many miles you drive it and how many litres of gas you burn that count.",
+        "Car tires wear out as you drive on them and the particles from those tires go into the air.",
+        "Obesity is linked to high levels of car and truck pollution.",
+        "Most ozone pollution is caused by cars and trucks.",
+        "It is estimated that of the CO2 emissions produced over a car's lifespan, 85% come from fuel use and servicing operations.",
+        "Traffic congestion wastes billions of litres of gas.",
+        "Just 25% of cars produce 90% of car air pollution.",
+        "Air pollution from cars idling in school zones make kids sick.",
+        "High levels of car and truck pollution increases hyperactivity (ADHD) in kids.",
+        "Moms in highly car-polluted areas have smaller babies, which is not good for their health.",
+        "The number of people who die due to air pollution is much less than the number of people killed per year in car crashes.",
+        "Car exhaust has also been linked to asthma, bronchitis, and other health hazards.",
+        "If you think bad air affects only other people, think again. New information shows that air pollution from traffic increases the chance of heart attack for everybody breathing that air.",
+        "Car pollution causes significant damage to neurons involved in learning and memory.",
+        "Car pollution causes signs of inflammation associated with premature aging and Alzheimer's disease.",
+        "The amount of car pollution is much more than the amount of pollution released by a nuclear power plant.",
+        "Ozone pollution is primarily due to the pollution that is released by cars.",
+        "30000 people in the United States die each year from conditions that are caused or exacerbated by car pollution.",
+        "Car pollution causes 51% of the carbon monoxide in the air, which contributes to the smog problem and can be extremely dangerous, even fatal.",
+        "Car exhaust particulates cause more clouds to form in the atmosphere, but less rain.",
+        "95% of a car's energy goes towards moving the car itself, and only 5% to moving the passenger. While on a bicycle, 83% of the energy goes towards transporting the rider, not the vehicle",
+        "When the complete life cycle of travelling with a car is taken into account, the carbon emissions are approximately 271 g CO2/passenger/km",
+        "Each hour per day spent driving corresponds with a 6% increase in the odds of being obese.",
+        "The WHO reports that the Air Pollution in Downtown Cairo is 10-100 times what is considered a safe limit.",
+        "The risk of developing serious respiratory disease and cancer from inhaling particulate in Cairo air is: 2 persons for every 1000.",
+        "Half a million of the Cairo residents will develop serious health problems (respiratory diseases and cancer) that will result in premature death in a period of 5-25 years.",
+        "Assuming that each person suffering from health problems, due to air pollution, will receive medical treatment worth 10,000 Egyptian pounds, the total cost will be 5 billion Egyptian pounds.",
+        "A recent World Bank report estimated the annual costs of the congestion in Cairo to be up to EGP50 billion.",
+        "At least 1,000 Cairo residents die each year in traffic related accidents, of which more than half are pedestrians, and over 4,000 are injured.",
+        "Cairo has one of the highest ratios of cars to km of road in the world.",
+        "If traffic is reduced by 40% you don’t have jams anymore, except of course during rush hour.",
+        "A 16km car trip from Dokki to Heliopolis which could take an hour and a half, could take around 30 minutes on a bike.",
+        "Using a bicycle to commute 4 days a week for 6.5 km (one-way) saves 204 litres of gas annually.",
+        "7 to 12 bicycles can park in one automobile parking space.",
+        "It costs about 450 EGP to build and maintain one space in a bike rack and 4500 EGP for a bike locker, yet one car parking space in a parking structure costs about 75000 EGP.",
+        "Bike-to-Work Week is celebrated every May.",
+        "The energy and resources needed to build one medium-sized car could produce 100 bicycles.",
+        "Bikes are 2/3 more efficient than cars even after factoring in the energy to produce the extra food the cyclist requires.",
+        "It costs the same to build parking for 75 bikes as it does for just 4 cars.",
+        "A 40% obese population requires 19% more food energy, resulting in an extra 0.4-1.0 Giga tonnes of CO2 emissions per year (for a population of 1 billion)",
+        "When the complete life cycle of travelling with a bicycle is taken into account, the carbon emissions are approximately 21 g CO2/passenger/km",
+        "One study shows that increasing biking and walking from 4 to 24 minutes a day on average would reduce cardiovascular disease and diabetes by 14% and decrease Greenhouse Gas Emissions by 14%.",
+        "Urban cyclists are exposed to less accumulated air pollution than bus commuters.",
+        "The benefits of increased physical activity from shifting from driving to bicycling (3 to 14 months gained) outweigh the effects of increased inhaled air pollution (0.8 to 40 days lost) and increased traffic accidents (5 to 9 days lost).",
+        "Bicycling to school improves children's cardiorespiratory fitness.",
+        "It costs 3 to 4 times more to enroll a inactive adult in a structured exercise program than to teach them how to integrate moderate-intensity physical activity into their life [e.g. bicycling for transportation].",
+        "In a study of more than 30,000 people, those who bicycled to work were 40% less likely to die during follow-up, regardless of how much physical activity they got outside of commuting.",
+        "A 30-minute round trip bicycle commute is associated with better mental health in men.",
+        "Active commuting that incorporates cycling and walking is associated with an overall 11% reduction in cardiovascular risk.",
+        "Biking for transportation can count toward the minimum 150 minutes/week of moderate-intensity aerobic activity recommended for physical health.",
+        "Biking is listed as the safest way to get physical activity.",
+        "82% of bicycle commuters believe their health has improved since they started bicycle commuting.",
+        "30-60 minutes of daily physical activity such as biking to work is associated with low blood pressure in women and low hypertension in both genders.",
+        "One study found that cycling improves levels of well-being, self-confidence, and tolerance to stress while reducing tiredness, difficulties with sleep and a range of medical symptoms.",
+        "A study of nearly 2,400 adults found that those who biked to work were fitter, leaner, less likely to be obese, and had better triglyceride levels, blood pressure, and insulin levels than those who didn't active commute to work.",
+        "Bike commuters report lower stress and greater feelings of freedom, relaxation, and excitement than car commuters.",
+        "Bicycle commuting burns an average of 540 calories per hour.",
+        "Men who cycle to work are significantly less likely to be overweight and obese (39.8%) than those who drive to work (60.8%).",
+        "Replacing car trips with walking and biking improves air quality.",
+        "Increasing walking and bicycling can reduce single occupancy vehicle trips and greenhouse gas emissions.",
+        "Walking and bicycling are affordable transportation options.",
+        "Walking and bicycling improve personal and community health, Wang.",
+        "Walking and bicycling increase quality of life and create vibrant communities.",
+        "A reduction in carbon dioxide emissions through an increase in biking and walking for transportation has greater health benefits for a population than from the increased use of lower-emission motor vehicles.",
+        "An increase in active transportation is estimated to reduce 500 accidents per million citizens.", 
+        "Cycling and walking commuters have significantly lower levels of exposure to harmful pollutants like benzene compared with car commuters and significantly lower levels of pollutant NO2 than bus commuters.",
+        "Kids who ride a school bus inhale up to a million times more vehicle emissions than the average person outside the bus.",
+        "Women who walk or bike 30 minutes a day have a lower risk of breast cancer.",
+        "Countries with the highest levels of cycling and walking generally have the lowest obesity rates.",
+        "People exercise for longer when they are outside compared to at home, work, or a gym.",
+        "When the complete life cycle of travelling with a bus is taken into account, the carbon emissions are approximately 101 g CO2/passenger/km",
     ];
 
     var randomDiv = document.getElementById("myRandomDiv");
