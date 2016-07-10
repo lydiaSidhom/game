@@ -142,10 +142,10 @@
           <a href="#errandsPanel" aria-selected="true"><i class="icon-connectdevelop"></i> Errands</a>
         </li>
         <li class="tabs-title">
-          <a href="#aboutPanel"><i class="icon-emo-happy"></i> Settings</a>
+          <a href="#leaderboardPanel"><i class="icon-crown"></i> Leaderboard</a>
         </li>
         <li class="tabs-title">
-          <a href="#leaderboardPanel"><i class="icon-crown"></i> Leaderboard</a>
+          <a href="#aboutPanel"><i class="icon-cog"></i> Settings</a>
         </li>
       </ul>
       <div class="tabs-content" data-tabs-content="timeline-tabs">
@@ -242,6 +242,70 @@
 
         <div class="row">
         </div>
+        <div class="tabs-panel" id="leaderboardPanel">
+          <div class="row leaderboard-header">
+            <div class="large-4 columns">
+              <b>Name</b>
+            </div>
+            <div class="large-4 columns">
+              <b>Score</b>
+            </div>
+            <div class="large-4 columns">
+              <b>Rank</b>
+            </div>
+          </div>
+
+          <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
+          <% @users.each do |user| %>
+            <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
+              <% @rank+=1 %>
+            <% end %>
+            <% if(user.id == @user.id) %>       
+              <div class="row user-leaderboard-success">
+                <div class="large-4 columns">
+                  <p><%= user.name.titleize %></p>
+                </div>
+                <div class="large-4 columns">
+                  <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
+                </div>
+                <div class="large-4 columns">
+                    <% if(@rank == 1) %>
+                    <td align="left"><img src="/images/gold.png"/></td>
+                    <% elsif(@rank == 2) %>
+                    <td align="left"><img src="/images/silver.png"/></td>
+                    <% elsif(@rank == 3) %>
+                    <td align="left"><img src="/images/bronze.png"/></td>
+                    <% else %>
+                    <td align="left" style="padding-left: 30px;"><%= @rank %></td>
+                    <% end %>
+                  <!--b><i class="icon-crown"></i></b-->
+                </div>
+              </div>
+            <% else %>
+              <div class="row user-leaderboard">
+                <div class="large-4 columns">
+                  <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
+                </div>
+                <div class="large-4 columns">
+                  <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
+                </div>
+                <div class="large-4 columns">
+                    <% if(@rank == 1) %>
+                    <td align="left"><img src="/images/gold.png"/></td>
+                    <% elsif(@rank == 2) %>
+                    <td align="left"><img src="/images/silver.png"/></td>
+                    <% elsif(@rank == 3) %>
+                    <td align="left"><img src="/images/bronze.png"/></td>
+                    <% else %>
+                    <td align="left" style="padding-left: 30px;"><%= @rank %></td>
+                    <% end %>
+                  <!--b><i class="icon-crown"></i></b-->
+                </div>
+              </div>
+            <% end %>
+            <% pre = user.score_time+user.score_money+user.score_pollution %>
+          <% end %>
+        </div>
         <div class="tabs-panel" id="aboutPanel">
           <div class="row about-panel">
             <div class="large-12 columns">
@@ -283,51 +347,6 @@
             </div>
           </div>
         </div>
-        <div class="tabs-panel" id="leaderboardPanel">
-          <div class="row leaderboard-header">
-            <div class="large-4 columns">
-              <b>Name</b>
-            </div>
-            <div class="large-4 columns">
-              <b>Score</b>
-            </div>
-            <div class="large-4 columns">
-              <b>Rank</b>
-            </div>
-          </div>
-
-          <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
-          <% @users.each do |user| %>
-            <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
-              <% @rank+=1 %>
-            <% end %>
-            <% if(user.id == @user.id) %>       
-              <div class="row user-leaderboard-success">
-            <% else %>
-              <div class="row user-leaderboard">
-            <% end %>
-              <div class="large-4 columns">
-                <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
-              </div>
-              <div class="large-4 columns">
-                <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
-              </div>
-              <div class="large-4 columns">
-                  <% if(@rank == 1) %>
-                  <td align="left"><img src="/images/gold.png"/></td>
-                  <% elsif(@rank == 2) %>
-                  <td align="left"><img src="/images/silver.png"/></td>
-                  <% elsif(@rank == 3) %>
-                  <td align="left"><img src="/images/bronze.png"/></td>
-                  <% else %>
-                  <td align="left" style="padding-left: 30px;"><%= @rank %></td>
-                  <% end %>
-                <!--b><i class="icon-crown"></i></b-->
-              </div>
-            </div>
-            <% pre = user.score_time+user.score_money+user.score_pollution %>
-          <% end %>
-        </div>
       </div>
     </div>
   </div>
@@ -338,10 +357,10 @@
           <a href="#errandsPanelSmall" aria-selected="true"><i class="icon-connectdevelop"></i></a>
         </li>
         <li class="tabs-title">
-          <a href="#aboutPanelSmall"><i class="icon-emo-happy"></i></a>
+          <a href="#leaderboardPanelSmall"><i class="icon-crown"></i></a>
         </li>
         <li class="tabs-title">
-          <a href="#leaderboardPanelSmall"><i class="icon-crown"></i></a>
+          <a href="#aboutPanelSmall"><i class="icon-cog"></i></a>
         </li>
       </ul>
       <div class="tabs-content" data-tabs-content="timeline-tabs">
@@ -462,6 +481,72 @@
             <% end %>
           <% end %>
         </div>
+
+        <div class="tabs-panel" id="leaderboardPanelSmall">
+          <div class="row leaderboard-header">
+            <div class="large-4 columns">
+              <b>Name</b>
+            </div>
+            <div class="large-4 columns">
+              <b>Score</b>
+            </div>
+            <div class="large-4 columns">
+              <b>Rank</b>
+            </div>
+          </div>
+          <% @rank = 0 %>
+          <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
+          <% @users.each do |user| %>
+            <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
+              <% @rank+=1 %>
+            <% end %>
+            <% if(user.id == @user.id) %>       
+              <div class="row user-leaderboard-success">
+                <div class="large-4 columns">
+                  <p><%= user.name.titleize %></p>
+                </div>
+                <div class="large-4 columns">
+                  <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
+                </div>
+                <div class="large-4 columns">
+                    <% if(@rank == 1) %>
+                    <td align="left"><img src="/images/gold.png"/></td>
+                    <% elsif(@rank == 2) %>
+                    <td align="left"><img src="/images/silver.png"/></td>
+                    <% elsif(@rank == 3) %>
+                    <td align="left"><img src="/images/bronze.png"/></td>
+                    <% else %>
+                    <td align="left" style="padding-left: 30px;"><%= @rank %></td>
+                    <% end %>
+                  <!--b><i class="icon-crown"></i></b-->
+                </div>
+              </div>
+            <% else %>
+              <div class="row user-leaderboard">
+                <div class="large-4 columns">
+                  <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
+                </div>
+                <div class="large-4 columns">
+                  <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
+                </div>
+                <div class="large-4 columns">
+                    <% if(@rank == 1) %>
+                    <td align="left"><img src="/images/gold.png"/></td>
+                    <% elsif(@rank == 2) %>
+                    <td align="left"><img src="/images/silver.png"/></td>
+                    <% elsif(@rank == 3) %>
+                    <td align="left"><img src="/images/bronze.png"/></td>
+                    <% else %>
+                    <td align="left" style="padding-left: 30px;"><%= @rank %></td>
+                    <% end %>
+                  <!--b><i class="icon-crown"></i></b-->
+                </div>
+              </div>
+            <% end %>
+            <% pre = user.score_time+user.score_money+user.score_pollution %>
+          <% end %>
+        </div>
+
         <div class="tabs-panel" id="aboutPanelSmall">
           <div class="large-12 columns">
               <b>Update your profile</b>
@@ -500,51 +585,6 @@
                 veteran greenie
               </p-->
             </div>
-        </div>
-        <div class="tabs-panel" id="leaderboardPanelSmall">
-          <div class="row leaderboard-header">
-            <div class="large-4 columns">
-              <b>Name</b>
-            </div>
-            <div class="large-4 columns">
-              <b>Score</b>
-            </div>
-            <div class="large-4 columns">
-              <b>Rank</b>
-            </div>
-          </div>
-          <% @rank = 0 %>
-          <% pre = @users[0].score_time+@users[0].score_money+@users[0].score_pollution-1 %>
-          <% @users.each do |user| %>
-            <% if(pre != (user.score_time+user.score_money+user.score_pollution)) %>
-              <% @rank+=1 %>
-            <% end %>
-            <% if(user.id == @user.id) %>       
-              <div class="row user-leaderboard-success">
-            <% else %>
-              <div class="row user-leaderboard">
-            <% end %>
-              <div class="large-4 columns">
-                <p><%= link_to user.name.titleize, publicprofile_path(:other_id => user.id) %></p>
-              </div>
-              <div class="large-4 columns">
-                <p class="leaderboard-score"><%= user.score_time+user.score_money+user.score_pollution %></p>
-              </div>
-              <div class="large-4 columns">
-                  <% if(@rank == 1) %>
-                  <td align="left"><img src="/images/gold.png"/></td>
-                  <% elsif(@rank == 2) %>
-                  <td align="left"><img src="/images/silver.png"/></td>
-                  <% elsif(@rank == 3) %>
-                  <td align="left"><img src="/images/bronze.png"/></td>
-                  <% else %>
-                  <td align="left" style="padding-left: 30px;"><%= @rank %></td>
-                  <% end %>
-                <!--b><i class="icon-crown"></i></b-->
-              </div>
-            </div>
-            <% pre = user.score_time+user.score_money+user.score_pollution %>
-          <% end %>
         </div>
       </div>
     </div>

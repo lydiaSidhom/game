@@ -177,9 +177,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 				<tr class="matrix_row_light">
 					<td class="question" style="word-wrap: break-word; text-align: left;">						
 						Using own Car<br>
-						Cost: <%= image_tag "/images/angry2.png" %><br>
+						Cost: <i class="icon-emo-unhappy"></i> <br>
 						<label class="drive" id="drive" style="padding-left: 0px;"></label>
-						Pollution: <%= image_tag "/images/angry2.png" %>
+						Pollution: <i class="icon-emo-unhappy"></i> 
 					</td>
 					<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked/></td>
 				</tr>
@@ -188,9 +188,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 					<tr class="matrix_row_light">
 						<td class="question" style="word-wrap: break-word; text-align: left;">
 							Walking<br>
-							Cost: <%= image_tag "/images/happy2.png" %><br>
+							Cost: <i class="icon-emo-happy"></i> <br>
 							<label id="walking" style="padding-left: 0px;"></label>
-							Pollution: <%= image_tag "/images/happy2.png" %>
+							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
 						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Walking" /></td>
 					</tr>
@@ -199,9 +199,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 					<tr class="matrix_row_light">
 						<td class="question" style="word-wrap: break-word; text-align: left;">
 							Cycling<br>
-							Cost: <%= image_tag "/images/happy2.png" %><br>
+							Cost: <i class="icon-emo-happy"></i> <br>
 							<label id="cycling" style="padding-left: 0px;"></label><br>
-							Pollution: <%= image_tag "/images/happy2.png" %>
+							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
 						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Cycling" /></td>
 					</tr>
@@ -210,9 +210,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 					<tr class="matrix_row_light">
 						<td class="question" style="word-wrap: break-word; text-align: left;">
 							Carpooling<br>
-							Cost: <%= image_tag "/images/happy2.png" %><br>
+							Cost: <i class="icon-emo-happy"></i> <br>
 							<label class="drive" id="drive" style="padding-left: 0px;"></label>
-							Pollution: <%= image_tag "/images/angry2.png" %>
+							Pollution: <i class="icon-emo-unhappy"></i> 
 						</td>
 						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Carpooling" /></td>
 					</tr>
@@ -235,9 +235,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 					<tr class="matrix_row_light">
 						<td class="question" style="word-wrap: break-all; text-align: left;">
 							<%= choice %><br>
-							Cost: <%= image_tag "/images/happy2.png" %><br>
+							Cost: <i class="icon-emo-happy"></i> <br>
 							<label class="metro" id="metro" style="padding-left: 0px;"></label>
-							Pollution: <%= image_tag "/images/happy2.png" %>
+							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
 						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>" /></td>
 					</tr>
@@ -260,9 +260,9 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 					<tr class="matrix_row_light">
 						<td class="question" style="word-wrap: break-word; text-align: left;">
 							<%= choice %><br>
-							Cost: <%= image_tag "/images/happy2.png" %><br>
+							Cost: <i class="icon-emo-happy"></i> <br>
 							<label class="drive" id="drive" style="padding-left: 0px;"></label>
-							Pollution: <%= image_tag "/images/angry2.png" %>
+							Pollution: <i class="icon-emo-unhappy"></i> 
 						</td>
 						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>" /></td>
 					</tr>
