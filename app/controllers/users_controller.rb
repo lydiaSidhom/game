@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
   def pretest_answers
     @user = User.find(params[:id])
-    @user.update_attribute :pretest, params[:q1]+"$"+params[:q2]+"$"+params[:q3]+"$"+params[:q4]+"$"+params[:q5]+"$"+params[:q6]+"$"+params[:q7]+"$"+params[:q8]+"$"+params[:q9]+"$"+params[:q10]+"$"+params[:q11]+"$"+params[:q12]+"$"+params[:q13]+"$"+params[:q14]
+    @user.update_attribute :pretest, params[:q1]+"$"+params[:q2]+"$"+params[:q3]+"$"+params[:q4]+"$"+params[:q5]+"$"+params[:q6]+"$"+params[:q7]+"$"+params[:q8]+"$"+params[:q9]+"$"+params[:q10]+"$"+params[:q11]+"$"+params[:q12]+"$"+params[:q13]+"$"+params[:q14]+"$"+params[:q15]+"$"+params[:q16]+"$"+params[:q17]
 
     currentChallenges = Challenge.where(:current => true)
     @ch1 = currentChallenges[0]
@@ -650,8 +650,11 @@ class UsersController < ApplicationController
           @estimated_duration = (distance/16)*3600 #average cycling speed is 16km/hr (https://en.wikipedia.org/wiki/Bicycle_performance)
         end
 
+        logger.debug @actual_duration
+        logger.debug @estimated_duration
+
         #if the difference between the actual duration and the estimated duration is more or less than 15 minutes then there is something wrong
-        diff = ((@estimated_duration-@actual_duration).abs < 900) || ((@actual_duration-@estimated_duration).abs < 900)
+        diff = ((@estimated_duration-@actual_duration).abs < 900) || ((@estimated_duration-@actual_duration).abs > 900)
         if(diff)
           @errand.update_attribute :check_end_lat, params[:lat]
           @errand.update_attribute :check_end_lng, params[:lng]
@@ -757,75 +760,81 @@ class UsersController < ApplicationController
     @ch1 = currentChallenges[0]
     @ch2 = currentChallenges[1]
     @ch3 = currentChallenges[2]
-
-    if(Time.now.saturday?)
-      @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
-###check if errands of the week are not zero
-      if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
-        if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
-          @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
-          if(@car_use.size <= 2)
-            @challen1 = [@ch1.details,true]
-            @user.update_attribute :score_pollution, @user.score_pollution+50
-            UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.update_attribute :done, true
+    
+    @week_errands = @user.errands.where(:check_start_time => ("2016-02-14 08:00:00".."2016-05-21 23:00:00"), :check_end_time => ("2016-02-14 08:00:00".."2016-02-21 23:00:00"))
+      
+    if(@week_errands.size > 0)
+      if(Time.now.saturday?)
+        if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).size > 0)
+          if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.done))
+            @car_use = @week_errands.where("choice like?","#{"Using own Car"}%")
+            if(@car_use.size <= 2)
+              @challen1 = [@ch1.details,true]
+              @user.update_attribute :score_pollution, @user.score_pollution+50
+              UserChallenge.where(:user_id => @user.id, :challenge_id => @ch1.id).first.update_attribute :done, true
+            else
+              @challen1 = [@ch1.details,false]
+            end
           else
-            @challen1 = [@ch1.details,false]
+            @challen1 = [@ch1.details,true]
           end
         else
-          @challen1 = [@ch1.details,true]
+          @challen1 = [@ch1.details,false]
         end
+
+       if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).size > 0)
+        if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.done))
+          cost = 0
+          @week_errands.each do |e|
+            if(e.choice.starts_with?("Metro"))
+              cost+=1
+            elsif(e.choice.starts_with?("Bus"))
+              cost+=2  
+            elsif(e.choice.starts_with?("Using own Car")) ########################### why 50??
+              cost+=50
+            end
+          end
+          if(cost <= 30)
+            @challen2 = [@ch2.details,true]
+            @user.update_attribute :score_pollution, @user.score_pollution+50
+            UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.update_attribute :done, true
+          else
+            @challen2 = [@ch2.details,false]
+          end
+        else
+          @challen2 = [@ch1.details,true]
+        end
+       else
+         @challen2 = [@ch1.details,false]
+       end
+       
+       if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).size > 0)
+        if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.done))
+          @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
+          if(@metro_use.size >= 5)
+            @challen3 = [@ch3,true]
+            @user.update_attribute :score_pollution, @user.score_pollution+50
+            UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.update_attribute :done, true
+          else
+            @challen3 = [@ch3.details,false]
+          end
+        else
+          @challen3 = [@ch1.details,true]
+        end
+       else
+        @challen3 = [@ch1.details,false]
+       end
+
+        #save and reset values with each new set of challenges
       else
         @challen1 = [@ch1.details,false]
+        @challen2 = [@ch2.details,false]
+        @challen3 = [@ch3.details,false]
       end
-
-     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).size > 0)
-      if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.done))
-        cost = 0
-        @week_errands.each do |e|
-          if(e.choice.starts_with?("Metro"))
-            cost+=1
-          elsif(e.choice.starts_with?("Bus"))
-            cost+=2  
-          elsif(e.choice.starts_with?("Using own Car")) ########################### why 50??
-            cost+=50
-          end
-        end
-        if(cost <= 30)
-          @challen2 = [@ch2.details,true]
-          @user.update_attribute :score_pollution, @user.score_pollution+50
-          UserChallenge.where(:user_id => @user.id, :challenge_id => @ch2.id).first.update_attribute :done, true
-        else
-          @challen2 = [@ch2.details,false]
-        end
-      else
-        @challen2 = [@ch1.details,true]
-      end
-     else
-       @challen2 = [@ch1.details,false]
-     end
-     
-     if(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).size > 0)
-      if(!(UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.done))
-        @metro_use = @week_errands.where("choice like?","#{"Metro"}%")
-        if(@metro_use.size >= 5)
-          @challen3 = [@ch3,true]
-          @user.update_attribute :score_pollution, @user.score_pollution+50
-          UserChallenge.where(:user_id => @user.id, :challenge_id => @ch3.id).first.update_attribute :done, true
-        else
-          @challen3 = [@ch3.details,false]
-        end
-      else
-        @challen3 = [@ch1.details,true]
-      end
-     else
-      @challen3 = [@ch1.details,false]
-     end
-
-      #save and reset values with each new set of challenges
     else
       @challen1 = [@ch1.details,false]
       @challen2 = [@ch2.details,false]
-      @challen3 = [@ch3.details,false]
+      @challen3 = [@ch3.details,false]      
     end
   end
 

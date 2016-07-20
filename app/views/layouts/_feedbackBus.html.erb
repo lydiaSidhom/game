@@ -1,11 +1,29 @@
 <div id="feedbackBus" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "Public transportation can save households an average of 80,000 EGP every year. The savings continues to grow with the ever-increasing price of fuel.",
+      "By eliminating one car in a two-car household, taking public transportation instead of driving can result in a savings of up to 30% of a household’s annual carbon dioxide emissions.",
+      "Human activities release over 130 times the amount of CO2 emitted by volcanoes.",
+      "Using public transportation is vastly cheaper than driving.",
+      "Cycling or walking is a free gym on wheels.",
+      "By using public transportation, you won't miss morning traffic jams.",
+      "By using public transportation, you'll never have to worry about a parking spot again.",
+      "When the complete life cycle of travelling with a bus is taken into account, the carbon emissions are approximately 101 g CO2/passenger/km",
+      
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;

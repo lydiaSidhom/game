@@ -1,11 +1,46 @@
 <div id="feedbackCycling" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "Using a bicycle to commute 4 days a week for 6.5 km (one-way) saves 204 litres of gas annually.",
+      "7 to 12 bicycles can park in one automobile parking space.",
+      "It costs about 450 EGP to build and maintain one space in a bike rack and 4500 EGP for a bike locker, yet one car parking space in a parking structure costs about 75000 EGP.",
+      "Bike-to-Work Week is celebrated every May.",
+      "The energy and resources needed to build one medium-sized car could produce 100 bicycles.",
+      "Bikes are 2/3 more efficient than cars even after factoring in the energy to produce the extra food the cyclist requires.",
+      "It costs the same to build parking for 75 bikes as it does for just 4 cars.",
+      "A 40% obese population requires 19% more food energy, resulting in an extra 0.4-1.0 Giga tonnes of CO2 emissions per year (for a population of 1 billion)",
+      "When the complete life cycle of travelling with a bicycle is taken into account, the carbon emissions are approximately 21 g CO2/passenger/km",
+      "One study shows that increasing biking and walking from 4 to 24 minutes a day on average would reduce cardiovascular disease and diabetes by 14% and decrease Greenhouse Gas Emissions by 14%.",
+      "Urban cyclists are exposed to less accumulated air pollution than bus commuters.",
+      "The benefits of increased physical activity from shifting from driving to bicycling (3 to 14 months gained) outweigh the effects of increased inhaled air pollution (0.8 to 40 days lost) and increased traffic accidents (5 to 9 days lost).",
+      "Bicycling to school improves children's cardiorespiratory fitness.",
+      "It costs 3 to 4 times more to enroll a inactive adult in a structured exercise program than to teach them how to integrate moderate-intensity physical activity into their life [e.g. bicycling for transportation].",
+      "In a study of more than 30,000 people, those who bicycled to work were 40% less likely to die during follow-up, regardless of how much physical activity they got outside of commuting.",
+      "A 30-minute round trip bicycle commute is associated with better mental health in men.",
+      "Active commuting that incorporates cycling and walking is associated with an overall 11% reduction in cardiovascular risk.",
+      "Biking for transportation can count toward the minimum 150 minutes/week of moderate-intensity aerobic activity recommended for physical health.",
+      "Biking is listed as the safest way to get physical activity.",
+      "82% of bicycle commuters believe their health has improved since they started bicycle commuting.",
+      "30-60 minutes of daily physical activity such as biking to work is associated with low blood pressure in women and low hypertension in both genders.",
+      "One study found that cycling improves levels of well-being, self-confidence, and tolerance to stress while reducing tiredness, difficulties with sleep and a range of medical symptoms.",
+      "A study of nearly 2,400 adults found that those who biked to work were fitter, leaner, less likely to be obese, and had better triglyceride levels, blood pressure, and insulin levels than those who didn't active commute to work.",
+      "Bike commuters report lower stress and greater feelings of freedom, relaxation, and excitement than car commuters.",
+      "Bicycle commuting burns an average of 540 calories per hour.",
+      "Men who cycle to work are significantly less likely to be overweight and obese (39.8%) than those who drive to work (60.8%).",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;

@@ -1,11 +1,39 @@
 <div id="feedbackMetro" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "Public transportation can save households an average of 80,000 EGP every year. The savings continues to grow with the ever-increasing price of fuel.",
+      "By eliminating one car in a two-car household, taking public transportation instead of driving can result in a savings of up to 30% of a household’s annual carbon dioxide emissions.",
+      "Human activities release over 130 times the amount of CO2 emitted by volcanoes.",
+      "Using public transportation is vastly cheaper than driving.",
+      "Cycling or walking is a free gym on wheels.",
+      "By using public transportation, you won't miss morning traffic jams.",
+      "By using public transportation, you'll never have to worry about a parking spot again.",
+      "One person riding the metro for one day reduces their carbon emissions into the environment by 20 pounds. That equals more than 4,800 pounds per year, which offers immediate benefits to the environment.",
+      "One metro vehicle full of people removes up to 50 cars from the road; that’s a line of cars approximately four city blocks long.",
+      "The typical metro rider consumes, on average, one half of the oil consumed by an automobile rider. Each year, people using public transportation save the equivalent of 34 supertankers of oil.",
+      "The typical metro rider consumes, on average, one half of the oil consumed by an automobile rider. Each year, people using public transportation save the equivalent of a supertanker leaving the Middle East every 11 days.",
+      "The metro produces nearly 50% less carbon dioxide (CO2) and nitrogen oxide (NOx), per passenger mile, as private vehicles.",
+      "One metro ticket costs 1 EGP",
+      "A metro pass for an unlimited number of adult rides costs only 485 EGP per year.",
+      "A metro pass for an unlimited number of rides for students costs only 300 EGP per year.",
+      "Getting off a metro stop or two earlier can also be an easy way of building up your physical activity.",
+      "Taking cars off the road and replacing with public transport can help to reduce the total number of traffic accidents.",
+      "Using the metro helps to cut congestion which is a serious constraint on growth and costly to the economy. Reducing congestion in the city also improves the ambience of our streets and our general quality of life.",
+      "An increase in the use of public transport results in less pollution and better air quality. Just one person opting to take the metro rather than drive to work every day can reduce their carbon footprint by up to 3.8 tonnes per year!",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;

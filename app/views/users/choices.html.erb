@@ -181,7 +181,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 						<label class="drive" id="drive" style="padding-left: 0px;"></label>
 						Pollution: <i class="icon-emo-unhappy"></i> 
 					</td>
-					<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked/></td>
+					<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Using own Car" checked required/></td>
 				</tr>
 
 				<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
@@ -192,7 +192,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 							<label id="walking" style="padding-left: 0px;"></label>
 							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
-						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Walking" /></td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Walking"  required/></td>
 					</tr>
 				<% end %>
 				<% if(Geocoder::Calculations.distance_between([Errand.find(@errand_carpool[0]).start_lat,Errand.find(@errand_carpool[0]).start_lng],[Errand.find(@errand_carpool[0]).end_lat,Errand.find(@errand_carpool[0]).end_lng], :units => :km) < 3) %>
@@ -203,7 +203,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 							<label id="cycling" style="padding-left: 0px;"></label><br>
 							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
-						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Cycling" /></td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Cycling"  required/></td>
 					</tr>
 				<% end %>
 				<% if(@errand_carpool[1]) %>
@@ -214,7 +214,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 							<label class="drive" id="drive" style="padding-left: 0px;"></label>
 							Pollution: <i class="icon-emo-unhappy"></i> 
 						</td>
-						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Carpooling" /></td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Carpooling"  required/></td>
 					</tr>
 				<% end %>
 
@@ -239,7 +239,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 							<label class="metro" id="metro" style="padding-left: 0px;"></label>
 							Pollution: <i class="icon-emo-happy"></i> 
 						</td>
-						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>" /></td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Metro <%= choice %>"  required/></td>
 					</tr>
 				<% end %>
 
@@ -264,7 +264,7 @@ function getDirections(start_lat, start_lng, end_lat, end_lng) {
 							<label class="drive" id="drive" style="padding-left: 0px;"></label>
 							Pollution: <i class="icon-emo-unhappy"></i> 
 						</td>
-						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>" /></td>
+						<td><label for="choices[optionsRadios]" class="accessibility_hidden"></label><input type="radio" name="choices[optionsRadios]" class="multiple_choice" id="choices[optionsRadios]" value="<%= errand_no %>Bus <%= choice %>"  required/></td>
 					</tr>
 				<% end %>
 			</table>

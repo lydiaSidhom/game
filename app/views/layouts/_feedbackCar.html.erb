@@ -1,11 +1,58 @@
 <div id="feedbackCar" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "In 2007, the average annual delay for every person using motorized travel during peak periods was 36 hours, equivalent to: Almost 5 vacation days.",
+      "In 2007, the average annual delay for every person using motorized travel during peak periods was 36 hours, equivalent to: More than 600 average online video clips.",
+      "On a weekday, the average car causes a total of 3.26 hours of delays to other drivers, the equivalent of around 1500 EGP",
+      "Traffic congestion is linked to poor health in infants. Reductions in traffic congestion can reduce the incidence of prematurity and low birth weight among mothers who live within 2km of a road",
+      "Over time, people who commute by car daily tend to gain more weight than those who do not, even if they are physically active at other times.",
+      "A 1% decrease in the use of automobiles can decrease obesity by 0.4%.",
+      "It's not the kind of car you drive, but how many miles you drive it and how many litres of gas you burn that count.",
+      "Car tires wear out as you drive on them and the particles from those tires go into the air.",
+      "Obesity is linked to high levels of car and truck pollution.",
+      "Most ozone pollution is caused by cars and trucks.",
+      "It is estimated that of the CO2 emissions produced over a car's lifespan, 85% come from fuel use and servicing operations.",
+      "Traffic congestion wastes billions of litres of gas.",
+      "Just 25% of cars produce 90% of car air pollution.",
+      "Air pollution from cars idling in school zones make kids sick.",
+      "High levels of car and truck pollution increases hyperactivity (ADHD) in kids.",
+      "Moms in highly car-polluted areas have smaller babies, which is not good for their health.",
+      "The number of people who die due to air pollution is much less than the number of people killed per year in car crashes.",
+      "Car exhaust has also been linked to asthma, bronchitis, and other health hazards.",
+      "If you think bad air affects only other people, think again. New information shows that air pollution from traffic increases the chance of heart attack for everybody breathing that air.",
+      "Car pollution causes significant damage to neurons involved in learning and memory.",
+      "Car pollution causes signs of inflammation associated with premature aging and Alzheimer's disease.",
+      "The amount of car pollution is much more than the amount of pollution released by a nuclear power plant.",
+      "Ozone pollution is primarily due to the pollution that is released by cars.",
+      "30000 people in the United States die each year from conditions that are caused or exacerbated by car pollution.",
+      "Car pollution causes 51% of the carbon monoxide in the air, which contributes to the smog problem and can be extremely dangerous, even fatal.",
+      "Car exhaust particulates cause more clouds to form in the atmosphere, but less rain.",
+      "95% of a car's energy goes towards moving the car itself, and only 5% to moving the passenger. While on a bicycle, 83% of the energy goes towards transporting the rider, not the vehicle",
+      "When the complete life cycle of travelling with a car is taken into account, the carbon emissions are approximately 271 g CO2/passenger/km",
+      "Each hour per day spent driving corresponds with a 6% increase in the odds of being obese.",
+      "The WHO reports that the Air Pollution in Downtown Cairo is 10-100 times what is considered a safe limit.",
+      "The risk of developing serious respiratory disease and cancer from inhaling particulate in Cairo air is: 2 persons for every 1000.",
+      "Half a million of the Cairo residents will develop serious health problems (respiratory diseases and cancer) that will result in premature death in a period of 5-25 years.",
+      "Assuming that each person suffering from health problems, due to air pollution, will receive medical treatment worth 10,000 Egyptian pounds, the total cost will be 5 billion Egyptian pounds.",
+      "A recent World Bank report estimated the annual costs of the congestion in Cairo to be up to EGP50 billion.",
+      "At least 1,000 Cairo residents die each year in traffic related accidents, of which more than half are pedestrians, and over 4,000 are injured.",
+      "Cairo has one of the highest ratios of cars to km of road in the world.",
+      "If traffic is reduced by 40% you don’t have jams anymore, except of course during rush hour.",
+      "A 16km car trip from Dokki to Heliopolis which could take an hour and a half, could take around 30 minutes on a bike.",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;

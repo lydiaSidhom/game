@@ -1,11 +1,39 @@
 <div id="feedbackWalking" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "Replacing car trips with walking and biking improves air quality.",
+      "Increasing walking and bicycling can reduce single occupancy vehicle trips and greenhouse gas emissions.",
+      "Walking and bicycling are affordable transportation options.",
+      "Walking and bicycling improve personal and community health, Wang.",
+      "Walking and bicycling increase quality of life and create vibrant communities.",
+      "A reduction in carbon dioxide emissions through an increase in biking and walking for transportation has greater health benefits for a population than from the increased use of lower-emission motor vehicles.",
+      "An increase in active transportation is estimated to reduce 500 accidents per million citizens.", 
+      "Cycling and walking commuters have significantly lower levels of exposure to harmful pollutants like benzene compared with car commuters and significantly lower levels of pollutant NO2 than bus commuters.",
+      "Kids who ride a school bus inhale up to a million times more vehicle emissions than the average person outside the bus.",
+      "Women who walk or bike 30 minutes a day have a lower risk of breast cancer.",
+      "Countries with the highest levels of cycling and walking generally have the lowest obesity rates.",
+      "People exercise for longer when they are outside compared to at home, work, or a gym.",
+      "Public transportation can save households an average of 80,000 EGP every year. The savings continues to grow with the ever-increasing price of fuel.",
+      "By eliminating one car in a two-car household, taking public transportation instead of driving can result in a savings of up to 30% of a household’s annual carbon dioxide emissions.",
+      "Human activities release over 130 times the amount of CO2 emitted by volcanoes.",
+      "Using public transportation is vastly cheaper than driving.",
+      "Cycling or walking is a free gym on wheels.",
+      "By using public transportation, you won't miss morning traffic jams.",
+      "By using public transportation, you'll never have to worry about a parking spot again.",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;

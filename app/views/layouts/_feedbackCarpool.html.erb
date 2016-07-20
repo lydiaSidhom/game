@@ -1,11 +1,38 @@
 <div id="feedbackCarpool" class="modalDialog" role="dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <p>
-      >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    <p id="myRandomDiv">
     </p>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var randomStrings = [
+      "Carpooling can save you hundreds and even thousands of dollars a year as it reduces the costs involved in repetitive or long-distance driving.",
+      "It reduces the stress of your commute and allows you to read, relax, or even work while commuting.",
+      "Carpooling enables some families to cut back to one car or to do without a car at all.",
+      "If you don’t have a car or don’t drive, carpooling allows you to consider jobs throughout the area.",
+      "Carpooling can provide you with new friendships and company for your commute.",
+      "Carpooling reduces air pollution and traffic congestion, something that benefits all of us!",
+      "Carpooling helps to combat rising traffic congestion, by filling the extra seats in your car, there are fewer drivers, and therefore fewer cars crowding the roads.",
+      "Carpooling saves money. You share the costs of driving with other riders.",
+      "Carpooling reduces stress. You can read, listen to music, or relax when you’re not driving.",
+      "Carpooling helps the environment. Carpooling creates cleaner air and safer communities.",
+      "Carpooling prolongs the life of your vehicle, since shared driving puts fewer miles on your own car.",
+      "Carpooling reduces traffic. When three people carpool, there are two fewer cars on the road.",
+      "Something as simple as carpooling to work can have a huge impact on the environment, since the average vehicle releases 10,000 pounds of carbon dioxide every year.",
+      "Carpooling to work is not only good for the environment, but it's good for your wallet too!",
+      "Alternating driving to work means less wear and tear on your vehicle, only filling up your tank every other week and less mileage on your car.",
+      "Carpooling makes for a less stressful commute.",
+      "Carpooling is a great way to get to know somebody (and their taste in music) outside of the work environment.",
+      "If your carpooling with someone and when it’s not your turn to drive, you can use that extra time in the morning to eat breakfast, prepare for a meeting, or get some shut eye.",
+    ];
+
+    var randomDiv = document.getElementById("myRandomDiv");
+
+    randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
+    newText = randomStrings[randomIndex];
+    randomDiv.innerHTML = newText;
+</script>
 <style>
 .modalDialog {
   position: fixed;
