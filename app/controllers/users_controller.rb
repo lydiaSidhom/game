@@ -849,7 +849,7 @@ class UsersController < ApplicationController
     def is_near(checked_lat, checked_lng, errand_lat, errand_lng)
       #get the locations near the place the user checked-in in, that are maximum 1 mile away
       #????????????????????????????????????????????what is an appropriate range to say a location is near another
-
+      logger.debug "DISTANCEEEEEEEEE:" + Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng], :units => :km).to_s
       if(Geocoder::Calculations.distance_between([checked_lat,checked_lng],[errand_lat,errand_lng], :units => :km) < 2)
         return true
       else
