@@ -153,11 +153,11 @@
 
           <ul class="tabs" data-tabs id="map-tab">
             <li class="tabs-title" id="map-list" style="margin-bottom: 10px;">
-              <a href="#showmap"><i class="icon-globe"></i>Add new errand</a>
+              <a href="#"><i class="icon-globe"></i>Add new errand</a>
             </li>
           </ul>
           <div class="tabs-content" id="showmapContent" data-tabs-content="map-tab">
-            <div class="tabs-panel" id="showmap">          
+            <div class="tabs-panel-map" id="showmap">          
               <%= form_tag users_choices_path, :id => 'form_id' do %>
                 <div class="row">
                   <div class="large-5 columns">
@@ -396,11 +396,11 @@
           </div> -->
           <ul class="tabs" data-tabs id="map-tab-small">
             <li class="tabs-title" id="map-list-small" style="margin-bottom: 10px;">
-              <a href="#showmapSmall"><i class="icon-globe"></i>Add new errand</a>
+              <a href="#"><i class="icon-globe"></i>Add new errand</a>
             </li>
           </ul>
           <div class="tabs-content" id="showmapContentSmall" data-tabs-content="map-tab-small">
-            <div class="tabs-panel" id="showmapSmall">          
+            <div class="tabs-panel-map" id="showmapSmall">          
               <%= form_tag users_choices_path, :id => 'form_id' do %>
                 <div class="row">
                   <div class="large-5 columns">
@@ -1186,6 +1186,25 @@ function initMap() {
             displayRoute(posStart, posEnd, directionsServiceSmall, directionsDisplaySmall);
           });
         });
+  
+        // google.maps.event.addListener(map, "idle", function() {
+        //   google.maps.event.trigger(map, "resize");
+        // });
+        // this.map.setZoom(this.map.getZoom() - 1);
+        // this.map.setZoom(this.map.getZoom() + 1);
+
+        // google.maps.event.addListener(mapSmall, "idle", function() {
+        //   google.maps.event.trigger(mapSmall, "resize");
+        // });
+        // this.mapSmall.setZoom(this.mapSmall.getZoom() - 1);
+        // this.mapSmall.setZoom(this.mapSmall.getZoom() + 1);
+        // $(".tabs-content").tabs({
+        //   activate: function(event, ui) {
+        //     if(ui.newPanel.has('#map')) {
+        //       google.maps.event.trigger(window, 'resize', {});
+        //     }
+        //   }
+        // });
 
       }, function(error) {
             switch(error.code) {
