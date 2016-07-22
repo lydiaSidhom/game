@@ -637,9 +637,7 @@ class UsersController < ApplicationController
     if(@errand.check_start_time)
       if(is_near(params[:lat], params[:lng], @errand.end_lat, @errand.end_lng) && params[:datetime])
         @actual_duration = ActiveSupport::TimeZone['UTC'].parse(params[:datetime]) - @errand.check_start_time
-    
-        #logger.debug @actual_duration
-
+  
         if(@errand.choice.include?("Bus line") || @errand.choice.include?("Carpooling") || @errand.choice.include?("Using own Car") || @errand.choice.include?("Walking"))
           @estimated_duration = params[:duration].to_i
         elsif(@errand.choice.include?("Metro line"))
@@ -730,7 +728,7 @@ class UsersController < ApplicationController
           @errand.update_attribute :check_end_time, params[:datetime]
           @errand.update_attribute :done, true
           @errand.update_attribute :finished, false
-          render status: 200, text: "The time you took to finish the errand is more than the expected. Your score will not be updated."
+          render status: 200, text: "The time you took to finish the errand is more or less than the expected. Your score will not be updated."
         end
       else
         render status: 200, text: "The location you checked in is different from the end location of your errand."

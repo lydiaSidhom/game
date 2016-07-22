@@ -1,7 +1,3 @@
-<%# if session[:modal] == true %>
-  <%#= render :partial => 'layouts/info'%>
-<%# end %>
-
 <div class="full-width" id="profileContainer">
   <div class="row align-center" id="profileInfo">
     <div class="large-5 small-12 columns align-self-middle">
@@ -92,27 +88,24 @@
     <div class="row align-center" id="challenges">
       <div class="large-3 columns">
         <%if(@challen1[1])%>
-          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
         <% else %>
-          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge1'%>
       </div>
       <div class="large-3 columns">
         <%if(@challen2[1])%>
-          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
         <% else %>
-          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge2'%>
       </div>
       <div class="large-3 columns">
         <%if(@challen3[1])%>
-          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
         <% else %>
-          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge3'%>
       </div>
     </div>
 
@@ -124,7 +117,7 @@
                 <%= link_to "greenie", root_path(current_user), style: "padding: 0px;" %>
               </li>
               <li class="tips">
-                <p id="myRandomDiv">
+                <p id="randomProfile">
                 </p>                
               </li>
               <% if logged_in? %>
@@ -659,27 +652,24 @@
     <div class="row align-center" id="challenges">
       <div class="large-3 columns">
         <%if(@challen1[1])%>
-          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge1"><div class="challenge-pic" style="background-image: url('/img/level1.png" ></div></a>
         <% else %>
-          <a href="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge1"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge1'%>
       </div>
       <div class="large-3 columns">
         <%if(@challen2[1])%>
-          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge2"><div class="challenge-pic" style="background-image: url('/img/level2.png" ></div></a>
         <% else %>
-          <a href="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge2"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge2'%>
       </div>
       <div class="large-3 columns">
         <%if(@challen3[1])%>
-          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge3"><div class="challenge-pic" style="background-image: url('/img/level3.png" ></div></a>
         <% else %>
-          <a href="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
+          <a href="#" data-toggle="modal" data-target="#challenge3"><div class="challenge-pic" style="background-image: url('/img/locked.png" ></div></a>
         <% end %>
-        <%= render :partial => 'layouts/challenge3'%>
       </div>
     </div>
     <div class="row side-footer">
@@ -690,7 +680,7 @@
                 <%= link_to "greenie", root_path(current_user), style: "padding: 0px;" %>
               </li>
               <li class="tips">
-                <p id="myRandomDiv2">
+                <p id="randomProfileSmall">
                 </p>                
               </li>
               <% if logged_in? %>
@@ -707,7 +697,22 @@
   </div>
 </div>
 
-<script src="/js/vendor/jquery.min.js"></script>
+<%= render :partial => 'layouts/challenge1'%>
+<%= render :partial => 'layouts/challenge2'%>
+<%= render :partial => 'layouts/challenge3'%>
+
+<%= render :partial => 'layouts/feedbackCar'%>
+<%= render :partial => 'layouts/feedbackBus'%>
+<%= render :partial => 'layouts/feedbackMetro'%>
+<%= render :partial => 'layouts/feedbackCarpool'%>
+<%= render :partial => 'layouts/feedbackWalking'%>
+<%= render :partial => 'layouts/feedbackCycling'%>
+
+<%= render :partial => 'layouts/awardGold'%>
+<%= render :partial => 'layouts/awardSilver'%>
+<%= render :partial => 'layouts/awardBronze'%>
+
+<!--script src="/js/vendor/jquery.min.js"></script-->
 <script src="/js/vendor/what-input.min.js"></script>
 <script src="/js/vendor/foundation.js"></script>
 <script src="/js/app.js"></script>
@@ -860,8 +865,8 @@
         "An increase in the use of public transport results in less pollution and better air quality. Just one person opting to take the bus rather than drive to work every day can reduce their carbon footprint by up to 3.8 tonnes per year!",
     ];
 
-    var randomDiv = document.getElementById("myRandomDiv");
-    var randomDiv2 = document.getElementById("myRandomDiv2");
+    var randomDiv = document.getElementById("randomProfile");
+    var randomDiv2 = document.getElementById("randomProfileSmall");
 
     randomIndex = Math.ceil((Math.random()*randomStrings.length-1));
     newText = randomStrings[randomIndex];
@@ -873,12 +878,12 @@
 
 <script>
 
-$(window).load(function(){
-    var modal = document.getElementById('myModal');
-    if(modal != null) {
-      $('#myModal').modal('show');
-    }
-});
+// $(window).load(function(){
+//     var modal = document.getElementById('myModal');
+//     if(modal != null) {
+//       $('#myModal').modal('show');
+//     }
+// });
 
 
 // For todays date;
@@ -912,7 +917,7 @@ function getLocation(elm, loc, check_start_lat, check_start_lng, choice) {
               }).done(function(data){
                 if(data.startsWith("The") || data.startsWith("You")) {
                   alert(data);
-                  if (data.includes("The time")) {
+                  if (data.startsWith("The time")) {
                     location.reload(true);
                   }
                 } else {
@@ -1015,41 +1020,115 @@ function getDirections(start_lat, start_lng, end_lat, end_lng, choice, postReque
 
     var travelMode = ""
     if(choice.includes("Bus line") || choice.includes("Carpooling") || choice.includes("Using own Car")) {
-      travelMode = google.maps.TravelMode.DRIVING;
+      service.getDistanceMatrix(
+        {
+          origins: [origin],
+          destinations: [destination],
+          travelMode: google.maps.TravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+        }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              alert('Error was: ' + status);
+            } else {
+              var originList = response.originAddresses;
+              var destinationList = response.destinationAddresses;
+              //var outputDiv = document.getElementById('test');
+              //outputDiv.innerHTML = '';
+
+              var output = response.rows[0].elements[0].duration.value
+              console.log(response.rows[0].elements[0]);
+              // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+              //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+              //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+              // }
+              //outputDiv.innerHTML=output+"#";
+
+              postRequest(output);
+            }
+      });
     } else if(choice.includes("Metro line")) {
-      travelMode = "";
+      service.getDistanceMatrix(
+        {
+          origins: [origin],
+          destinations: [destination],
+          unitSystem: google.maps.UnitSystem.METRIC,
+        }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              alert('Error was: ' + status);
+            } else {
+              var originList = response.originAddresses;
+              var destinationList = response.destinationAddresses;
+              //var outputDiv = document.getElementById('test');
+              //outputDiv.innerHTML = '';
+
+              var output = response.rows[0].elements[0].duration.value
+              console.log(response.rows[0].elements[0]);
+              // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+              //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+              //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+              // }
+              //outputDiv.innerHTML=output+"#";
+
+              postRequest(output);
+            }
+      });
     } else if(choice.includes("Walking")) {
-      travelMode = google.maps.TravelMode.WALKING;
+      console.log("WALKINGGGGG");
+      service.getDistanceMatrix(
+        {
+          origins: [origin],
+          destinations: [destination],
+          travelMode: google.maps.TravelMode.WALKING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+        }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              alert('Error was: ' + status);
+            } else {
+              var originList = response.originAddresses;
+              var destinationList = response.destinationAddresses;
+              //var outputDiv = document.getElementById('test');
+              //outputDiv.innerHTML = '';
+
+              var output = response.rows[0].elements[0].duration.value
+              console.log(response.rows[0].elements[0]);
+              // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+              //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+              //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+              // }
+              //outputDiv.innerHTML=output+"#";
+
+              postRequest(output);
+            }
+      });
     } else if(choice.includes("Cycling")) {
-      travelMode = google.maps.TravelMode.WALKING;
+      service.getDistanceMatrix(
+        {
+          origins: [origin],
+          destinations: [destination],
+          travelMode: google.maps.TravelMode.WALKING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+        }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              alert('Error was: ' + status);
+            } else {
+              var originList = response.originAddresses;
+              var destinationList = response.destinationAddresses;
+              //var outputDiv = document.getElementById('test');
+              //outputDiv.innerHTML = '';
+
+              var output = response.rows[0].elements[0].duration.value
+              console.log(response.rows[0].elements[0]);
+              // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
+              //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
+              //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
+              // }
+              //outputDiv.innerHTML=output+"#";
+
+              postRequest(output);
+            }
+      });
     }
 
-    service.getDistanceMatrix(
-      {
-        origins: [origin],
-        destinations: [destination],
-        travelMode: travelMode,
-        unitSystem: google.maps.UnitSystem.METRIC,
-      }, function(response, status) {
-          if (status !== google.maps.DistanceMatrixStatus.OK) {
-            alert('Error was: ' + status);
-          } else {
-            var originList = response.originAddresses;
-            var destinationList = response.destinationAddresses;
-            //var outputDiv = document.getElementById('test');
-            //outputDiv.innerHTML = '';
-
-            var output = response.rows[0].elements[0].duration.value
-            console.log("HERE: "+output);
-            // for (x = 0;x < response.routes[0].legs[0].steps.length; x++){
-            //     output = output + response.routes[0].legs[0].steps[x].html_instructions;
-            //     output += " (Distance: " + response.routes[0].legs[0].steps[x].distance.text + ") <br />";
-            // }
-            //outputDiv.innerHTML=output+"#";
-
-            postRequest(output);
-          }
-    });
   } else {
     postRequest("");
   }
